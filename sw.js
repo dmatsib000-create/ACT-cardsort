@@ -1,6 +1,6 @@
 // Offline support. Pages are fetched network-first (so updates arrive quickly);
 // static assets are served from cache and refreshed in the background.
-const VERSION = 'lodestar-v3';
+const VERSION = 'lodestar-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -21,7 +21,13 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(VERSION).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  // cache: 'reload' skips the browser's HTTP cache, so every file in this
+  // install comes from the same deploy and the modules always match.
+  event.waitUntil(
+    caches.open(VERSION)
+      .then((c) => c.addAll(ASSETS.map((url) => new Request(url, { cache: 'reload' }))))
+      .then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener('activate', (event) => {
@@ -31,6 +37,16 @@ self.addEventListener('activate', (event) => {
       .then(() => self.clients.claim()),
   );
 });
+
+// Shown for pages other than the app that were never visited online. The app
+// shell can't stand in for them: its relative asset paths would break.
+function offlinePage() {
+  const html = '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
+    + '<title>Offline \u00b7 Lodestar</title><body style="font:17px/1.6 system-ui,sans-serif;max-width:32rem;margin:3rem auto;padding:0 1rem;color:#1d2b2f;background:#f6f1e9">'
+    + '<h1>You\u2019re offline</h1><p>This page hasn\u2019t been saved for offline use yet. Connect to the internet and try again.</p>'
+    + '<p><a href="' + new URL(self.registration.scope).pathname + '" style="color:#1e5e59">Open the Lodestar card sort</a>, which works offline.</p></body></html>';
+  return new Response(html, { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+}
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;
@@ -48,7 +64,7 @@ self.addEventListener('fetch', (event) => {
           if (res.ok) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(isShell ? './index.html' : req, copy)); }
           return res;
         })
-        .catch(() => (isShell ? caches.match('./index.html') : caches.match(req).then((r) => r || caches.match('./index.html')))),
+        .catch(() => (isShell ? caches.match('./index.html') : caches.match(req).then((r) => r || offlinePage()))),
     );
     return;
   }

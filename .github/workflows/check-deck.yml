@@ -7,6 +7,9 @@ on:
   pull_request:
     paths: ['assets/js/values.js', 'scripts/check-deck.mjs']
 
+permissions:
+  contents: read
+
 jobs:
   check:
     runs-on: ubuntu-latest

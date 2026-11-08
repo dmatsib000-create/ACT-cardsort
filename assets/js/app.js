@@ -424,6 +424,9 @@ function place(pile) {
   const finish = () => {
     clearTimeout(timer);
     pendingFinish = null;
+    // The card is already saved. If the person has left the sort screen while
+    // it was animating out, don't redraw whatever page they are on now.
+    if (parseHash().name !== 'sort') return;
     if (done) {
       announce('All cards sorted. Now review your piles.');
       render();
@@ -575,6 +578,14 @@ function viewCore() {
       <p><strong>You have ${very.length} \u201cvery important\u201d cards.</strong> A short narrowing round can help: you\u2019ll see a few cards at a time and pick the one that matters most and the one that matters least. It takes about ${narrowTrials(very.length)} rounds.</p>
       <button type="button" class="btn btn--secondary" data-action="narrow">${Object.keys(state.bw).length ? 'Narrow again' : 'Start narrowing round'}</button>
     </div>` : ''}
+    ${(() => {
+      const top = Object.keys(state.bw).length ? topFive() : [];
+      const same = top.length === state.core.length && top.every((id) => state.core.includes(id));
+      return top.length && state.core.length && !same ? `<div class="notice suggest">
+        <p><strong>Your narrowing round suggests:</strong> ${top.map((id) => esc(val(id).name)).join(', ')}. Your own choices below have been kept.</p>
+        <button type="button" class="btn btn--secondary btn--sm" data-action="use-top5">Use these five instead</button>
+      </div>` : '';
+    })()}
     <form class="core-form" id="core-form" novalidate>
       <fieldset>
         <legend><span class="legend-title">Very important to me</span> <span class="muted">(${very.length})</span></legend>
@@ -638,6 +649,14 @@ function viewCore() {
 // set gives a score that separates a crowded "very important" pile.
 const narrowTrials = (n) => Math.ceil((n * 2) / 4);
 
+// The five highest-scoring "very important" cards from the narrowing round.
+function topFive() {
+  return inPile('very')
+    .filter((id) => id in state.bw)
+    .sort((a, b) => state.bw[b] - state.bw[a])
+    .slice(0, 5);
+}
+
 function buildTrials(ids) {
   const seq = [...store.shuffle(ids), ...store.shuffle(ids)];
   const trials = [];
@@ -694,15 +713,19 @@ async function runNarrowing() {
       score[worst] -= 1;
     }
     state.bw = score;
-    const ordered = [...ids].sort((a, b) => score[b] - score[a]);
-    state.core = ordered.slice(0, 5);
-    state.ties = [];
-    state.ranked = false;
+    const top = topFive();
+    // Only fill in core values if none were chosen yet; never replace someone's choices.
+    const filled = state.core.length === 0;
+    if (filled) { state.core = top; state.ties = []; state.ranked = false; }
     persist();
     viewCore();
-    announce(`Done. Your top five have been selected: ${state.core.map((id) => val(id).name).join(', ')}. You can change them.`);
-    toast('Top five selected');
-  } catch {
+    const names = top.map((id) => val(id).name).join(', ');
+    announce(filled
+      ? `Done. Your top five have been selected: ${names}. You can change them.`
+      : `Done. Your choices were kept. The round suggests: ${names}.`);
+    toast(filled ? 'Top five selected' : 'Suggestion ready');
+  } catch (err) {
+    if (err?.message !== 'cancel') console.error('Narrowing round failed:', err);
     host.remove();
     form.hidden = false;
     if (help) help.hidden = false;
@@ -852,7 +875,8 @@ async function runPairwise() {
     state.ranked = true;
     persist();
     announce(`Ranking complete. Your top value is ${val(sorted[0]).name}.`);
-  } catch {
+  } catch (err) {
+    if (err?.message !== 'cancel') console.error('Ranking questions failed:', err);
     announce('Stopped. You can rank by hand.');
   }
   host.remove();
@@ -880,6 +904,7 @@ function shouldNudge(text) {
 }
 
 function viewReflect() {
+  const nums = rankNums();
   setTitle('Reflect on your values');
   if (!state.core.length) {
     app.innerHTML = `${stepper('reflect')}<h1 class="visually-hidden">Reflect on your values</h1>${emptyState({ title: 'Choose your core values first', body: 'Reflection works best once you know which values are at the heart of things for you.', href: progress().sorted ? '#/core' : '#/sort', cta: progress().sorted ? 'Choose core values' : 'Begin the card sort' })}`;
@@ -898,7 +923,7 @@ function viewReflect() {
         const r = state.reflections[id] || { meaning: '', living: null };
         const living = r.living ?? 5;
         return `<fieldset class="reflect">
-          <legend><span class="reflect__rank" aria-hidden="true">${rankNums()[i]}</span><span class="legend-title">${esc(v.name)}</span></legend>
+          <legend><span class="reflect__rank" aria-hidden="true">${nums[i]}</span><span class="legend-title">${esc(v.name)}</span></legend>
           <p class="reflect__desc">${esc(v.desc)}</p>
           <label for="m-${esc(id)}" class="field-label">What does ${esc(v.name.toLowerCase())} mean to you?</label>
           <p class="field-hint" id="mh-${esc(id)}">Try starting with: “${MEANING_PROMPTS[i % MEANING_PROMPTS.length]}”</p>
@@ -1141,6 +1166,7 @@ function drawPlan() {
  * ------------------------------------------------------------------ */
 
 function bullseyeSVG() {
+  const nums = rankNums();
   const rated = state.core.map((id, i) => ({ id, i, living: state.reflections[id]?.living })).filter((x) => x.living != null);
   if (!rated.length) return '';
   const size = 320, c = size / 2, R = 140;
@@ -1151,12 +1177,12 @@ function bullseyeSVG() {
     const angle = (-Math.PI / 2) + (2 * Math.PI * i) / n;
     const r = Math.max(0, (10 - living) / 10) * (R - 14);
     const x = c + r * Math.cos(angle), y = c + r * Math.sin(angle);
-    return `<g class="be-dot"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="13"/><text x="${x.toFixed(1)}" y="${(y + 4.5).toFixed(1)}" text-anchor="middle">${rankNums()[i]}</text></g>`;
+    return `<g class="be-dot"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="13"/><text x="${x.toFixed(1)}" y="${(y + 4.5).toFixed(1)}" text-anchor="middle">${nums[i]}</text></g>`;
   }).join('');
   return `<figure class="bullseye">
     <svg viewBox="0 0 ${size} ${size}" role="img" aria-labelledby="be-title be-desc">
       <title id="be-title">Values bull’s-eye</title>
-      <desc id="be-desc">Each numbered dot is one of your ranked values. The closer to the center, the more fully you said you are living it. ${rated.map(({ id, i, living }) => `${rankNums()[i]}, ${val(id).name}: ${living} out of 10.`).join(' ')}</desc>
+      <desc id="be-desc">Each numbered dot is one of your ranked values. The closer to the center, the more fully you said you are living it. ${rated.map(({ id, i, living }) => `${nums[i]}, ${val(id).name}: ${living} out of 10.`).join(' ')}</desc>
       ${rings}
       <line x1="${c}" y1="${c - R}" x2="${c}" y2="${c + R}" class="be-axis"/>
       <line x1="${c - R}" y1="${c}" x2="${c + R}" y2="${c}" class="be-axis"/>
@@ -1169,6 +1195,7 @@ function bullseyeSVG() {
 const WHY_TEXT = { own: 'for its own sake', means: 'for what it gives me', both: 'for its own sake and for what it gives me' };
 
 function summaryText() {
+  const nums = rankNums();
   const lines = [];
   lines.push('MY VALUES (Lodestar ACT values card sort)');
   lines.push(formatDate(new Date().toISOString()));
@@ -1176,7 +1203,7 @@ function summaryText() {
   state.core.forEach((id, i) => {
     const v = val(id);
     const r = state.reflections[id];
-    lines.push(`${rankNums()[i]}. ${v.name}${r?.living != null ? ` (living it: ${r.living}/10)` : ''}`);
+    lines.push(`${nums[i]}. ${v.name}${r?.living != null ? ` (living it: ${r.living}/10)` : ''}`);
     if (r?.meaning?.trim()) lines.push(`   ${r.meaning.trim()}`);
     if (r?.why) lines.push(`   Valued ${WHY_TEXT[r.why]}${r.leadsTo?.trim() ? `: ${r.leadsTo.trim()}` : ''}`);
   });
@@ -1194,6 +1221,7 @@ function summaryText() {
 }
 
 function viewResults() {
+  const nums = rankNums();
   setTitle('My values');
   if (!state.core.length) {
     app.innerHTML = `<h1 class="visually-hidden">My values</h1>${emptyState({ title: 'Your values will appear here', body: 'Work through the card sort and your core values, reflections and action plan will be gathered on this page.', href: progress().sorted ? '#/core' : '#/sort', cta: progress().started ? 'Continue the card sort' : 'Begin the card sort' })}
@@ -1221,7 +1249,7 @@ function viewResults() {
             const v = val(id);
             const r = state.reflections[id];
             return `<li class="value">
-              <span class="value__n" aria-hidden="true">${rankNums()[i]}</span>
+              <span class="value__n" aria-hidden="true">${nums[i]}</span>
               <div class="value__body">
                 <h3 class="value__name">${esc(v.name)}</h3>
                 ${r?.meaning?.trim() ? `<p class="value__meaning">${esc(r.meaning.trim())}</p>` : `<p class="value__desc">${esc(v.desc)}</p>`}
@@ -1542,11 +1570,25 @@ document.addEventListener('click', (e) => {
     }).then((ok) => {
       if (!ok) return;
       state.order = store.shuffle([...VALUES.map((v) => v.id), ...state.custom.map((c) => c.id)]);
-      state.pos = 0; state.piles = {}; state.history = [];
+      state.pos = 0; state.piles = {}; state.history = []; state.bw = {};
       persist(); render();
     }); break;
     case 'pairwise': runPairwise(); break;
     case 'narrow': runNarrowing(); break;
+    case 'use-top5': confirmDialog({
+      title: 'Use the suggested five?',
+      body: 'This replaces your current core values and resets their order. Your reflections are kept and come back if you choose those values again.',
+      confirm: 'Use these five',
+    }).then((ok) => {
+      if (!ok) return;
+      state.core = topFive();
+      state.ties = [];
+      state.ranked = false;
+      persist();
+      viewCore();
+      announce(`Your core values are now: ${state.core.map((id) => val(id).name).join(', ')}.`);
+      app.querySelector('h1')?.focus();
+    }); break;
     case 'dismiss-update': {
       state.deckUpdated = false;
       persist();

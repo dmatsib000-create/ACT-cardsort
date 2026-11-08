@@ -61,8 +61,6 @@ export function clear() {
   return fresh();
 }
 
-// Accepts any object (from storage or an imported file) and returns a safe,
-// fully shaped state. Unknown keys are dropped; wrong types are reset.
 // Carries saved progress from deck version 1 (65 cards) to version 2, where
 // some cards were merged or renamed. Choices follow the card to its new id;
 // when two old cards merge, the stronger pile and both reflections are kept.
@@ -100,6 +98,8 @@ function migrateV1(input) {
       ratings[opt] = {};
       for (const [vid, n] of Object.entries(r || {})) {
         const k = to(vid);
+        // Deliberate: if two merged cards were rated differently on one option,
+        // the first rating wins (we can't know which the person meant).
         if (!(k in ratings[opt])) ratings[opt][k] = n;
       }
     }
@@ -108,6 +108,8 @@ function migrateV1(input) {
   return out;
 }
 
+// Accepts any object (from storage or an imported file) and returns a safe,
+// fully shaped state. Unknown keys are dropped; wrong types are reset.
 export function normalize(input) {
   const base = fresh();
   if (!input || typeof input !== 'object') return base;

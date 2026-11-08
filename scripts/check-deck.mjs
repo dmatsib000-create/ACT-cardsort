@@ -8,9 +8,11 @@
 
 import { VALUES } from '../assets/js/values.js';
 
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\\-]/g, '\\$&');
+
 const RULES = [
   {
-    name: 'Starts with an action, not an identity ("Being honest")',
+    name: 'Starts with an identity ("Being honest") instead of an action',
     test: (v) => /^(being|to be|be)\b/i.test(v.desc),
   },
   {
@@ -37,7 +39,7 @@ const RULES = [
   {
     name: 'Defines the value with its own name',
     // Family is used as scope ("people I consider family"), not as a definition.
-    test: (v) => !['family'].includes(v.id) && new RegExp(`\\b${v.name.toLowerCase().replace(/[-\s]+/g, '[-\\s]')}\\b`, 'i').test(v.desc),
+    test: (v) => !['family'].includes(v.id) && new RegExp(`\\b${escapeRe(v.name.toLowerCase()).replace(/(?:\\-|\s)+/g, '[-\\s]')}\\b`, 'i').test(v.desc),
   },
   {
     name: 'Is too long to read at a glance (over 90 characters)',
