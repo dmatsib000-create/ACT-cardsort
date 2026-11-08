@@ -76,11 +76,12 @@ assets/icons/           App icons
 docs/research/          Research briefs with verified citations
 docs/VALUES-MAP.md      Values map findings and proposed deck changes
 docs/values-map.html    Interactive values map
+scripts/check-deck.mjs  Checks every card against ACT's definition of a value
 ```
 
 ### Editing the deck
 
-Cards live in `assets/js/values.js`. Each one needs a unique `id`, a `name` and a short `desc`. Keep descriptions as **qualities of action** (how someone wants to behave), not outcomes or feelings; that is how ACT defines values. After changing any file, bump `VERSION` in `sw.js` so returning visitors get the update.
+Cards live in `assets/js/values.js`. Each one needs a unique `id`, a `name` and a short `desc`. Keep descriptions as **qualities of action** (how someone wants to behave), not outcomes or feelings; that is how ACT defines values. Then run `node scripts/check-deck.mjs`, which checks every card against ACT's definition of a value: a chosen quality of ongoing action, never completed, within the person's control, and not an outcome, feeling or rule. The same check runs automatically on GitHub whenever the deck changes. After changing any file, bump `VERSION` in `sw.js` so returning visitors get the update.
 
 ## Credits and licenses
 

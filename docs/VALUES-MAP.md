@@ -34,22 +34,22 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 | **Adventure** | Seeking out new experiences and exploring the unfamiliar. | Unchanged | Stimulation |
 | **Assertiveness** | Saying clearly what I need, while staying respectful. | Reworded | Self-direction: action |
 | **Authenticity** | Acting in ways that fit who I really am. | Reworded | Self-direction: action |
-| **Beauty** | Noticing and savoring beauty in the world around me. | Reworded | Universalism: nature |
+| **Beauty** | Noticing and savoring what is lovely in art, nature and everyday life. | Reworded | Universalism: nature |
 | **Challenge** | Taking on hard things that stretch me. | Reworded | Stimulation |
-| **Citizenship** | Doing my part to keep my community and society working well. | New | Security: societal |
+| **Citizenship** | Doing my part as a member of my community and society. | New | Security: societal |
 | **Community** | Taking an active part in the groups I belong to. | Reworded | Benevolence: caring |
-| **Compassion** | Responding to other people's pain with warmth and a wish to help. | Reworded | Universalism: concern |
-| **Contribution** | Making a positive difference beyond myself. | Reworded | Universalism: concern |
+| **Compassion** | Responding to other people’s pain with care and support. | Reworded | Universalism: concern |
+| **Contribution** | Giving my effort to people and causes beyond myself. | Reworded | Universalism: concern |
 | **Cooperation** | Working well with others toward shared aims. | Unchanged | Benevolence: dependability |
 | **Courage** | Doing hard or frightening things when they are worth doing to me. | Reworded | No single home |
 | **Courtesy** | Showing good manners and consideration in everyday dealings with people. | New | Conformity: interpersonal |
 | **Creativity** | Imagining, making and expressing things in my own way. | Unchanged | Self-direction: thought |
 | **Curiosity** | Asking questions, exploring and staying open to discovery. | Unchanged | Self-direction: thought |
-| **Duty** | Fulfilling the obligations that come with my roles and relationships. | New | Conformity: rules |
+| **Duty** | Honoring the commitments that come with my roles and relationships. | New | Conformity: rules |
 | **Empathy** | Trying to understand how things are for other people. | Reworded | Universalism: tolerance |
-| **Excellence** | Doing my work carefully and to a high standard. | Renamed from Diligence | Achievement |
+| **Excellence** | Putting care and skill into the work I do. | Renamed from Diligence | Achievement |
 | **Fairness** | Treating people even-handedly, without favoritism. | Reworded | Universalism: concern |
-| **Faith** | Practicing my religion and living by its teachings. | New (split from Spirituality) | Tradition |
+| **Faith** | Practicing my religion and letting it guide how I live. | New (split from Spirituality) | Tradition |
 | **Family** | Showing up for the people I consider family. | Reworded | Benevolence: caring |
 | **Flexibility** | Adapting with grace when plans or circumstances change. | Unchanged | Self-direction: action |
 | **Forgiveness** | Letting go of resentment toward people who hurt me, without excusing the harm. | Reworded | Benevolence: caring |
@@ -67,16 +67,16 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 | **Humility** | Letting my actions speak, without needing credit. | Reworded | Humility |
 | **Humor** | Seeing and sharing the funny side of life. | Unchanged | Hedonism |
 | **Independence** | Taking care of things myself rather than relying on others. | Reworded | Self-direction: action |
-| **Influence** | Having a say in decisions and shaping what happens around me. | New | Power: dominance |
-| **Integrity** | Acting in line with my principles, even when no one is watching. | Unchanged | Benevolence: dependability |
-| **Intimacy** | Opening up and sharing closeness with a partner. | Reworded | Benevolence: caring |
+| **Influence** | Speaking up and getting involved in decisions that affect me and others. | New | Power: dominance |
+| **Integrity** | Acting in line with my principles, in private as well as in public. | Reworded | Benevolence: dependability |
+| **Intimacy** | Opening up and sharing closeness with someone I trust. | Reworded | Benevolence: caring |
 | **Justice** | Standing up for people who are treated unfairly. | Reworded | Universalism: concern |
 | **Kindness** | Treating people with warmth and consideration. | Merges Caring + Kindness | Benevolence: caring |
 | **Leadership** | Helping a group find and move toward shared aims. | Reworded | Achievement |
 | **Learning** | Building my knowledge, skills and understanding. | Unchanged | Self-direction: thought |
 | **Love** | Showing affection and devotion to the people closest to me. | Reworded | Benevolence: caring |
 | **Loyalty** | Standing by the people I am committed to. | Reworded | Benevolence: dependability |
-| **Mastery** | Practicing so I can do the things I care about really well. | Unchanged | Achievement |
+| **Mastery** | Practicing and refining my skills in the things I care about. | Reworded | Achievement |
 | **Nature** | Spending time in the natural world. | Split | Universalism: nature |
 | **Nurturing** | Helping others grow and flourish by teaching, guiding and encouraging them. | Merges Encouragement + Nurturing | Benevolence: caring |
 | **Open-mindedness** | Considering other viewpoints and staying open to being wrong. | Reworded | Universalism: tolerance |
@@ -84,9 +84,9 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 | **Patience** | Giving things and people the time they need. | Reworded | Conformity: interpersonal |
 | **Pleasure** | Savoring the good things my senses and body can enjoy. | Unchanged | Hedonism |
 | **Presence** | Giving my full attention to what I'm doing and who I'm with. | Merges Connection + Mindfulness | Benevolence: caring |
-| **Providing** | Working to provide for, and secure the future of, the people who depend on me. | New | Power: resources |
+| **Providing** | Working to provide for the people who depend on me. | New | Power: resources |
 | **Prudence** | Thinking ahead and making careful, considered choices. | New | Security: personal |
-| **Reliability** | Doing what I said I would do and keeping confidences. | Reworded | Benevolence: dependability |
+| **Reliability** | Keeping my word to people. | Reworded | Benevolence: dependability |
 | **Respect** | Treating others with consideration and dignity. | Unchanged | Conformity: interpersonal |
 | **Responsibility** | Owning my choices and their consequences. | Unchanged | Benevolence: dependability |
 | **Safety** | Protecting the people in my care from harm. | Reworded | Security: personal |
@@ -99,7 +99,7 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 | **Stewardship** | Protecting the natural world for the people who come after me. | New (split from Nature) | Universalism: nature |
 | **Tradition** | Honoring the customs and heritage that shaped me. | Unchanged | Tradition |
 | **Trusting others** | Giving people the benefit of the doubt and letting them in. | Renamed from Trust | Benevolence: dependability |
-| **Vitality** | Throwing myself into life with energy and wholeheartedness. | New | Stimulation |
+| **Vitality** | Throwing myself fully into what I do. | New | Stimulation |
 | **Wisdom** | Acting with good judgment, especially when things are complicated. | Reworded | Universalism: tolerance |
 
 ## Changes to the sort
@@ -112,13 +112,34 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 - Not yet implemented: treat life areas (family, work, health, community) as areas that values attach to, as the Valued Living Questionnaire does.
 - Use the wellbeing findings for coverage only. Never steer people toward "healthy" values: the effects are small and depend on culture, and steering invites choosing values to please others.
 
+## Every card fits ACT's definition of a value
+
+In ACT, a value is a freely chosen, desired quality of ongoing action (Wilson & DuFrene, 2009; Harris, 2019). Every card was checked against that definition:
+
+1. **A quality of action:** it describes how the person acts, not something they have or are.
+2. **Never completed:** it is a direction, not a goal or outcome that can be reached or ticked off.
+3. **Within the person's control:** it does not depend on how others respond (being respected, accepted, admired) or on results.
+4. **Not a feeling:** feelings come and go and cannot be chosen; the card names what the person does.
+5. **Not a rule:** it is held as a chosen direction, not as an obligation or an absolute standard.
+6. **One action at a time:** each card describes one quality, so people know what they are choosing.
+
+A final pass revised 14 cards that slipped:
+- **Outcome or result:** Contribution ("making a positive difference"), Excellence ("to a high standard"), Mastery ("really well"), Providing ("secure the future"), Citizenship ("keep society working well").
+- **Dependent on others:** Influence ("having a say").
+- **Rule or absolute:** Duty ("obligations"), Integrity ("even when no one is watching"), Faith ("living by its teachings").
+- **Feeling:** Vitality ("energy"), Compassion ("a wish to help").
+- **Two actions or a precondition:** Reliability (two promises), Intimacy (assumed a partner).
+- **Circular:** Beauty (defined with its own name).
+
+`scripts/check-deck.mjs` turns these criteria into automatic checks: identity framing, outcome words, dependence on others' responses, feelings, rules and absolutes, circular words, self-definition and length. It runs on every change to the deck through `.github/workflows/check-deck.yml`, and can be run locally with `node scripts/check-deck.mjs`. Some judgments, like whether a card bundles two actions, still need a human read.
+
 ## Wording rules
 
 1. One act, one target.
 2. Start with a verb, not "Being...". Identity framing is fragile after lapses (Foster-Hanson et al., 2020).
 3. Make the person the giver. Never write a value that depends on how others treat you.
 4. No circular words ("what matters", "what is right").
-5. No absolutes by default ("even when no one is watching").
+5. No absolutes ("always", "never", "even when no one is watching").
 6. No feelings as values (calm, happy, confident).
 7. Plain, translatable words.
 8. Show the description wherever the name appears.
@@ -137,7 +158,7 @@ These codings are judgment calls based on the frameworks, not published mappings
 | Caring | Benevolence: caring | Kindness | Relatedness | Family, parenting, friends | Merge: Into Kindness |
 | Challenge | Stimulation | Perseverance | Competence | Work, education | Reword |
 | Community | Benevolence: caring | Teamwork | Relatedness | Citizenship | Reword |
-| Compassion | Universalism: concern | Kindness | Relatedness, beneficence | Any | Keep |
+| Compassion | Universalism: concern | Kindness | Relatedness, beneficence | Any | Reword |
 | Connection | Benevolence: caring | Love, social intelligence | Relatedness | Family, couples, friends | Merge: With Mindfulness, into Presence |
 | Contribution | Universalism: concern | Kindness, teamwork | Beneficence | Citizenship, work | Reword |
 | Cooperation | Benevolence: dependability | Teamwork | Relatedness | Work, citizenship | Keep |
@@ -163,7 +184,7 @@ These codings are judgment calls based on the frameworks, not published mappings
 | Humility | Humility | Humility | None | Any | Reword |
 | Humor | Hedonism | Humor | Relatedness | Recreation, friends | Keep |
 | Independence | Self-direction: action | None | Autonomy | Work | Reword |
-| Integrity | Benevolence: dependability | Honesty | Autonomy | Any | Keep |
+| Integrity | Benevolence: dependability | Honesty | Autonomy | Any | Reword |
 | Intimacy | Benevolence: caring | Love | Relatedness | Couples | Reword |
 | Justice | Universalism: concern | Fairness, bravery | Beneficence | Citizenship | Reword |
 | Kindness | Benevolence: caring | Kindness | Relatedness | Any | Reword: Absorbs Caring |
@@ -171,7 +192,7 @@ These codings are judgment calls based on the frameworks, not published mappings
 | Learning | Self-direction: thought | Love of learning | Competence | Education | Keep |
 | Love | Benevolence: caring | Love | Relatedness | Family, couples, parenting, friends | Reword |
 | Loyalty | Benevolence: dependability | Teamwork | Relatedness | Family, friends, citizenship | Reword |
-| Mastery | Achievement | Perseverance | Competence | Work, education, recreation | Keep |
+| Mastery | Achievement | Perseverance | Competence | Work, education, recreation | Reword |
 | Mindfulness | No single home | None (an ACT process) | Autonomy | Spirituality | Merge: With Connection, into Presence |
 | Nature | Universalism: nature | Appreciation of beauty | None | Recreation, citizenship | Split: Into Nature and Stewardship |
 | Nurturing | Benevolence: caring | Kindness, love | Relatedness, beneficence | Parenting, work | Reword: Absorbs Encouragement |
