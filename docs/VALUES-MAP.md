@@ -109,7 +109,7 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 - Allow ties ("on a par") when ranking (Chang, 2002).
 - In Reflect, ask "Do I value this for its own sake, or for something it gives me?" (Korsgaard, 1983).
 - For custom cards such as Wealth or Success, ask what having it would let the person do or be, rather than rejecting it.
-- Not yet implemented: treat life areas (family, work, health, community) as areas that values attach to, as the Valued Living Questionnaire does.
+- Life areas (family, work, health, community and so on) are a separate, optional exercise rather than cards. See "Life areas" below.
 - Use the wellbeing findings for coverage only. Never steer people toward "healthy" values: the effects are small and depend on culture, and steering invites choosing values to please others.
 
 ## Every card fits ACT's definition of a value
@@ -219,3 +219,17 @@ These codings are judgment calls based on the frameworks, not published mappings
 ## Implementation notes
 
 Ids changed for merged and renamed cards, and `store.normalize` migrates saved data from schema 1: caring to kindness, encouragement to nurturing, connection and mindfulness to presence, persistence to self-discipline, diligence to excellence, peace to harmony, and trust to trusting-others. When two old cards merge, the stronger pile wins and both reflections are kept. New cards are queued for sorting after the ones already placed.
+
+## Life areas
+
+ACT treats life areas as the places where values are lived, not as values. A third research round (`research/life-areas.md`) and a design critique shaped how Lodestar handles them:
+
+- **The deck stays qualities only.** The Family card keeps its id but now reads "Caring for the people I count as family", so people who hold family as a core value keep a card for it.
+- **An optional area tag in the action step** ("Where in your life?"). This adds context at almost no cost. The existing "When and where?" field already supplies the specific cue that the implementation-intention research credits with improving follow-through.
+- **An optional "Map your values to your life" exercise**, offered from My values *after* the action plan exists, so it never stands between someone and their plan.
+  - People pick only the areas that fit their life, can rename or add their own, and see one area per screen.
+  - Each area offers three neutral statuses: "This matters to me", "Matters to me, but it's hard right now" (with a gentle note and a link to support) and "Not part of my life right now".
+  - Importance and "living it lately" are separate, labelled 5-point choices. The second is optional, and a low answer is framed as information, not failure.
+  - Each area links to up to three of the person's own core values.
+  - No combined, product or gap score is ever shown. An area that matters a lot but has had little room lately is offered only as a suggestion for where to plan a step.
+- **Not done:** a separate areas-first mode, or rating all ten areas, which the engagement research flags as the riskiest pattern late in a session.

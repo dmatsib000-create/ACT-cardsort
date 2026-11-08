@@ -15,6 +15,7 @@ It works on phones and desktops, can be installed to a home screen, works offlin
 It also includes:
 
 - **My values**: a summary with a bull's-eye chart, action plan, print or save as PDF, copy as text, share, and backup or restore to a file.
+- **Life areas** (optional): after planning an action, people can map their values to the areas of life that fit them (family, work, health, their own areas…), say an area is hard right now or not part of their life, and plan a step in a chosen area. No scores are shown.
 - **Decision helper**: a values-based "choice point" tool. Rate each option as moving toward or away from each core value, see a summary weighted by rank, then reflect on willingness and next steps.
 - **Learn**: a plain-language guide to ACT, values vs goals, feelings and rules, choice points, and the research evidence.
 - **About**: crisis resources, a "this is not therapy" statement, privacy details, an accessibility statement, credits and references.

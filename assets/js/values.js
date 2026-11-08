@@ -31,7 +31,7 @@ export const VALUES = [
   { id: 'excellence', name: 'Excellence', desc: 'Putting care and skill into the work I do.' },
   { id: 'fairness', name: 'Fairness', desc: 'Treating people even-handedly, without favoritism.' },
   { id: 'faith', name: 'Faith', desc: 'Practicing my religion and letting it guide how I live.' },
-  { id: 'family', name: 'Family', desc: 'Showing up for the people I consider family.' },
+  { id: 'family', name: 'Family', desc: 'Caring for the people I count as family.' },
   { id: 'flexibility', name: 'Flexibility', desc: 'Adapting with grace when plans or circumstances change.' },
   { id: 'forgiveness', name: 'Forgiveness', desc: 'Letting go of resentment toward people who hurt me, without excusing the harm.' },
   { id: 'freedom', name: 'Freedom', desc: 'Making my own choices about how I live.' },
@@ -83,6 +83,25 @@ export const VALUES = [
   { id: 'vitality', name: 'Vitality', desc: 'Throwing myself fully into what I do.' },
   { id: 'wisdom', name: 'Wisdom', desc: 'Acting with good judgment, especially when things are complicated.' },
 ];
+
+// Life areas: the places where values are lived (ACT's Valued Living
+// Questionnaire and Bull's-Eye use similar areas). They are not values
+// themselves, so they are never sorted as cards. Definitions are deliberately
+// inclusive: family by choice, unpaid work, health "as it is", and so on.
+export const AREAS = [
+  { id: 'family', name: 'Family', def: 'The people I count as family, by birth, choice or circumstance.' },
+  { id: 'partner', name: 'Partner and intimacy', def: 'A romantic or intimate relationship, now or in the future.' },
+  { id: 'caregiving', name: 'Parenting and caregiving', def: 'Raising, guiding or caring for children or others who depend on me.' },
+  { id: 'friends', name: 'Friendships', def: 'The friends and companions in my life.' },
+  { id: 'work', name: 'Work', def: 'Paid or unpaid work, including caring, volunteering and looking for work.' },
+  { id: 'learning', name: 'Learning and growth', def: 'Study, training and developing myself.' },
+  { id: 'health', name: 'Health and body', def: 'Looking after my body and mind, as they are right now.' },
+  { id: 'play', name: 'Play and rest', def: 'Hobbies, fun, creativity and rest.' },
+  { id: 'community', name: 'Community', def: 'Neighbors, groups, culture and the wider world I am part of.' },
+  { id: 'spirit', name: 'Spirituality and faith', def: 'Faith, spiritual practice, or connection to something larger.' },
+];
+
+export const MAX_AREA_VALUES = 3;
 
 export const PILES = {
   very: { label: 'Very important', short: 'Very', key: '3' },

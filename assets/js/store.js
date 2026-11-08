@@ -2,7 +2,7 @@
 // browser's localStorage, and falls back to memory if storage is unavailable
 // (for example in some private browsing modes).
 
-import { VALUES, RENAMED } from './values.js';
+import { VALUES, RENAMED, AREAS, MAX_AREA_VALUES } from './values.js';
 
 const KEY = 'lodestar:v1';
 const SCHEMA = 2;
@@ -22,6 +22,8 @@ export const fresh = () => ({
   bw: {},             // id -> best-minus-worst score from the narrowing round
   reflections: {},    // id -> { meaning, living, why: 'own'|'means'|'both'|null, leadsTo }
   deckUpdated: false, // true after migrating saved progress to a newer deck
+  areas: {},          // areaId -> { status: 'active'|'hard'|'notnow', importance: 1-5|null, living: 1-5|null, values: [ids] }
+  customAreas: [],    // [{ id: 'area-…', name, def }]
   actions: [],        // [{ id, valueId, step, when, obstacles, response, done, created }]
   decisions: [],      // [{ id, question, options:[{id,label}], ratings:{optId:{valueId:-1|0|1}}, feelings, choice, created, updated }]
 });
@@ -149,6 +151,22 @@ export function normalize(input) {
   }
   const pos = order.length ? order.filter((id) => piles[id]).length : 0;
   const core = ids(input.core).slice(0, 10);
+
+  const customAreas = arr(input.customAreas)
+    .filter((a) => a && typeof a.id === 'string' && a.id.startsWith('area-') && str(a.name).trim())
+    .map((a) => ({ id: a.id.slice(0, 80), name: str(a.name, 40).trim(), def: str(a.def, 120).trim() }));
+  const areaIds = new Set([...AREAS.map((a) => a.id), ...customAreas.map((a) => a.id)]);
+  const scale = (n) => (Number.isInteger(n) && n >= 1 && n <= 5 ? n : null);
+  const areas = {};
+  for (const [id, a] of Object.entries(obj(input.areas))) {
+    if (!areaIds.has(id) || !a || typeof a !== 'object') continue;
+    areas[id] = {
+      status: ['active', 'hard', 'notnow'].includes(a.status) ? a.status : 'active',
+      importance: scale(a.importance),
+      living: scale(a.living),
+      values: ids(a.values).slice(0, MAX_AREA_VALUES),
+    };
+  }
   const bw = {};
   for (const [id, n] of Object.entries(obj(input.bw))) if (known.has(id) && Number.isInteger(n)) bw[id] = n;
 
@@ -167,11 +185,14 @@ export function normalize(input) {
     bw,
     reflections,
     deckUpdated: Boolean(input.deckUpdated),
+    areas,
+    customAreas,
     actions: arr(input.actions)
       .filter((a) => a && known.has(a.valueId))
       .map((a) => ({
         id: str(a.id, 40) || uid(),
         valueId: a.valueId,
+        areaId: areaIds.has(a.areaId) ? a.areaId : '',
         step: str(a.step, 500),
         when: str(a.when, 300),
         obstacles: str(a.obstacles, 800),
