@@ -1,0 +1,1622 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/icons/icon.svg" type="image/svg+xml">
+<title>Lodestar Values Map</title>
+<style>
+@font-face { font-family: 'Atkinson Hyperlegible'; font-weight: 400; font-display: swap; src: url('../assets/fonts/atkinson-hyperlegible-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Atkinson Hyperlegible'; font-weight: 400; font-style: italic; font-display: swap; src: url('../assets/fonts/atkinson-hyperlegible-latin-400-italic.woff2') format('woff2'); }
+@font-face { font-family: 'Atkinson Hyperlegible'; font-weight: 700; font-display: swap; src: url('../assets/fonts/atkinson-hyperlegible-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Fraunces'; font-weight: 100 900; font-display: swap; src: url('../assets/fonts/fraunces-latin-opsz-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Fraunces'; font-weight: 100 900; font-style: italic; font-display: swap; src: url('../assets/fonts/fraunces-latin-opsz-italic.woff2') format('woff2'); }
+/* Layout: a single reading column with one wide band for the wheel + detail panel.
+   Tokens follow the Lodestar app's design system (paper, teal ink, gold star). */
+:root {
+  --bg: #f6f1e9; --surface: #fffcf7; --surface-2: #efe8dc;
+  --ink: #1d2b2f; --ink-2: #4a5759; --line: #e0d6c6; --line-strong: #857a6a;
+  --primary: #1e5e59; --primary-soft: #dcebe6; --on-primary: #fff;
+  --accent: #a2461f; --gold: #c38a22;
+  /* higher-order value families */
+  --open: #b07a12; --open-soft: #f3e3bd;
+  --selfenh: #a2461f; --selfenh-soft: #f4dccf;
+  --cons: #4f6470; --cons-soft: #dfe5e8;
+  --selftr: #1e5e59; --selftr-soft: #d6e9e4;
+  /* recommendations */
+  --keep: #1e5e59; --reword: #7c5300; --split: #6b4aa0; --merge: #a2461f; --add: #c38a22; --add-ink: #85590a;
+  --font-text: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10181a; --surface: #172225; --surface-2: #1f2d31;
+    --ink: #ece6dc; --ink-2: #b4bdb9; --line: #2c3c40; --line-strong: #7d8d90;
+    --primary: #8ad0c5; --primary-soft: #1c3936; --on-primary: #0d1f1d;
+    --accent: #f0a27c; --gold: #e6bd62;
+    --open: #e6bd62; --open-soft: #3a3020; --selfenh: #f0a27c; --selfenh-soft: #3d2820;
+    --cons: #a9bcc6; --cons-soft: #26333a; --selftr: #8ad0c5; --selftr-soft: #1c3936;
+    --keep: #8ad0c5; --reword: #e9c072; --split: #c3a8f0; --merge: #f0a27c; --add: #e6bd62; --add-ink: #e6bd62;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #10181a; --surface: #172225; --surface-2: #1f2d31;
+  --ink: #ece6dc; --ink-2: #b4bdb9; --line: #2c3c40; --line-strong: #7d8d90;
+  --primary: #8ad0c5; --primary-soft: #1c3936; --on-primary: #0d1f1d;
+  --accent: #f0a27c; --gold: #e6bd62;
+  --open: #e6bd62; --open-soft: #3a3020; --selfenh: #f0a27c; --selfenh-soft: #3d2820;
+  --cons: #a9bcc6; --cons-soft: #26333a; --selftr: #8ad0c5; --selftr-soft: #1c3936;
+  --keep: #8ad0c5; --reword: #e9c072; --split: #c3a8f0; --merge: #f0a27c; --add: #e6bd62; --add-ink: #e6bd62;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-text); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+.page { max-width: 72rem; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 2.5rem 4rem; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; line-height: 1.15; text-wrap: balance; margin: 0 0 .6rem; letter-spacing: -.01em; }
+h1 { font-size: clamp(2.1rem, 1.4rem + 3vw, 3.2rem); font-weight: 500; }
+h2 { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem); margin-top: 3.5rem; }
+h3 { font-size: 1.2rem; }
+p { margin: 0 0 1rem; text-wrap: pretty; }
+a { color: var(--primary); text-underline-offset: .18em; }
+.eyebrow { font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: .4rem; }
+.lede { font-size: 1.15rem; color: var(--ink-2); max-width: 44rem; }
+.muted { color: var(--ink-2); }
+.prose { max-width: 44rem; }
+:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; border-radius: 4px; }
+.detail__name:focus { outline: none; }
+
+/* Stat strip */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; margin: 2rem 0 0; }
+.stat { background: var(--surface); padding: 1rem 1.2rem; }
+.stat b { display: block; font-family: var(--font-display); font-size: 2rem; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.stat span { font-size: .9rem; color: var(--ink-2); }
+
+/* Map band */
+.map { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 1.5rem; align-items: start; margin-top: 1.25rem; }
+@media (max-width: 860px) { .map { grid-template-columns: 1fr; } }
+.wheel-wrap { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: .75rem; }
+#wheel { display: block; width: 100%; height: auto; max-width: 100%; }
+.sector { fill: var(--surface); stroke: var(--line); stroke-width: 1; }
+.sector--alt { fill: var(--bg); }
+.band--open { fill: var(--open); } .band--selfenh { fill: var(--selfenh); } .band--cons { fill: var(--cons); } .band--selftr { fill: var(--selftr); }
+.sector-label { font: 700 10.5px var(--font-text); fill: var(--ink-2); letter-spacing: .02em; }
+.dot circle { stroke: var(--surface); stroke-width: 2; cursor: pointer; transition: r .15s; }
+.dot--keep circle { fill: var(--keep); }
+.dot--reword circle { fill: var(--reword); }
+.dot--split circle { fill: var(--split); }
+.dot--merge circle { fill: var(--merge); }
+.dot--add circle { fill: var(--surface); stroke: var(--add); stroke-width: 2.5; stroke-dasharray: 3 2.5; }
+.dot-label { font: 600 10.5px var(--font-text); fill: var(--ink); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; opacity: 0; transition: opacity .15s; }
+.dot:hover .dot-label, .dot:focus .dot-label, .dot.is-selected .dot-label { opacity: 1; }
+.labels-on .dot-label { opacity: 1; }
+.labels-on .dot.is-dim .dot-label { opacity: 0; }
+.dot.is-dim { opacity: .18; }
+.dot.is-selected circle { r: 10; stroke: var(--ink); stroke-width: 2.5; }
+.dot:focus { outline: none; }
+.dot:focus-visible circle { stroke: var(--ink); stroke-width: 3; }
+
+.controls { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-bottom: .75rem; }
+.chip { font: inherit; font-size: .9rem; font-weight: 700; min-height: 40px; padding: .3rem .85rem; border-radius: 999px; border: 1.5px solid var(--line-strong); background: var(--surface); color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; gap: .45rem; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip .n { font-variant-numeric: tabular-nums; opacity: .75; font-weight: 400; }
+.key { width: .75rem; height: .75rem; border-radius: 50%; display: inline-block; flex: none; }
+.key--keep { background: var(--keep); } .key--reword { background: var(--reword); } .key--split { background: var(--split); } .key--merge { background: var(--merge); }
+.key--add { border: 2px dashed var(--add); }
+.toggle { display: inline-flex; align-items: center; gap: .4rem; font-size: .9rem; margin-left: auto; min-height: 40px; cursor: pointer; }
+.toggle input { width: 1.1rem; height: 1.1rem; accent-color: var(--primary); }
+
+.legend { display: flex; flex-wrap: wrap; gap: .4rem 1rem; font-size: .85rem; color: var(--ink-2); margin-top: .6rem; padding: 0 .4rem; }
+.legend span { display: inline-flex; align-items: center; gap: .35rem; }
+.swatch { width: .8rem; height: .8rem; border-radius: 3px; display: inline-block; flex: none; }
+.swatch--open { background: var(--open); } .swatch--selfenh { background: var(--selfenh); } .swatch--cons { background: var(--cons); } .swatch--selftr { background: var(--selftr); }
+
+.detail { position: sticky; top: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 1.4rem 1.5rem; min-width: 0; }
+.detail__eyebrow { display: flex; align-items: center; gap: .45rem; font-size: .8rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); margin-bottom: .3rem; }
+.detail__name { font-size: 2rem; margin-bottom: .3rem; }
+.detail__desc { color: var(--ink-2); }
+.rec { display: inline-flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-weight: 700; font-size: .9rem; padding: .25rem .8rem; border-radius: 999px; border: 1.5px solid currentColor; margin-bottom: .8rem; }
+.rec--keep { color: var(--keep); } .rec--reword { color: var(--reword); } .rec--split { color: var(--split); } .rec--merge { color: var(--merge); } .rec--add { color: var(--add-ink); }
+.rec__target { font-weight: 400; color: var(--ink); }
+.detail__note { font-size: .98rem; }
+.detail__grid { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem 1rem; margin: 1rem 0; padding: 1rem 0; border-block: 1px solid var(--line); }
+.detail__grid dt { font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.detail__grid dd { margin: 0; font-size: .95rem; }
+.detail__sibs { font-size: .93rem; margin: 0; }
+.linkbtn { font: inherit; color: var(--primary); background: none; border: 0; padding: 0; text-decoration: underline; text-underline-offset: .18em; cursor: pointer; }
+
+/* Sector list */
+.families { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 32rem), 1fr)); gap: 1.25rem; margin-top: 1.25rem; }
+.hi-group { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 1.25rem 1.4rem; min-width: 0; }
+.hi-group h3 { display: flex; align-items: center; gap: .5rem; font-size: 1.35rem; }
+.hi-group__def { color: var(--ink-2); font-size: .95rem; }
+.sec-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: .2rem; }
+.sec-row { padding: .7rem 0; border-top: 1px solid var(--line); }
+.sec-row__head { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
+.sec-row__count { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink-2); }
+.sec-row--empty .sec-row__count { color: var(--accent); }
+.sec-row__def { font-size: .88rem; color: var(--ink-2); margin: .1rem 0 .45rem; }
+.tags { display: flex; flex-wrap: wrap; gap: .35rem; }
+.tag { font: inherit; font-size: .85rem; font-weight: 700; padding: .2rem .65rem; min-height: 32px; border-radius: 999px; cursor: pointer; background: var(--bg); color: var(--ink); border: 1.5px solid var(--line-strong); }
+.tag--keep { border-color: var(--keep); } .tag--reword { border-color: var(--reword); } .tag--split { border-color: var(--split); } .tag--merge { border-color: var(--merge); }
+.tag--add { border: 1.5px dashed var(--add); background: transparent; }
+.tag:hover { background: var(--surface-2); }
+
+/* Lenses */
+.lenses { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: 1.25rem; margin-top: 1.25rem; }
+.lens { padding: 1.3rem 1.4rem; border-top: 3px solid var(--ink); background: var(--surface); border-radius: 0 0 14px 14px; min-width: 0; }
+.lens__q { font-family: var(--font-display); font-style: italic; color: var(--ink-2); font-size: 1.05rem; }
+.lens ul { padding-left: 1.1rem; margin: 0; }
+.lens li { margin-bottom: .55rem; font-size: .97rem; }
+
+/* Tables */
+.table-wrap { overflow-x: auto; margin-top: 1rem; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; min-width: 40rem; }
+th, td { text-align: left; vertical-align: top; padding: .7rem .9rem; border-bottom: 1px solid var(--line); }
+th { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); background: var(--surface-2); }
+tr:last-child td { border-bottom: 0; }
+td strong { font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; }
+.pill { display: inline-block; font-size: .78rem; font-weight: 700; padding: .05rem .55rem; border-radius: 999px; border: 1.5px solid currentColor; white-space: nowrap; }
+.pill--merge { color: var(--merge); } .pill--split { color: var(--split); } .pill--reword { color: var(--reword); } .pill--add { color: var(--add-ink); }
+
+.coverage { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 1.25rem; margin-top: 1.25rem; }
+.cov { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 1.1rem 1.25rem; min-width: 0; }
+.cov h3 { font-size: 1.1rem; }
+.cov-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .3rem; font-size: .92rem; }
+.cov-list li { display: flex; justify-content: space-between; gap: .75rem; border-bottom: 1px dashed var(--line); padding-bottom: .25rem; }
+.cov-list .gap { color: var(--accent); font-weight: 700; }
+.cov-list .thin { color: var(--reword); font-weight: 700; }
+
+.rules { counter-reset: r; list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: .9rem; max-width: 46rem; }
+.rules li { counter-increment: r; display: grid; grid-template-columns: 2.2rem 1fr; gap: .6rem; }
+.rules li::before { content: counter(r); font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; color: var(--gold); line-height: 1.2; }
+.refs { font-size: .9rem; list-style: none; padding: 0; max-width: 50rem; }
+.refs li { padding-left: 1.5rem; text-indent: -1.5rem; margin-bottom: .55rem; overflow-wrap: anywhere; }
+.note-box { background: var(--surface-2); border-radius: 14px; padding: 1.1rem 1.3rem; max-width: 46rem; margin-top: 1.25rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="masthead">
+    <p class="eyebrow">Lodestar research · November 2026</p>
+    <h1>Lodestar Values Map</h1>
+    <p class="lede">How the 65 cards relate to each other and to the science of values and wellbeing, and what to merge, split, reword or add. Built from two research briefs covering the philosophy of value, linguistics, and the psychology of values and wellbeing.</p>
+    <div class="stats" role="list">
+      <div class="stat" role="listitem"><b>31 of 65</b><span>cards sit in self-transcendence, concern for others</span></div>
+      <div class="stat" role="listitem"><b>13</b><span>cards crowd one region: caring for the people close to you</span></div>
+      <div class="stat" role="listitem"><b>4 of 19</b><span>Schwartz values have no card at all</span></div>
+      <div class="stat" role="listitem"><b>2 of 5</b><span>strengths most linked to life satisfaction are missing (hope, zest)</span></div>
+      <div class="stat" role="listitem"><b>~20</b><span>descriptions bundle two acts or two targets</span></div>
+    </div>
+  </header>
+
+  <h2 id="map">The map</h2>
+  <div class="prose">
+    <p>The ring is Shalom Schwartz’s circle of 19 basic human values, the most widely replicated map of what people value. It has been found in 49 cultural groups. Values next to each other can be pursued together; values on opposite sides pull against each other. The colored band shows the four families. Each dot is a card, placed in its closest region and colored by what the research suggests doing with it. Dashed rings are proposed new cards. The center holds cards with no home on the circle: virtues and ACT processes that can serve any value.</p>
+  </div>
+
+  <div class="map">
+    <div>
+      <div class="controls" role="group" aria-label="Show cards by recommendation">
+        <button type="button" class="chip" data-filter="all" aria-pressed="true">All <span class="n" data-count="all"></span></button>
+        <button type="button" class="chip" data-filter="keep" aria-pressed="false"><span class="key key--keep"></span>Keep <span class="n" data-count="keep"></span></button>
+        <button type="button" class="chip" data-filter="reword" aria-pressed="false"><span class="key key--reword"></span>Reword <span class="n" data-count="reword"></span></button>
+        <button type="button" class="chip" data-filter="merge" aria-pressed="false"><span class="key key--merge"></span>Merge <span class="n" data-count="merge"></span></button>
+        <button type="button" class="chip" data-filter="split" aria-pressed="false"><span class="key key--split"></span>Split <span class="n" data-count="split"></span></button>
+        <button type="button" class="chip" data-filter="add" aria-pressed="false"><span class="key key--add"></span>Add <span class="n" data-count="add"></span></button>
+        <label class="toggle"><input type="checkbox" id="labels-toggle"> Show all names</label>
+      </div>
+      <div class="wheel-wrap">
+        <svg id="wheel" role="group" aria-labelledby="wheel-title"></svg>
+        <div class="legend" aria-hidden="true">
+          <span><span class="swatch swatch--open"></span>Openness to change</span>
+          <span><span class="swatch swatch--selfenh"></span>Self-enhancement</span>
+          <span><span class="swatch swatch--cons"></span>Conservation</span>
+          <span><span class="swatch swatch--selftr"></span>Self-transcendence</span>
+        </div>
+      </div>
+      <p class="hint">Select a dot, or use Tab and Enter, to see its coding and proposed wording. Every card is also listed by region below.</p>
+    </div>
+    <aside class="detail" id="detail" aria-live="polite" aria-label="Selected card"></aside>
+  </div>
+
+  <h2>What the map shows</h2>
+  <div class="findings">
+    <article class="finding">
+      <h3>The deck leans hard toward one half of the circle</h3>
+      <p>Almost every card sits on the “growth” side: openness and self-transcendence. That fits ACT, and those values do relate modestly to wellbeing. But people whose priorities are achievement, duty, security or tradition find few cards that describe them honestly. They either over-endorse caring cards or feel judged.</p>
+    </article>
+    <article class="finding">
+      <h3>One region is overcrowded</h3>
+      <p>Thirteen cards sit in benevolence: caring. Caring, Kindness, Compassion, Empathy, Love and Nurturing share one core idea, so a person who values care spreads their choices across near-synonyms. That makes the “very important” pile swell and the core values harder to pick.</p>
+    </article>
+    <article class="finding">
+      <h3>Whole regions are empty</h3>
+      <p>Power (dominance and resources), face, and societal security have no cards; rules has one. Leaving out power, wealth and image is a sound ACT decision because they are outcomes, not qualities of action. But each has an action form people genuinely hold (having a say, providing for family, doing one’s part) that can be added safely.</p>
+    </article>
+    <article class="finding">
+      <h3>Strong wellbeing strengths are missing</h3>
+      <p>Of the five character strengths most strongly linked to life satisfaction (hope, zest, gratitude, love and curiosity), the deck has no card for hope or zest. Purpose, which appears in nearly every wellbeing model, is the third notable absence. It is left out on purpose here, because the whole exercise is a search for purpose and a “Purpose” card would be circular.</p>
+    </article>
+    <article class="finding">
+      <h3>Every card is a compliment</h3>
+      <p>All 65 names are praise words, so putting Honesty in “not important to me” feels like saying you don’t care about honesty. This pushes people to rate most cards highly (a ceiling effect), which makes the sort less informative. Adding a few legitimate, less flattering cards and softening the bottom pile’s label both help.</p>
+    </article>
+    <article class="finding">
+      <h3>The deck mixes kinds of things</h3>
+      <p>It includes virtues (Honesty), goods (Beauty, Health), a state (Peace), life areas (Family, Friendship, Community) and practices (Learning, Mindfulness). ACT’s own tools treat life areas separately from the qualities you bring to them. The action-phrased descriptions mostly repair this, but people read the name first.</p>
+    </article>
+  </div>
+
+  <h2>Four lenses on a values deck</h2>
+  <div class="lenses">
+    <section class="lens lens--ax">
+      <h3>Axiology</h3>
+      <p class="lens__q">What kind of value is on each card?</p>
+      <ul>
+        <li><strong>Final or instrumental.</strong> Two people can rate Health “very important”, one for its own sake and one so they can be there for their children (Korsgaard, 1983). Asking “for its own sake, or for something else?” can reveal the deeper value.</li>
+        <li><strong>Pluralism.</strong> Values can be many, can conflict and cannot always be ranked (Berlin; Raz, 1986). Chang (2002) argues two values can be “on a par”. Forcing a strict ranking can feel wrong, so allowing ties respects this.</li>
+        <li><strong>A curated deck is an objective list.</strong> ACT says values are freely chosen, yet a fixed deck decides in advance which goods count. Custom cards and a broader deck soften this.</li>
+        <li><strong>Caring as identification.</strong> Frankfurt (1971, 1982): what we care about is what we identify with, not what we merely like. A follow-up such as “Do I want to be moved by this, even when I’m not?” fits ACT’s idea of chosen values.</li>
+      </ul>
+    </section>
+    <section class="lens lens--sem">
+      <h3>Semantics</h3>
+      <p class="lens__q">What do the words mean, and to whom?</p>
+      <ul>
+        <li><strong>Direction.</strong> Respect, Trust, Acceptance and Love can be given or received. Being respected is an outcome, not a value. Descriptions should make the person the giver.</li>
+        <li><strong>Polysemy.</strong> Love (romantic, family, universal), Order (tidiness or society), Peace (inner, social, political). One-line descriptions pick a sense and can drift from what the word means to a given reader (Rosch, 1975; Fehr, 1988).</li>
+        <li><strong>Culture.</strong> Fairness and freedom have no exact equivalents in many languages (Wierzbicka, 1997, 2006). Independence, Assertiveness, Authenticity and Self-care carry an individualist ideal, so relational counterparts like Harmony and Duty widen the deck.</li>
+        <li><strong>Circular words.</strong> Descriptions like “what matters” or “what is right” assume the very thing being sorted (Williams, 1985).</li>
+      </ul>
+    </section>
+    <section class="lens lens--prag">
+      <h3>Pragmatics</h3>
+      <p class="lens__q">What does choosing a card do?</p>
+      <ul>
+        <li><strong>Praise words.</strong> Value words carry approval (Stevenson, 1937; Hare, 1952), so rejecting one is socially marked. Some inflation is real valuing, not bias (Schwartz et al., 1997).</li>
+        <li><strong>Double-barreled cards.</strong> Cards that bundle two acts or targets are answered for whichever part stands out, and measure less validly (Menold, 2020).</li>
+        <li><strong>Ranking beats rating at the top.</strong> Choosing most and least important first reduces end-piling (McCarty &amp; Shrum, 2000). Best-worst choices recover the same structure faster (Lee et al., 2008).</li>
+        <li><strong>Verbs over identities.</strong> “Being a helper” can motivate in the moment but backfires after setbacks (Foster-Hanson et al., 2020), and the voter-noun effect failed a large replication (Gerber et al., 2016). Action wording is sturdier.</li>
+      </ul>
+    </section>
+    <section class="lens lens--psy">
+      <h3>Wellbeing science</h3>
+      <p class="lens__q">How do values relate to living well?</p>
+      <ul>
+        <li><strong>Schwartz’s circle</strong> (Schwartz et al., 2012) gives the map’s structure. Openness values relate modestly to higher wellbeing, but effects are small and depend on culture and fit with one’s surroundings (Sortheix &amp; Schwartz, 2017).</li>
+        <li><strong>Intrinsic over extrinsic.</strong> Goals for money, image and status relate to lower wellbeing (Kasser &amp; Ryan, 1996; Dittmar et al., 2014, 259 samples), largely through unmet basic needs.</li>
+        <li><strong>Basic needs.</strong> Autonomy, competence and relatedness (Ryan &amp; Deci, 2000), plus beneficence, the sense of giving (Martela &amp; Ryan, 2016). The deck covers all four, relatedness most heavily.</li>
+        <li><strong>Do not steer.</strong> These findings should shape the deck’s coverage, never nudge people toward “healthy” values. Steering would invite choosing values to please others, which ACT works to avoid.</li>
+      </ul>
+    </section>
+  </div>
+
+  <h2>Region by region</h2>
+  <p class="muted prose">Each Schwartz value with its definition and the cards that sit there. Select a card to see it on the map.</p>
+  <div class="families" id="families"></div>
+
+  <h2>The proposed deck</h2>
+  <div class="prose">
+    <p>These recommendations were adopted as Lodestar’s deck version 2 in November 2026. Applying them gives <strong><span id="deck-count"></span> cards</strong>, up from 65. Five merges remove near-duplicates, two splits separate cards that held two values, and eight additions fill the empty and thin regions. All descriptions follow the wording rules below.</p>
+  </div>
+  <div class="table-wrap" tabindex="0" role="region" aria-label="Proposed deck table">
+    <table>
+      <caption class="visually-hidden">All proposed cards with wording and type of change</caption>
+      <thead><tr><th scope="col">Card</th><th scope="col">Proposed wording</th><th scope="col">Change</th></tr></thead>
+      <tbody id="deck-table"></tbody>
+    </table>
+  </div>
+
+  <h2>Changes to the sort itself</h2>
+  <div class="process">
+    <div class="proc"><h3>Soften the bottom pile</h3><p>Rename “Not important to me” to “Less important to me”. It separates low priority from rejection and lowers the cost of using the pile honestly.</p></div>
+    <div class="proc"><h3>Anchor the extremes</h3><p>When the “very important” pile passes about a third of the deck, offer a quick step: pick the three that matter most and the three that matter least. This reduces end-piling.</p></div>
+    <div class="proc"><h3>Allow ties when ranking</h3><p>Let people mark two values as “on a par” instead of forcing an order that can feel arbitrary or wrong.</p></div>
+    <div class="proc"><h3>Ask what it’s for</h3><p>In Reflect, add an optional question: “Do I value this for its own sake, or for something it gives me?” If the answer is the latter, that something may be the deeper value.</p></div>
+    <div class="proc"><h3>Ladder up from outcomes</h3><p>If someone adds a custom card like Wealth, Success or Being respected, gently ask what having it would let them do or be, rather than rejecting it.</p></div>
+    <div class="proc"><h3>Treat life areas as areas</h3><p>Longer term: let people attach their values to life areas (family, work, health, community) as ACT’s Valued Living Questionnaire does, instead of sorting areas as cards.</p></div>
+  </div>
+
+  <h2>Wording rules for every card</h2>
+  <ol class="rules">
+    <li><div><strong>One act, one target.</strong> If a description covers myself and others, or noticing and doing, split it or choose one.</div></li>
+    <li><div><strong>Start with a verb.</strong> “Telling the truth” rather than “Being honest”. Identity framing is fragile after lapses, and lapses are certain.</div></li>
+    <li><div><strong>Make the person the giver.</strong> Never write a value that depends on how others treat you.</div></li>
+    <li><div><strong>No circular words.</strong> Replace “what matters” and “what is right” with concrete scope.</div></li>
+    <li><div><strong>No absolutes by default.</strong> “Even when no one is watching” sets a perfectionist bar. Use it only where it defines the value.</div></li>
+    <li><div><strong>No feelings as values.</strong> Calm, happy and confident can’t be chosen. Describe the action instead.</div></li>
+    <li><div><strong>Plain, translatable words.</strong> Simple vocabulary travels better across cultures and languages.</div></li>
+    <li><div><strong>Show the description everywhere.</strong> People who read only names and people who read descriptions are answering different questions.</div></li>
+  </ol>
+
+  <div class="note-box">
+    <h3>What stays out on purpose</h3>
+    <p>Wealth, power over others, status, fame and image are not added. In ACT they are goals or outcomes, not qualities of action, and in the research they relate to lower wellbeing through unmet needs. They are also the values most shaped by others’ approval. The proposed Influence and Providing cards give their healthier action forms a home.</p>
+  </div>
+
+  <h2>How this was made</h2>
+  <div class="prose">
+    <p>Two research briefs were written for this project, with citations checked against PubMed and publisher records. The card codings on this map are judgment calls based on those frameworks, not published mappings. A future option is to rebuild the map from real data, by looking at which cards people tend to place together, the same way Schwartz derived his circle.</p>
+    <p>The full briefs, with verification notes, are in the Lodestar repository under <code>docs/research/</code>.</p>
+  </div>
+
+  <h2>Key references</h2>
+  <ul class="refs">
+    <li>Bryan, C. J., Walton, G. M., Rogers, T., &amp; Dweck, C. S. (2011). Motivating voter turnout by invoking the self. <em>PNAS, 108</em>(31), 12653–12656.</li>
+    <li>Chang, R. (2002). The possibility of parity. <em>Ethics, 112</em>(4), 659–688.</li>
+    <li>Dittmar, H., Bond, R., Hurst, M., &amp; Kasser, T. (2014). The relationship between materialism and personal well-being: A meta-analysis. <em>Journal of Personality and Social Psychology, 107</em>(5), 879–924.</li>
+    <li>Foster-Hanson, E., Cimpian, A., Leshin, R. A., &amp; Rhodes, M. (2020). Asking children to “be helpers” can backfire after setbacks. <em>Child Development, 91</em>(1), 236–248.</li>
+    <li>Frankfurt, H. G. (1982). The importance of what we care about. <em>Synthese, 53</em>, 257–272.</li>
+    <li>Gerber, A. S., Huber, G. A., Biggers, D. R., &amp; Hendry, D. J. (2016). A field experiment shows that subtle linguistic cues might not affect voter behavior. <em>PNAS, 113</em>(26), 7112–7117.</li>
+    <li>Kasser, T., &amp; Ryan, R. M. (1996). Further examining the American dream: Differential correlates of intrinsic and extrinsic goals. <em>Personality and Social Psychology Bulletin, 22</em>(3), 280–287.</li>
+    <li>Korsgaard, C. M. (1983). Two distinctions in goodness. <em>The Philosophical Review, 92</em>(2), 169–195.</li>
+    <li>Lee, J. A., Soutar, G., &amp; Louviere, J. (2008). The best-worst scaling approach: An alternative to Schwartz’s Values Survey. <em>Journal of Personality Assessment, 90</em>(4), 335–347.</li>
+    <li>Martela, F., &amp; Ryan, R. M. (2016). The benefits of benevolence. <em>Journal of Personality, 84</em>(6), 750–764.</li>
+    <li>McCarty, J. A., &amp; Shrum, L. J. (2000). The measurement of personal values in survey research: A test of alternative rating procedures. <em>Public Opinion Quarterly, 64</em>(3), 271–298.</li>
+    <li>Menold, N. (2020). Double barreled questions: An analysis of the similarity of elements and effects on measurement quality. <em>Journal of Official Statistics, 36</em>(4), 855–886.</li>
+    <li>Park, N., Peterson, C., &amp; Seligman, M. E. P. (2004). Strengths of character and well-being. <em>Journal of Social and Clinical Psychology, 23</em>(5), 603–619.</li>
+    <li>Peterson, C., &amp; Seligman, M. E. P. (2004). <em>Character strengths and virtues: A handbook and classification.</em> APA / Oxford University Press.</li>
+    <li>Raz, J. (1986). <em>The morality of freedom.</em> Clarendon Press.</li>
+    <li>Ryan, R. M., &amp; Deci, E. L. (2000). Self-determination theory and the facilitation of intrinsic motivation, social development, and well-being. <em>American Psychologist, 55</em>(1), 68–78.</li>
+    <li>Schwartz, S. H., Cieciuch, J., Vecchione, M., et al. (2012). Refining the theory of basic individual values. <em>Journal of Personality and Social Psychology, 103</em>(4), 663–688.</li>
+    <li>Schwartz, S. H., &amp; Cieciuch, J. (2022). Measuring the refined theory of individual values in 49 cultural groups. <em>Assessment, 29</em>(5), 1005–1019.</li>
+    <li>Sortheix, F. M., &amp; Schwartz, S. H. (2017). Values that underlie and undermine well-being: Variability across countries. <em>European Journal of Personality, 31</em>(2), 187–201.</li>
+    <li>Wierzbicka, A. (1997). <em>Understanding cultures through their key words.</em> Oxford University Press.</li>
+    <li>Williams, B. (1985). <em>Ethics and the limits of philosophy.</em> Harvard University Press.</li>
+    <li>Wilson, K. G., Sandoz, E. K., Kitchens, J., &amp; Roberts, M. (2010). The Valued Living Questionnaire. <em>The Psychological Record, 60</em>(2), 249–272.</li>
+  </ul>
+</div>
+
+<script>
+const SECTORS = [{"code": "SDT", "name": "Self-direction: thought", "short": "Thought", "hi": "open", "defn": "Freedom to cultivate one’s own ideas and abilities"}, {"code": "SDA", "name": "Self-direction: action", "short": "Action", "hi": "open", "defn": "Freedom to determine one’s own actions"}, {"code": "ST", "name": "Stimulation", "short": "Stimulation", "hi": "open", "defn": "Excitement, novelty and challenge in life"}, {"code": "HE", "name": "Hedonism", "short": "Hedonism", "hi": "open", "defn": "Pleasure and sensuous gratification for oneself"}, {"code": "AC", "name": "Achievement", "short": "Achievement", "hi": "selfenh", "defn": "Personal success through demonstrating competence according to social standards"}, {"code": "POD", "name": "Power: dominance", "short": "Dominance", "hi": "selfenh", "defn": "Power through exercising control over people"}, {"code": "POR", "name": "Power: resources", "short": "Resources", "hi": "selfenh", "defn": "Power through control of material and social resources"}, {"code": "FAC", "name": "Face", "short": "Face", "hi": "selfenh", "defn": "Security and power through maintaining one’s public image and avoiding humiliation"}, {"code": "SEP", "name": "Security: personal", "short": "Personal security", "hi": "cons", "defn": "Safety in one’s immediate environment"}, {"code": "SES", "name": "Security: societal", "short": "Societal security", "hi": "cons", "defn": "Safety and stability in the wider society"}, {"code": "TR", "name": "Tradition", "short": "Tradition", "hi": "cons", "defn": "Maintaining and preserving cultural, family or religious traditions"}, {"code": "COR", "name": "Conformity: rules", "short": "Rules", "hi": "cons", "defn": "Compliance with rules, laws and formal obligations"}, {"code": "COI", "name": "Conformity: interpersonal", "short": "Interpersonal", "hi": "cons", "defn": "Avoidance of upsetting or harming other people"}, {"code": "HUM", "name": "Humility", "short": "Humility", "hi": "cons", "defn": "Recognizing one’s insignificance in the larger scheme of things"}, {"code": "BED", "name": "Benevolence: dependability", "short": "Dependability", "hi": "selftr", "defn": "Being a reliable and trustworthy member of the in-group"}, {"code": "BEC", "name": "Benevolence: caring", "short": "Caring", "hi": "selftr", "defn": "Devotion to the welfare of in-group members"}, {"code": "UNC", "name": "Universalism: concern", "short": "Concern", "hi": "selftr", "defn": "Commitment to equality, justice and protection for all people"}, {"code": "UNN", "name": "Universalism: nature", "short": "Nature", "hi": "selftr", "defn": "Preservation of the natural environment"}, {"code": "UNT", "name": "Universalism: tolerance", "short": "Tolerance", "hi": "selftr", "defn": "Acceptance and understanding of those who are different from oneself"}];
+const HIGHER = {"open": {"name": "Openness to change", "def_": "Independent thought, action and new experience. Concerns the self; growth-oriented."}, "selfenh": {"name": "Self-enhancement", "def_": "Pursuing one’s own success and standing. Concerns the self; self-protective."}, "cons": {"name": "Conservation", "def_": "Order, self-restraint, tradition and safety. Concerns others and society; self-protective."}, "selftr": {"name": "Self-transcendence", "def_": "Concern for the welfare of others and the world. Concerns others; growth-oriented."}, "hub": {"name": "No single home", "def_": "Virtues and ACT processes that serve any value, so Schwartz’s circle has no place for them."}};
+const VALUES = [
+{
+"id": "acceptance",
+"name": "Acceptance",
+"desc": "Making room for myself, other people and life as they are, including the hard parts.",
+"s": "UNT",
+"via": "None (an ACT process)",
+"sdt": "Autonomy",
+"domain": "Any",
+"rec": "reword",
+"target": "",
+"pname": "Acceptance",
+"pdesc": "Making room for feelings and situations I can't change, instead of fighting them.",
+"note": "Currently aims at three targets (myself, others, life) and can be read as approval, resignation or being accepted, which was the original card sort's sense. Keep the ACT sense: willingness toward experience. Accepting others moves to Open-mindedness."
+},
+{
+"id": "adventure",
+"name": "Adventure",
+"desc": "Seeking out new experiences and exploring the unfamiliar.",
+"s": "ST",
+"via": "Bravery, zest",
+"sdt": "Autonomy",
+"domain": "Recreation",
+"rec": "keep",
+"target": "",
+"pname": "Adventure",
+"pdesc": "Seeking out new experiences and exploring the unfamiliar.",
+"note": "Clear and single-barreled."
+},
+{
+"id": "assertiveness",
+"name": "Assertiveness",
+"desc": "Speaking up for my needs and boundaries, clearly and respectfully.",
+"s": "SDA",
+"via": "Bravery, honesty",
+"sdt": "Autonomy",
+"domain": "Couples, family, work",
+"rec": "reword",
+"target": "",
+"pname": "Assertiveness",
+"pdesc": "Saying clearly what I need, while staying respectful.",
+"note": "\"Needs and boundaries\" bundles two acts. An individualist norm in some cultures, so the respectful clause matters."
+},
+{
+"id": "authenticity",
+"name": "Authenticity",
+"desc": "Being genuine and true to who I am, not who I think I should be.",
+"s": "SDA",
+"via": "Honesty",
+"sdt": "Autonomy",
+"domain": "Any",
+"rec": "reword",
+"target": "",
+"pname": "Authenticity",
+"pdesc": "Acting in ways that fit who I really am.",
+"note": "\"Being genuine\" is identity framing, which backfires after lapses. \"Not who I think I should be\" adds an anti-conformity stance."
+},
+{
+"id": "beauty",
+"name": "Beauty",
+"desc": "Noticing, savoring and creating beauty in the world around me.",
+"s": "UNN",
+"via": "Appreciation of beauty",
+"sdt": "None",
+"domain": "Recreation, spirituality",
+"rec": "reword",
+"target": "",
+"pname": "Beauty",
+"pdesc": "Noticing and savoring what is lovely in art, nature and everyday life.",
+"note": "\"Creating\" beauty overlaps Creativity. Keep appreciation only. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule."
+},
+{
+"id": "caring",
+"name": "Caring",
+"desc": "Looking after people and paying attention to how they are doing.",
+"s": "BEC",
+"via": "Kindness",
+"sdt": "Relatedness",
+"domain": "Family, parenting, friends",
+"rec": "merge",
+"target": "Into Kindness",
+"pname": "Kindness",
+"pdesc": "Treating people with warmth and consideration.",
+"note": "Same Schwartz value, same VIA strength and near-synonymous description as Kindness. Six cards draw on one prototype cluster, which splits people's choices among them."
+},
+{
+"id": "challenge",
+"name": "Challenge",
+"desc": "Taking on hard things that stretch me and help me grow.",
+"s": "ST",
+"via": "Perseverance",
+"sdt": "Competence",
+"domain": "Work, education",
+"rec": "reword",
+"target": "",
+"pname": "Challenge",
+"pdesc": "Taking on hard things that stretch me.",
+"note": "\"Help me grow\" adds an outcome and overlaps Growth."
+},
+{
+"id": "community",
+"name": "Community",
+"desc": "Taking part in, and giving back to, the groups I belong to.",
+"s": "BEC",
+"via": "Teamwork",
+"sdt": "Relatedness",
+"domain": "Citizenship",
+"rec": "reword",
+"target": "",
+"pname": "Community",
+"pdesc": "Taking an active part in the groups I belong to.",
+"note": "A domain name plus two acts. \"Giving back\" is moral-accounting language."
+},
+{
+"id": "compassion",
+"name": "Compassion",
+"desc": "Responding to other people’s pain with warmth and a wish to help.",
+"s": "UNC",
+"via": "Kindness",
+"sdt": "Relatedness, beneficence",
+"domain": "Any",
+"rec": "reword",
+"target": "",
+"pname": "Compassion",
+"pdesc": "Responding to other people’s pain with care and support.",
+"note": "Distinct from Kindness because it is defined by a response to suffering. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule."
+},
+{
+"id": "connection",
+"name": "Connection",
+"desc": "Being fully present and engaged with the people I am with.",
+"s": "BEC",
+"via": "Love, social intelligence",
+"sdt": "Relatedness",
+"domain": "Family, couples, friends",
+"rec": "merge",
+"target": "With Mindfulness, into Presence",
+"pname": "Presence",
+"pdesc": "Giving my full attention to what I'm doing and who I'm with.",
+"note": "The description (full presence with people) is really attention, which overlaps Mindfulness. The name suggests a relationship you receive."
+},
+{
+"id": "contribution",
+"name": "Contribution",
+"desc": "Giving, helping and making a positive difference beyond myself.",
+"s": "UNC",
+"via": "Kindness, teamwork",
+"sdt": "Beneficence",
+"domain": "Citizenship, work",
+"rec": "reword",
+"target": "",
+"pname": "Contribution",
+"pdesc": "Giving my effort to people and causes beyond myself.",
+"note": "Three acts, and \"giving\" overlaps Generosity. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule."
+},
+{
+"id": "cooperation",
+"name": "Cooperation",
+"desc": "Working well with others toward shared aims.",
+"s": "BED",
+"via": "Teamwork",
+"sdt": "Relatedness",
+"domain": "Work, citizenship",
+"rec": "keep",
+"target": "",
+"pname": "Cooperation",
+"pdesc": "Working well with others toward shared aims.",
+"note": "Clear."
+},
+{
+"id": "courage",
+"name": "Courage",
+"desc": "Acting on what matters even when I feel afraid or unsure.",
+"s": "HUB",
+"via": "Bravery",
+"sdt": "Autonomy",
+"domain": "Any",
+"rec": "reword",
+"target": "",
+"pname": "Courage",
+"pdesc": "Doing hard or frightening things when they are worth doing to me.",
+"note": "\"What matters\" is circular in a values deck. A virtue that serves any value, so it has no single Schwartz home."
+},
+{
+"id": "creativity",
+"name": "Creativity",
+"desc": "Imagining, making and expressing things in my own way.",
+"s": "SDT",
+"via": "Creativity",
+"sdt": "Autonomy, competence",
+"domain": "Recreation, work",
+"rec": "keep",
+"target": "",
+"pname": "Creativity",
+"pdesc": "Imagining, making and expressing things in my own way.",
+"note": "Clear."
+},
+{
+"id": "curiosity",
+"name": "Curiosity",
+"desc": "Asking questions, exploring and staying open to discovery.",
+"s": "SDT",
+"via": "Curiosity",
+"sdt": "Autonomy",
+"domain": "Education",
+"rec": "keep",
+"target": "",
+"pname": "Curiosity",
+"pdesc": "Asking questions, exploring and staying open to discovery.",
+"note": "One of the five strengths most linked to life satisfaction."
+},
+{
+"id": "diligence",
+"name": "Diligence",
+"desc": "Working carefully and wholeheartedly, and seeing things through.",
+"s": "AC",
+"via": "Perseverance",
+"sdt": "Competence",
+"domain": "Work, education",
+"rec": "reword",
+"target": "Renamed Excellence",
+"pname": "Excellence",
+"pdesc": "Putting care and skill into the work I do.",
+"note": "Overlaps Persistence (\"seeing things through\"). Repurposing it as care and quality in work fills two gaps: achievement (thin) and the work domain (no work-specific card)."
+},
+{
+"id": "empathy",
+"name": "Empathy",
+"desc": "Trying to understand how others feel and see the world.",
+"s": "UNT",
+"via": "Social intelligence",
+"sdt": "Relatedness",
+"domain": "Any",
+"rec": "reword",
+"target": "",
+"pname": "Empathy",
+"pdesc": "Trying to understand how things are for other people.",
+"note": "\"How others feel and see the world\" mixes feeling and perspective-taking."
+},
+{
+"id": "encouragement",
+"name": "Encouragement",
+"desc": "Cheering people on and supporting their efforts to grow.",
+"s": "BEC",
+"via": "Kindness",
+"sdt": "Relatedness, beneficence",
+"domain": "Parenting, friends, work",
+"rec": "merge",
+"target": "Into Nurturing",
+"pname": "Nurturing",
+"pdesc": "Helping others grow and flourish by teaching, guiding and encouraging them.",
+"note": "Encouraging is one way of nurturing; both sit in the crowded caring region."
+},
+{
+"id": "fairness",
+"name": "Fairness",
+"desc": "Treating people even-handedly, myself included.",
+"s": "UNC",
+"via": "Fairness",
+"sdt": "Relatedness",
+"domain": "Citizenship, work",
+"rec": "reword",
+"target": "",
+"pname": "Fairness",
+"pdesc": "Treating people even-handedly, without favoritism.",
+"note": "A key Anglo concept with few exact equivalents. \"Myself included\" is an unusual extension; overlaps Justice."
+},
+{
+"id": "family",
+"name": "Family",
+"desc": "Investing time, care and energy in my family relationships.",
+"s": "BEC",
+"via": "Love",
+"sdt": "Relatedness",
+"domain": "Family, parenting, couples",
+"rec": "reword",
+"target": "",
+"pname": "Family",
+"pdesc": "Showing up for the people I consider family.",
+"note": "A life domain, not a quality. Define it inclusively; it can be painful for people who are estranged."
+},
+{
+"id": "flexibility",
+"name": "Flexibility",
+"desc": "Adapting with grace when plans or circumstances change.",
+"s": "SDA",
+"via": "Judgment",
+"sdt": "Autonomy",
+"domain": "Any",
+"rec": "keep",
+"target": "",
+"pname": "Flexibility",
+"pdesc": "Adapting with grace when plans or circumstances change.",
+"note": "Close to ACT's psychological flexibility."
+},
+{
+"id": "forgiveness",
+"name": "Forgiveness",
+"desc": "Letting go of resentment toward others or myself.",
+"s": "BEC",
+"via": "Forgiveness",
+"sdt": "Relatedness",
+"domain": "Family, couples, friends",
+"rec": "reword",
+"target": "",
+"pname": "Forgiveness",
+"pdesc": "Letting go of resentment toward people who hurt me, without excusing the harm.",
+"note": "Forgiving others and forgiving myself are distinct constructs. Self-forgiveness sits with Self-compassion. \"Letting go\" alone can be read as condoning harm."
+},
+{
+"id": "freedom",
+"name": "Freedom",
+"desc": "Making my own choices and respecting other people’s right to do the same.",
+"s": "SDA",
+"via": "None",
+"sdt": "Autonomy",
+"domain": "Any",
+"rec": "reword",
+"target": "",
+"pname": "Freedom",
+"pdesc": "Making my own choices about how I live.",
+"note": "Double-barreled across two regions of the circle: my choices (self-direction) and respecting others' (tolerance). The second clause moralizes the card."
+},
+{
+"id": "friendship",
+"name": "Friendship",
+"desc": "Showing up for friends: staying in touch, listening, being there.",
+"s": "BEC",
+"via": "Love",
+"sdt": "Relatedness",
+"domain": "Friends",
+"rec": "keep",
+"target": "",
+"pname": "Friendship",
+"pdesc": "Showing up for friends: staying in touch, listening, being there.",
+"note": "The name is a domain, but the description gives the qualities."
+},
+{
+"id": "fun",
+"name": "Fun",
+"desc": "Making space for play, lightness and enjoyment.",
+"s": "HE",
+"via": "Humor, zest",
+"sdt": "Autonomy",
+"domain": "Recreation",
+"rec": "keep",
+"target": "",
+"pname": "Fun",
+"pdesc": "Making space for play, lightness and enjoyment.",
+"note": "Clear."
+},
+{
+"id": "generosity",
+"name": "Generosity",
+"desc": "Sharing my time, attention and resources freely.",
+"s": "BEC",
+"via": "Kindness",
+"sdt": "Beneficence",
+"domain": "Any",
+"rec": "keep",
+"target": "",
+"pname": "Generosity",
+"pdesc": "Sharing my time, attention and resources freely.",
+"note": "Clear."
+},
+{
+"id": "gratitude",
+"name": "Gratitude",
+"desc": "Noticing what I have and expressing thanks for it.",
+"s": "HUB",
+"via": "Gratitude",
+"sdt": "None",
+"domain": "Spirituality",
+"rec": "reword",
+"target": "",
+"pname": "Gratitude",
+"pdesc": "Expressing thanks for the good things and people in my life.",
+"note": "Noticing and expressing are two acts. One of the five strengths most linked to life satisfaction. No Schwartz home."
+},
+{
+"id": "growth",
+"name": "Growth",
+"desc": "Continuing to develop and evolve as a person.",
+"s": "SDT",
+"via": "Love of learning",
+"sdt": "Competence, autonomy",
+"domain": "Education",
+"rec": "reword",
+"target": "",
+"pname": "Growth",
+"pdesc": "Working on becoming more the person I want to be.",
+"note": "The most outcome-like card (\"evolve as a person\"). Kasser's intrinsic aspiration of personal growth supports keeping it if it is made concrete."
+},
+{
+"id": "health",
+"name": "Health",
+"desc": "Caring for my body through movement, rest and nourishment.",
+"s": "SEP",
+"via": "Self-regulation, prudence",
+"sdt": "Competence",
+"domain": "Physical self-care",
+"rec": "reword",
+"target": "",
+"pname": "Health",
+"pdesc": "Looking after my body through movement, rest and food.",
+"note": "A good, not a quality. Align the boundary with Self-care (routines and rest) and Self-compassion (stance)."
+},
+{
+"id": "honesty",
+"name": "Honesty",
+"desc": "Being truthful and sincere with myself and others.",
+"s": "BED",
+"via": "Honesty",
+"sdt": "Relatedness",
+"domain": "Any",
+"rec": "reword",
+"target": "",
+"pname": "Honesty",
+"pdesc": "Telling the truth and not misleading people.",
+"note": "\"Being truthful and sincere with myself and others\" bundles two targets. Self-honesty belongs with Self-awareness."
+},
+{
+"id": "hospitality",
+"name": "Hospitality",
+"desc": "Welcoming people and helping them feel at home.",
+"s": "BEC",
+"via": "Kindness",
+"sdt": "Relatedness",
+"domain": "Family, friends, citizenship",
+"rec": "keep",
+"target": "",
+"pname": "Hospitality",
+"pdesc": "Welcoming people and helping them feel at home.",
+"note": "Norms vary by culture, but the wording is neutral."
+},
+{
+"id": "humility",
+"name": "Humility",
+"desc": "Letting my actions speak and staying open to being wrong.",
+"s": "HUM",
+"via": "Humility",
+"sdt": "None",
+"domain": "Any",
+"rec": "reword",
+"target": "",
+"pname": "Humility",
+"pdesc": "Letting my actions speak, without needing credit.",
+"note": "Bundles modesty and intellectual humility, two constructs. Being open to being wrong moves to Open-mindedness."
+},
+{
+"id": "humor",
+"name": "Humor",
+"desc": "Seeing and sharing the funny side of life.",
+"s": "HE",
+"via": "Humor",
+"sdt": "Relatedness",
+"domain": "Recreation, friends",
+"rec": "keep",
+"target": "",
+"pname": "Humor",
+"pdesc": "Seeing and sharing the funny side of life.",
+"note": "Distinct from Fun."
+},
+{
+"id": "independence",
+"name": "Independence",
+"desc": "Thinking for myself and standing on my own two feet.",
+"s": "SDA",
+"via": "None",
+"sdt": "Autonomy",
+"domain": "Work",
+"rec": "reword",
+"target": "",
+"pname": "Independence",
+"pdesc": "Taking care of things myself rather than relying on others.",
+"note": "Bundles thinking for myself and practical self-reliance. Individualist ideal; Duty and Community offer relational counterparts."
+},
+{
+"id": "integrity",
+"name": "Integrity",
+"desc": "Acting in line with my principles, even when no one is watching.",
+"s": "BED",
+"via": "Honesty",
+"sdt": "Autonomy",
+"domain": "Any",
+"rec": "reword",
+"target": "",
+"pname": "Integrity",
+"pdesc": "Acting in line with my principles, in private as well as in public.",
+"note": "\"My principles\" is thin and \"no one is watching\" sets a maximal standard, but here it is the definition. Avoid that phrasing elsewhere. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule."
+},
+{
+"id": "intimacy",
+"name": "Intimacy",
+"desc": "Opening up and sharing closeness, emotional or physical, with someone.",
+"s": "BEC",
+"via": "Love",
+"sdt": "Relatedness",
+"domain": "Couples",
+"rec": "reword",
+"target": "",
+"pname": "Intimacy",
+"pdesc": "Opening up and sharing closeness with someone I trust.",
+"note": "\"Emotional or physical\" bundles two senses. Physical pleasure is covered by Pleasure. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule."
+},
+{
+"id": "justice",
+"name": "Justice",
+"desc": "Standing up for what is right and for people treated unfairly.",
+"s": "UNC",
+"via": "Fairness, bravery",
+"sdt": "Beneficence",
+"domain": "Citizenship",
+"rec": "reword",
+"target": "",
+"pname": "Justice",
+"pdesc": "Standing up for people who are treated unfairly.",
+"note": "\"What is right\" is thin, and the description bundles two acts."
+},
+{
+"id": "kindness",
+"name": "Kindness",
+"desc": "Being considerate, gentle and warm in how I treat others.",
+"s": "BEC",
+"via": "Kindness",
+"sdt": "Relatedness",
+"domain": "Any",
+"rec": "reword",
+"target": "Absorbs Caring",
+"pname": "Kindness",
+"pdesc": "Treating people with warmth and consideration.",
+"note": "\"Being ... gentle\" is identity framing and narrows the concept, leaving out firm kindness."
+},
+{
+"id": "leadership",
+"name": "Leadership",
+"desc": "Guiding and inspiring others toward something worthwhile.",
+"s": "AC",
+"via": "Leadership",
+"sdt": "Competence, relatedness",
+"domain": "Work, citizenship",
+"rec": "reword",
+"target": "",
+"pname": "Leadership",
+"pdesc": "Helping a group find and move toward shared aims.",
+"note": "A role that assumes followers; \"something worthwhile\" is thin."
+},
+{
+"id": "learning",
+"name": "Learning",
+"desc": "Building my knowledge, skills and understanding.",
+"s": "SDT",
+"via": "Love of learning",
+"sdt": "Competence",
+"domain": "Education",
+"rec": "keep",
+"target": "",
+"pname": "Learning",
+"pdesc": "Building my knowledge, skills and understanding.",
+"note": "Clear."
+},
+{
+"id": "love",
+"name": "Love",
+"desc": "Acting with love and affection toward others and myself.",
+"s": "BEC",
+"via": "Love",
+"sdt": "Relatedness",
+"domain": "Family, couples, parenting, friends",
+"rec": "reword",
+"target": "",
+"pname": "Love",
+"pdesc": "Showing affection and devotion to the people closest to me.",
+"note": "\"Acting with love\" is circular, and \"others and myself\" bundles two targets."
+},
+{
+"id": "loyalty",
+"name": "Loyalty",
+"desc": "Staying faithful to the people and causes I am committed to.",
+"s": "BED",
+"via": "Teamwork",
+"sdt": "Relatedness",
+"domain": "Family, friends, citizenship",
+"rec": "reword",
+"target": "",
+"pname": "Loyalty",
+"pdesc": "Standing by the people I am committed to.",
+"note": "\"People and causes\" bundles two targets, and loyalty to causes can be loyalty to harmful groups."
+},
+{
+"id": "mastery",
+"name": "Mastery",
+"desc": "Practicing so I can do the things I care about really well.",
+"s": "AC",
+"via": "Perseverance",
+"sdt": "Competence",
+"domain": "Work, education, recreation",
+"rec": "reword",
+"target": "",
+"pname": "Mastery",
+"pdesc": "Practicing and refining my skills in the things I care about.",
+"note": "One of only four cards in the achievement half. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule."
+},
+{
+"id": "mindfulness",
+"name": "Mindfulness",
+"desc": "Paying open, curious attention to this moment.",
+"s": "HUB",
+"via": "None (an ACT process)",
+"sdt": "Autonomy",
+"domain": "Spirituality",
+"rec": "merge",
+"target": "With Connection, into Presence",
+"pname": "Presence",
+"pdesc": "Giving my full attention to what I'm doing and who I'm with.",
+"note": "An ACT process and practice rather than a value, and therapy jargon to many people. \"Presence\" keeps the quality of action."
+},
+{
+"id": "nature",
+"name": "Nature",
+"desc": "Spending time in, appreciating and protecting the natural world.",
+"s": "UNN",
+"via": "Appreciation of beauty",
+"sdt": "None",
+"domain": "Recreation, citizenship",
+"rec": "split",
+"target": "Into Nature and Stewardship",
+"pname": "Nature",
+"pdesc": "Spending time in the natural world.",
+"note": "Three acts (spending time, appreciating, protecting). Recreation in nature and protecting the environment are different values."
+},
+{
+"id": "nurturing",
+"name": "Nurturing",
+"desc": "Helping others grow and flourish, as a parent, mentor or guide.",
+"s": "BEC",
+"via": "Kindness, love",
+"sdt": "Relatedness, beneficence",
+"domain": "Parenting, work",
+"rec": "reword",
+"target": "Absorbs Encouragement",
+"pname": "Nurturing",
+"pdesc": "Helping others grow and flourish by teaching, guiding and encouraging them.",
+"note": "Drop the role list (parent, mentor, guide), which presupposes a role."
+},
+{
+"id": "open-mindedness",
+"name": "Open-mindedness",
+"desc": "Considering other viewpoints and weighing ideas fairly.",
+"s": "UNT",
+"via": "Judgment",
+"sdt": "Autonomy",
+"domain": "Education, citizenship",
+"rec": "reword",
+"target": "Absorbs intellectual humility",
+"pname": "Open-mindedness",
+"pdesc": "Considering other viewpoints and staying open to being wrong.",
+"note": "Takes over \"open to being wrong\" from Humility."
+},
+{
+"id": "order",
+"name": "Order",
+"desc": "Creating structure and organization in my life and spaces.",
+"s": "SEP",
+"via": "Prudence",
+"sdt": "Competence",
+"domain": "Work, family",
+"rec": "keep",
+"target": "",
+"pname": "Order",
+"pdesc": "Creating structure and organization in my life and spaces.",
+"note": "The description settles the polysemy (tidiness, not social order)."
+},
+{
+"id": "patience",
+"name": "Patience",
+"desc": "Waiting calmly and letting things and people take their time.",
+"s": "COI",
+"via": "Self-regulation",
+"sdt": "None",
+"domain": "Parenting, family",
+"rec": "reword",
+"target": "",
+"pname": "Patience",
+"pdesc": "Giving things and people the time they need.",
+"note": "\"Calmly\" names a feeling, which can't be chosen."
+},
+{
+"id": "peace",
+"name": "Peace",
+"desc": "Cultivating calm within myself and harmony with others.",
+"s": "UNC",
+"via": "None",
+"sdt": "None",
+"domain": "Spirituality, citizenship",
+"rec": "reword",
+"target": "Renamed Harmony",
+"pname": "Harmony",
+"pdesc": "Acting to ease conflict between the people around me.",
+"note": "A state, and bundles inner calm with harmony with others. Inner calm is covered by Acceptance and Presence. Harmony is also a relational counterpart to the individualist cards."
+},
+{
+"id": "persistence",
+"name": "Persistence",
+"desc": "Keeping going with what matters, despite setbacks.",
+"s": "AC",
+"via": "Perseverance",
+"sdt": "Competence",
+"domain": "Work, education",
+"rec": "merge",
+"target": "Into Self-discipline",
+"pname": "Self-discipline",
+"pdesc": "Following through on my intentions, even when it is hard or slow.",
+"note": "\"What matters\" is thin; near-identical to Self-discipline and Diligence."
+},
+{
+"id": "pleasure",
+"name": "Pleasure",
+"desc": "Savoring the good things my senses and body can enjoy.",
+"s": "HE",
+"via": "None",
+"sdt": "None",
+"domain": "Recreation, couples",
+"rec": "keep",
+"target": "",
+"pname": "Pleasure",
+"pdesc": "Savoring the good things my senses and body can enjoy.",
+"note": "Clear; one of few prudential (good-for-me) cards."
+},
+{
+"id": "reliability",
+"name": "Reliability",
+"desc": "Being someone people can count on to do what I say.",
+"s": "BED",
+"via": "Teamwork, honesty",
+"sdt": "Relatedness",
+"domain": "Work, family, friends",
+"rec": "reword",
+"target": "Absorbs being trustworthy",
+"pname": "Reliability",
+"pdesc": "Keeping my word to people.",
+"note": "\"Being someone people can count on\" is identity framing, from other people's point of view. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule."
+},
+{
+"id": "respect",
+"name": "Respect",
+"desc": "Treating others with consideration and dignity.",
+"s": "COI",
+"via": "Fairness, kindness",
+"sdt": "Relatedness",
+"domain": "Any",
+"rec": "keep",
+"target": "",
+"pname": "Respect",
+"pdesc": "Treating others with consideration and dignity.",
+"note": "Can be heard as being respected (an outcome). The description makes the person the giver, which is right."
+},
+{
+"id": "responsibility",
+"name": "Responsibility",
+"desc": "Owning my choices and their consequences.",
+"s": "BED",
+"via": "Prudence",
+"sdt": "Autonomy",
+"domain": "Work, parenting",
+"rec": "keep",
+"target": "",
+"pname": "Responsibility",
+"pdesc": "Owning my choices and their consequences.",
+"note": "The description settles the polysemy."
+},
+{
+"id": "safety",
+"name": "Safety",
+"desc": "Protecting myself and others, and creating security.",
+"s": "SEP",
+"via": "Prudence",
+"sdt": "None",
+"domain": "Family, parenting, citizenship",
+"rec": "reword",
+"target": "",
+"pname": "Safety",
+"pdesc": "Protecting the people in my care from harm.",
+"note": "A state, and bundles self and others. For anxious people, safety-seeking can serve avoidance."
+},
+{
+"id": "self-awareness",
+"name": "Self-awareness",
+"desc": "Getting to know my own thoughts, feelings and patterns.",
+"s": "SDT",
+"via": "Perspective",
+"sdt": "Autonomy",
+"domain": "Any",
+"rec": "keep",
+"target": "",
+"pname": "Self-awareness",
+"pdesc": "Getting to know my own thoughts, feelings and patterns.",
+"note": "Clear."
+},
+{
+"id": "self-care",
+"name": "Self-care",
+"desc": "Looking after my own emotional and mental wellbeing.",
+"s": "SEP",
+"via": "Self-regulation",
+"sdt": "Autonomy",
+"domain": "Physical self-care",
+"rec": "reword",
+"target": "",
+"pname": "Self-care",
+"pdesc": "Making time for rest and the things that restore me.",
+"note": "Boundary with Health and Self-compassion was unclear."
+},
+{
+"id": "self-compassion",
+"name": "Self-compassion",
+"desc": "Treating myself with the warmth I would offer a good friend.",
+"s": "HUB",
+"via": "None",
+"sdt": "None",
+"domain": "Any",
+"rec": "keep",
+"target": "",
+"pname": "Self-compassion",
+"pdesc": "Treating myself with the warmth I would offer a good friend.",
+"note": "No Schwartz home; central to ACT."
+},
+{
+"id": "self-discipline",
+"name": "Self-discipline",
+"desc": "Following through on my intentions, even when it is hard.",
+"s": "COR",
+"via": "Self-regulation",
+"sdt": "Competence",
+"domain": "Any",
+"rec": "reword",
+"target": "Absorbs Persistence",
+"pname": "Self-discipline",
+"pdesc": "Following through on my intentions, even when it is hard or slow.",
+"note": "Now covers keeping going despite setbacks."
+},
+{
+"id": "simplicity",
+"name": "Simplicity",
+"desc": "Living simply and focusing on what truly matters.",
+"s": "HUM",
+"via": "Prudence",
+"sdt": "None",
+"domain": "Any",
+"rec": "reword",
+"target": "",
+"pname": "Simplicity",
+"pdesc": "Living with less clutter and fewer distractions.",
+"note": "\"What truly matters\" is circular."
+},
+{
+"id": "spirituality",
+"name": "Spirituality",
+"desc": "Connecting with something larger than myself.",
+"s": "TR",
+"via": "Spirituality",
+"sdt": "None",
+"domain": "Spirituality",
+"rec": "split",
+"target": "Into Spirituality and Faith",
+"pname": "Spirituality",
+"pdesc": "Connecting with something larger than myself.",
+"note": "Religious practice and heritage (tradition) differ from transcendent connection. Religious users may need their own card."
+},
+{
+"id": "tradition",
+"name": "Tradition",
+"desc": "Honoring the customs and heritage that shaped me.",
+"s": "TR",
+"via": "None",
+"sdt": "Relatedness",
+"domain": "Family, spirituality, citizenship",
+"rec": "keep",
+"target": "",
+"pname": "Tradition",
+"pdesc": "Honoring the customs and heritage that shaped me.",
+"note": "Fine as written."
+},
+{
+"id": "trust",
+"name": "Trust",
+"desc": "Being trustworthy, and extending trust to others.",
+"s": "BED",
+"via": "Love, honesty",
+"sdt": "Relatedness",
+"domain": "Any",
+"rec": "split",
+"target": "Trustworthiness into Reliability; card becomes Trusting others",
+"pname": "Trusting others",
+"pdesc": "Giving people the benefit of the doubt and letting them in.",
+"note": "Two opposite directions in one card: being trustworthy and extending trust."
+},
+{
+"id": "wisdom",
+"name": "Wisdom",
+"desc": "Seeking deep understanding and acting with good judgment.",
+"s": "UNT",
+"via": "Perspective",
+"sdt": "Competence",
+"domain": "Any",
+"rec": "reword",
+"target": "",
+"pname": "Wisdom",
+"pdesc": "Acting with good judgment, especially when things are complicated.",
+"note": "Seeking understanding overlaps Learning; keep judging well."
+}
+];
+const ADDITIONS = [
+{
+"id": "add-hope",
+"name": "Hope",
+"s": "HUB",
+"via": "Hope",
+"sdt": "None",
+"domain": "Any",
+"pdesc": "Keeping a better future in view and working toward it.",
+"note": "Hope is one of the five character strengths most strongly linked to life satisfaction (Park, Peterson & Seligman, 2004), and the deck has no card for it. Worded as an action so it is not a feeling to be had.",
+"rec": "add",
+"target": "",
+"pname": "Hope",
+"desc": ""
+},
+{
+"id": "add-vitality",
+"name": "Vitality",
+"s": "ST",
+"via": "Zest",
+"sdt": "Autonomy",
+"domain": "Any",
+"pdesc": "Throwing myself fully into what I do.",
+"note": "Zest is the other top life-satisfaction strength missing from the deck. Worded as a way of engaging rather than a feeling of energy. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule.",
+"rec": "add",
+"target": "",
+"pname": "Vitality",
+"desc": ""
+},
+{
+"id": "add-influence",
+"name": "Influence",
+"s": "POD",
+"via": "Leadership",
+"sdt": "Autonomy",
+"domain": "Work, citizenship",
+"pdesc": "Speaking up and getting involved in decisions that affect me and others.",
+"note": "Power is absent by design, but some people genuinely value having a say. This action form gives them an honest card and makes endorsing the others more meaningful, which helps with ceiling effects. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule.",
+"rec": "add",
+"target": "",
+"pname": "Influence",
+"desc": ""
+},
+{
+"id": "add-providing",
+"name": "Providing",
+"s": "POR",
+"via": "Prudence",
+"sdt": "Competence",
+"domain": "Family, work",
+"pdesc": "Working to provide for the people who depend on me.",
+"note": "The action form of material stability, which VanderWeele treats as enabling flourishing. It is what \"wealth\" usually turns out to mean when an ACT therapist asks what it would give you. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule.",
+"rec": "add",
+"target": "",
+"pname": "Providing",
+"desc": ""
+},
+{
+"id": "add-duty",
+"name": "Duty",
+"s": "COR",
+"via": "Teamwork",
+"sdt": "Relatedness",
+"domain": "Family, work, citizenship",
+"pdesc": "Honoring the commitments that come with my roles and relationships.",
+"note": "Conformity values and the binding moral foundations have almost no cards, so people with these priorities see few cards that describe them. A relational counterpart to Independence. Watch for pliance in reflection. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule.",
+"rec": "add",
+"target": "",
+"pname": "Duty",
+"desc": ""
+},
+{
+"id": "add-courtesy",
+"name": "Courtesy",
+"s": "COI",
+"via": "Kindness",
+"sdt": "Relatedness",
+"domain": "Any",
+"pdesc": "Showing good manners and consideration in everyday dealings with people.",
+"note": "Interpersonal conformity (avoiding upsetting others) is thin in the deck.",
+"rec": "add",
+"target": "",
+"pname": "Courtesy",
+"desc": ""
+},
+{
+"id": "add-prudence",
+"name": "Prudence",
+"s": "SEP",
+"via": "Prudence",
+"sdt": "Competence",
+"domain": "Any",
+"pdesc": "Thinking ahead and making careful, considered choices.",
+"note": "Prudence is one of the 24 VIA strengths with no card.",
+"rec": "add",
+"target": "",
+"pname": "Prudence",
+"desc": ""
+},
+{
+"id": "add-citizenship",
+"name": "Citizenship",
+"s": "SES",
+"via": "Teamwork",
+"sdt": "Beneficence",
+"domain": "Citizenship",
+"pdesc": "Doing my part as a member of my community and society.",
+"note": "Societal security has no card, and citizenship is a thin VLQ domain. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule.",
+"rec": "add",
+"target": "",
+"pname": "Citizenship",
+"desc": ""
+},
+{
+"id": "add-stewardship",
+"name": "Stewardship",
+"s": "UNN",
+"via": "None",
+"sdt": "Beneficence",
+"domain": "Citizenship",
+"pdesc": "Protecting the natural world for the people who come after me.",
+"note": "Split from Nature: protecting the environment is a different value from enjoying it.",
+"rec": "add",
+"target": "",
+"pname": "Stewardship",
+"desc": ""
+},
+{
+"id": "add-faith",
+"name": "Faith",
+"s": "TR",
+"via": "Spirituality",
+"sdt": "Relatedness",
+"domain": "Spirituality",
+"pdesc": "Practicing my religion and letting it guide how I live.",
+"note": "Split from Spirituality: religious practice differs from a general sense of connection to something larger. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule.",
+"rec": "add",
+"target": "",
+"pname": "Faith",
+"desc": ""
+}
+];
+
+(function () {
+  document.documentElement.lang = 'en';
+  const $ = (s, el = document) => el.querySelector(s);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const NS = 'http://www.w3.org/2000/svg';
+  const REC = { keep: 'Keep', reword: 'Reword', split: 'Split', merge: 'Merge', add: 'Proposed addition' };
+  const HUB = { code: 'HUB', name: 'No single home', short: '', hi: 'hub', defn: 'Virtues and ACT processes that can serve any value.' };
+  const sectorOf = (code) => (code === 'HUB' ? HUB : SECTORS.find((s) => s.code === code));
+  const all = [...VALUES.map((v) => ({ ...v, kind: 'deck' })), ...ADDITIONS.map((v) => ({ ...v, kind: 'add' }))];
+  const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const size = 680, c = size / 2;
+  const R_HUB = 58, R_IN = 66, R_OUT = 250, R_BAND_IN = 256, R_BAND_OUT = 268, R_LABEL = 288;
+  const n = SECTORS.length, step = (Math.PI * 2) / n;
+  const angleOf = (i) => -Math.PI / 2 + step * i + step / 2;
+  const pt = (a, r) => [c + r * Math.cos(a), c + r * Math.sin(a)];
+  let filter = 'all';
+  let selected = null;
+
+  function el(tag, attrs, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const [k, v] of Object.entries(attrs || {})) e.setAttribute(k, v);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function arc(a0, a1, r0, r1) {
+    const [x0, y0] = pt(a0, r1), [x1, y1] = pt(a1, r1), [x2, y2] = pt(a1, r0), [x3, y3] = pt(a0, r0);
+    return `M${x0.toFixed(1)},${y0.toFixed(1)} A${r1},${r1} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)} L${x2.toFixed(1)},${y2.toFixed(1)} A${r0},${r0} 0 0 0 ${x3.toFixed(1)},${y3.toFixed(1)} Z`;
+  }
+
+  function addDot(parent, v, x, y) {
+    const g = el('g', {
+      class: `dot dot--${v.rec}`, tabindex: '0', role: 'button', 'data-id': v.id,
+      'aria-label': `${v.name}${v.kind === 'add' ? ', proposed new card' : ''}. ${sectorOf(v.s).name}. ${REC[v.rec]}.`,
+    }, parent);
+    el('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: 7 }, g);
+    const right = x >= c;
+    const t = el('text', { x: (x + (right ? 11 : -11)).toFixed(1), y: (y + 4).toFixed(1), 'text-anchor': right ? 'start' : 'end', class: 'dot-label' }, g);
+    t.textContent = v.kind === 'add' ? `+ ${v.name}` : v.name;
+    g.addEventListener('click', () => select(v.id, true));
+    g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(v.id, true); } });
+  }
+
+  function drawWheel() {
+    const svg = $('#wheel');
+    svg.innerHTML = '';
+    svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+    const title = el('title', { id: 'wheel-title' }, svg);
+    title.textContent = 'The deck on Schwartz’s circle of 19 basic values';
+    const gS = el('g', {}, svg);
+    SECTORS.forEach((s, i) => {
+      const a0 = -Math.PI / 2 + step * i, a1 = a0 + step;
+      el('path', { d: arc(a0, a1, R_IN, R_OUT), class: `sector${i % 2 ? ' sector--alt' : ''}` }, gS);
+      el('path', { d: arc(a0 + 0.005, a1 - 0.005, R_BAND_IN, R_BAND_OUT), class: `band band--${s.hi}` }, gS);
+      const a = angleOf(i), [lx, ly] = pt(a, R_LABEL);
+      const deg = (a * 180) / Math.PI;
+      const flip = deg > 0 && deg < 180;
+      const t = el('text', { x: lx.toFixed(1), y: ly.toFixed(1), class: 'sector-label', 'text-anchor': 'middle', 'dominant-baseline': 'middle', transform: `rotate(${(flip ? deg - 90 : deg + 90).toFixed(1)} ${lx.toFixed(1)} ${ly.toFixed(1)})` }, gS);
+      t.textContent = s.short;
+      if (!all.some((v) => v.s === s.code && v.kind === 'deck')) {
+        const [ex, ey] = pt(a, R_OUT - 16);
+        const e = el('text', { x: ex.toFixed(1), y: ey.toFixed(1), class: 'empty-mark', 'text-anchor': 'middle', 'dominant-baseline': 'middle' }, gS);
+        e.textContent = 'empty';
+      }
+    });
+    el('circle', { cx: c, cy: c, r: R_HUB, class: 'hub' }, gS);
+
+    const gD = el('g', {}, svg);
+    SECTORS.forEach((s, i) => {
+      const items = all.filter((v) => v.s === s.code);
+      const span = R_OUT - R_IN - 34;
+      items.forEach((v, k) => {
+        const r = R_IN + 20 + (items.length > 1 ? (span * k) / (items.length - 1) : span * 0.55);
+        const jitter = items.length > 5 ? (k % 2 ? 1 : -1) * step * 0.2 : 0;
+        const [x, y] = pt(angleOf(i) + jitter, r);
+        addDot(gD, v, x, y);
+      });
+    });
+    const hub = all.filter((v) => v.s === 'HUB');
+    hub.forEach((v, k) => {
+      const a = -Math.PI / 2 + (Math.PI * 2 * k) / hub.length;
+      const [x, y] = pt(a, 32);
+      addDot(gD, v, x, y);
+    });
+    applyFilter();
+  }
+
+  function matches(v) {
+    return filter === 'all' || v.rec === filter;
+  }
+  function applyFilter() {
+    document.querySelectorAll('.dot').forEach((g) => {
+      const v = all.find((x) => x.id === g.dataset.id);
+      g.classList.toggle('is-dim', !matches(v));
+      g.classList.toggle('is-selected', selected === v.id);
+    });
+    document.querySelectorAll('.chip[data-filter]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === filter)));
+    document.querySelectorAll('[data-count]').forEach((s) => {
+      const k = s.dataset.count;
+      s.textContent = k === 'all' ? all.length : all.filter((v) => v.rec === k).length;
+    });
+  }
+
+  function select(id, focus) {
+    selected = id;
+    const v = all.find((x) => x.id === id);
+    const s = sectorOf(v.s);
+    const sibs = all.filter((x) => x.s === v.s && x.id !== v.id);
+    const changed = v.kind === 'deck' && (v.pname !== v.name || v.pdesc !== v.desc);
+    $('#detail').innerHTML = `
+      <p class="detail__eyebrow"><span class="swatch swatch--${s.hi}"></span>${esc(HIGHER[s.hi].name)}</p>
+      <h3 class="detail__name" tabindex="-1">${esc(v.name)}</h3>
+      <p class="rec rec--${v.rec}">${esc(REC[v.rec])}${v.target ? `<span class="rec__target">${esc(v.target)}</span>` : ''}</p>
+      ${v.kind === 'deck' ? `<p class="wording"><span class="wording__k">Now</span>${esc(v.desc)}</p>` : ''}
+      ${changed || v.kind === 'add' ? `<p class="wording wording--new"><span class="wording__k">Proposed</span>${v.pname !== v.name ? `<strong>${esc(v.pname)}:</strong> ` : ''}${esc(v.pdesc)}</p>` : ''}
+      <p class="detail__note">${esc(v.note)}</p>
+      <dl class="detail__grid">
+        <div><dt>Schwartz value</dt><dd>${esc(s.name)}</dd></div>
+        <div><dt>Character strength</dt><dd>${esc(v.via || 'None close')}</dd></div>
+        <div><dt>Basic need</dt><dd>${esc(v.sdt || 'None')}</dd></div>
+        <div><dt>Life domain</dt><dd>${esc(v.domain || 'Any')}</dd></div>
+      </dl>
+      ${sibs.length ? `<p class="detail__sibs-h">Same region</p><div class="tags">${sibs.map((x) => `<button type="button" class="tag tag--${x.rec}" data-goto="${esc(x.id)}">${x.kind === 'add' ? '+ ' : ''}${esc(x.name)}</button>`).join('')}</div>` : '<p class="detail__sibs muted">No other cards in this region.</p>'}`;
+    $('#detail').querySelectorAll('[data-goto]').forEach((b) => b.addEventListener('click', () => select(b.dataset.goto, true)));
+    applyFilter();
+    if (focus) $('#detail .detail__name').focus({ preventScroll: window.innerWidth > 860 });
+  }
+
+  function drawFamilies() {
+    const host = $('#families');
+    host.innerHTML = Object.entries(HIGHER).map(([key, h]) => {
+      const secs = key === 'hub' ? [HUB] : SECTORS.filter((s) => s.hi === key);
+      const deckCount = all.filter((v) => v.kind === 'deck' && sectorOf(v.s).hi === key).length;
+      return `<section class="hi-group" aria-labelledby="hg-${key}">
+        <h3 id="hg-${key}"><span class="swatch swatch--${key}"></span>${esc(h.name)}<span class="hi-group__n">${deckCount} cards</span></h3>
+        <p class="hi-group__def">${esc(h.def_)}</p>
+        <ul class="sec-rows">${secs.map((s) => {
+          const items = all.filter((v) => v.s === s.code);
+          const nDeck = items.filter((v) => v.kind === 'deck').length;
+          return `<li class="sec-row${nDeck ? '' : ' sec-row--empty'}">
+            ${key === 'hub' ? '' : `<div class="sec-row__head"><strong>${esc(s.name)}</strong><span class="sec-row__count">${nDeck ? nDeck : 'none'}</span></div>
+            <p class="sec-row__def">${esc(s.defn)}</p>`}
+            <div class="tags">${items.length ? items.map((v) => `<button type="button" class="tag tag--${v.rec}" data-goto="${esc(v.id)}">${v.kind === 'add' ? '+ ' : ''}${esc(v.name)}</button>`).join('') : '<span class="muted small">No cards, by design</span>'}</div>
+          </li>`;
+        }).join('')}</ul>
+      </section>`;
+    }).join('');
+    host.querySelectorAll('[data-goto]').forEach((b) => b.addEventListener('click', () => {
+      select(b.dataset.goto, false);
+      $('#map').scrollIntoView({ behavior: reduce() ? 'auto' : 'smooth', block: 'start' });
+      $('#detail .detail__name').focus({ preventScroll: true });
+    }));
+  }
+
+  function drawDeckTable() {
+    const seen = new Set();
+    const rows = [];
+    for (const v of all) {
+      const key = v.pname;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const sources = all.filter((x) => x.pname === key);
+      const recs = [...new Set(sources.map((x) => x.rec))];
+      let change = 'Unchanged';
+      if (v.kind === 'add') change = sources[0].note.startsWith('Split from') ? `New (split from ${sources[0].note.match(/Split from (\w+)/)[1]})` : 'New';
+      else if (sources.length > 1) change = `Merges ${sources.map((x) => x.name).join(' + ')}`;
+      else if (v.pname !== v.name) change = `Renamed from ${v.name}`;
+      else if (recs.includes('split')) change = 'Split';
+      else if (v.pdesc !== v.desc) change = 'Reworded';
+      rows.push({ name: key, desc: v.pdesc, change, cls: change === 'Unchanged' ? 'keep' : change.startsWith('New') ? 'add' : change.startsWith('Merges') ? 'merge' : change === 'Split' ? 'split' : 'reword' });
+    }
+    rows.sort((a, b) => a.name.localeCompare(b.name));
+    $('#deck-count').textContent = rows.length;
+    $('#deck-table').innerHTML = rows.map((r) => `<tr><td><strong>${esc(r.name)}</strong></td><td>${esc(r.desc)}</td><td><span class="pill pill--${r.cls}">${esc(r.change)}</span></td></tr>`).join('');
+  }
+
+  document.querySelectorAll('.chip[data-filter]').forEach((b) => b.addEventListener('click', () => { filter = b.dataset.filter; applyFilter(); }));
+  const lab = $('#labels-toggle');
+  const setLabels = () => $('.wheel-wrap').classList.toggle('labels-on', lab.checked);
+  lab.addEventListener('change', () => { setLabels(); try { localStorage.setItem('vm-labels', lab.checked ? '1' : '0'); } catch (e) { /* ignore */ } });
+  try { const saved = localStorage.getItem('vm-labels'); if (saved !== null) lab.checked = saved === '1'; } catch (e) { /* ignore */ }
+  setLabels();
+
+  drawWheel();
+  drawFamilies();
+  drawDeckTable();
+  select('caring', false);
+})();
+
+</script>
+</body>
+</html>

@@ -6,10 +6,10 @@ It works on phones and desktops, can be installed to a home screen, works offlin
 
 ## What it does
 
-1. **Sort**: 65 value cards, one at a time, into *very important*, *somewhat important* or *not important to me*. People can add their own values, undo, and review or move cards afterwards.
-2. **Choose**: narrow the "very important" pile to up to 10 core values, with prompts that check whether each value is truly theirs (ACT's "pliance" check).
-3. **Rank**: order the core values by hand, or answer a few either/or questions (a binary-insertion ranking that keeps the number of questions small).
-4. **Reflect**: write what each value means to them, and rate how fully they have lived it over the past two weeks (inspired by the Valued Living Questionnaire and the Values Bull's-Eye). A gentle nudge appears if a value starts sounding like a "should".
+1. **Sort**: 71 value cards, one at a time, into *very important*, *somewhat important* or *less important to me*. People can add their own values (with a gentle prompt if a card names an outcome like wealth or a feeling like happiness), undo, and review or move cards afterwards.
+2. **Choose**: narrow the "very important" pile to up to 10 core values, with prompts that check whether each value is truly theirs (ACT's "pliance" check). If the pile is large, an optional best-worst round (pick the most and least important of a few cards at a time) suggests a top five.
+3. **Rank**: order the core values by hand, or answer a few either/or questions (a binary-insertion ranking that keeps the number of questions small). Values can be marked "on a par" when they can't honestly be ordered.
+4. **Reflect**: write what each value means to them, say whether they hold it for its own sake or for what it gives them, and rate how fully they have lived it over the past two weeks (inspired by the Valued Living Questionnaire and the Values Bull's-Eye). A gentle nudge appears if a value starts sounding like a "should".
 5. **Act**: plan a small, specific committed action, with what might get in the way and how they will respond (ACT willingness).
 
 It also includes:
@@ -19,7 +19,7 @@ It also includes:
 - **Learn**: a plain-language guide to ACT, values vs goals, feelings and rules, choice points, and the research evidence.
 - **About**: crisis resources, a "this is not therapy" statement, privacy details, an accessibility statement, credits and references.
 
-The research behind the content is in [`docs/RESEARCH.md`](docs/RESEARCH.md).
+The research behind the content is in [`docs/research/`](docs/research/). A map of how the cards relate to Schwartz's circle of values and the science of wellbeing, with proposed deck changes, is in [`docs/VALUES-MAP.md`](docs/VALUES-MAP.md) and the interactive [`docs/values-map.html`](docs/values-map.html).
 
 ## Publish it on GitHub Pages
 
@@ -73,12 +73,15 @@ assets/js/content.js    Learn and About page content and references
 assets/js/store.js      Local storage, import validation
 assets/fonts/           Self-hosted fonts (SIL Open Font License)
 assets/icons/           App icons
-docs/RESEARCH.md        Research brief with verified citations
+docs/research/          Research briefs with verified citations
+docs/VALUES-MAP.md      Values map findings and proposed deck changes
+docs/values-map.html    Interactive values map
+scripts/check-deck.mjs  Checks every card against ACT's definition of a value
 ```
 
 ### Editing the deck
 
-Cards live in `assets/js/values.js`. Each one needs a unique `id`, a `name` and a short `desc`. Keep descriptions as **qualities of action** (how someone wants to behave), not outcomes or feelings; that is how ACT defines values. After changing any file, bump `VERSION` in `sw.js` so returning visitors get the update.
+Cards live in `assets/js/values.js`. Each one needs a unique `id`, a `name` and a short `desc`. Keep descriptions as **qualities of action** (how someone wants to behave), not outcomes or feelings; that is how ACT defines values. Then run `node scripts/check-deck.mjs`, which checks every card against ACT's definition of a value: a chosen quality of ongoing action, never completed, within the person's control, and not an outcome, feeling or rule. The same check runs automatically on GitHub whenever the deck changes. After changing any file, bump `VERSION` in `sw.js` so returning visitors get the update.
 
 ## Credits and licenses
 
