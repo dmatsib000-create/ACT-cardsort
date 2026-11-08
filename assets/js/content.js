@@ -1,5 +1,5 @@
 // Long-form content for the Learn and About pages.
-// Sources are listed in full on the About page and in docs/RESEARCH.md.
+// Sources are listed in full on the About page and in docs/research/.
 
 export const learnHTML = (deckSize) => `
 <article class="prose">

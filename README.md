@@ -19,7 +19,7 @@ It also includes:
 - **Learn**: a plain-language guide to ACT, values vs goals, feelings and rules, choice points, and the research evidence.
 - **About**: crisis resources, a "this is not therapy" statement, privacy details, an accessibility statement, credits and references.
 
-The research behind the content is in [`docs/RESEARCH.md`](docs/RESEARCH.md).
+The research behind the content is in [`docs/research/`](docs/research/). A map of how the cards relate to Schwartz's circle of values and the science of wellbeing, with proposed deck changes, is in [`docs/VALUES-MAP.md`](docs/VALUES-MAP.md) and the interactive [`docs/values-map.html`](docs/values-map.html).
 
 ## Publish it on GitHub Pages
 
@@ -73,7 +73,9 @@ assets/js/content.js    Learn and About page content and references
 assets/js/store.js      Local storage, import validation
 assets/fonts/           Self-hosted fonts (SIL Open Font License)
 assets/icons/           App icons
-docs/RESEARCH.md        Research brief with verified citations
+docs/research/          Research briefs with verified citations
+docs/VALUES-MAP.md      Values map findings and proposed deck changes
+docs/values-map.html    Interactive values map
 ```
 
 ### Editing the deck
