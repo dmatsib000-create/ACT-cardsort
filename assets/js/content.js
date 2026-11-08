@@ -80,11 +80,12 @@ export const learnHTML = (deckSize) => `
     <p>Card sorts are a common way to explore values in therapy and coaching. The best known, the <em>Personal Values Card Sort</em>, was created by William R. Miller and colleagues at the University of New Mexico for motivational interviewing, and its authors released it into the public domain. Lodestar follows the same basic procedure, adapted for ACT:</p>
     <ol>
       <li><strong>Sort</strong> all ${deckSize} cards into three piles by how important each is to the way you want to live. First reactions are usually best.</li>
-      <li><strong>Narrow</strong> your “very important” pile to the values that feel most central, up to ten.</li>
-      <li><strong>Rank</strong> them, which helps clarify what matters most when values pull in different directions.</li>
+      <li><strong>Narrow</strong> your “very important” pile to the values that feel most central, up to ten. If the pile is large, a short round of “most and least important” choices can help separate them.</li>
+      <li><strong>Rank</strong> them, which helps clarify what matters most when values pull in different directions. If two values feel equally important, you can mark them as on a par: some values simply can’t be weighed against each other.</li>
       <li><strong>Reflect</strong> on what each value means to you and how fully you are living it. The idea of rating importance and consistency comes from ACT tools such as the Valued Living Questionnaire and the Values Bull’s-Eye.</li>
       <li><strong>Act</strong>: choose one small, specific step and plan for the thoughts and feelings that might get in the way.</li>
     </ol>
+    <p>The deck was reviewed against Shalom Schwartz’s map of basic human values, which has been found across dozens of cultures, so that it covers the full range of what people care about, not only the most admired values. It deliberately leaves out outcomes such as wealth, status and fame. If something like that matters to you, try asking what having it would let you do or be: that quality is often the value underneath. You can always add your own cards.</p>
     <p>Your answers may change over time, and that is normal. Many people find it useful to repeat the sort every few months or after a big life change.</p>
   </section>
 
@@ -131,7 +132,10 @@ const REFS = [
   'Klimczak, K. S., San Miguel, G. G., Mukasa, M. N., Twohig, M. P., & Levin, M. E. (2023). A systematic review and meta-analysis of self-guided online acceptance and commitment therapy as a transdiagnostic self-help intervention. <em>Cognitive Behaviour Therapy, 52</em>(3), 269–294. <a href="https://doi.org/10.1080/16506073.2023.2178498">doi.org/10.1080/16506073.2023.2178498</a>',
   'Levin, M. E., Hildebrandt, M. J., Lillis, J., & Hayes, S. C. (2012). The impact of treatment components suggested by the psychological flexibility model: A meta-analysis of laboratory-based component studies. <em>Behavior Therapy, 43</em>(4), 741–756. <a href="https://doi.org/10.1016/j.beth.2012.05.003">doi.org/10.1016/j.beth.2012.05.003</a>',
   'Lundgren, T., Luoma, J. B., Dahl, J., Strosahl, K., & Melin, L. (2012). The Bull’s-Eye Values Survey: A psychometric evaluation. <em>Cognitive and Behavioral Practice, 19</em>(4), 518–526. <a href="https://doi.org/10.1016/j.cbpra.2012.01.004">doi.org/10.1016/j.cbpra.2012.01.004</a>',
+  'Lee, J. A., Soutar, G., & Louviere, J. (2008). The best-worst scaling approach: An alternative to Schwartz’s Values Survey. <em>Journal of Personality Assessment, 90</em>(4), 335–347. <a href="https://doi.org/10.1080/00223890802107925">doi.org/10.1080/00223890802107925</a>',
   'Miller, W. R., C’de Baca, J., Matthews, D. B., & Wilbourne, P. L. (2001). <em>Personal values card sort.</em> University of New Mexico. Public domain.',
+  'Park, N., Peterson, C., & Seligman, M. E. P. (2004). Strengths of character and well-being. <em>Journal of Social and Clinical Psychology, 23</em>(5), 603–619. <a href="https://doi.org/10.1521/jscp.23.5.603.50748">doi.org/10.1521/jscp.23.5.603.50748</a>',
+  'Schwartz, S. H., Cieciuch, J., Vecchione, M., Davidov, E., Fischer, R., Beierlein, C., et al. (2012). Refining the theory of basic individual values. <em>Journal of Personality and Social Psychology, 103</em>(4), 663–688. <a href="https://doi.org/10.1037/a0029393">doi.org/10.1037/a0029393</a>',
   'Wilson, K. G., & Murrell, A. R. (2004). Values work in acceptance and commitment therapy: Setting a course for behavioral treatment. In S. C. Hayes, V. M. Follette, & M. M. Linehan (Eds.), <em>Mindfulness and acceptance</em> (pp. 120–151). Guilford Press.',
   'Wilson, K. G., Sandoz, E. K., Kitchens, J., & Roberts, M. (2010). The Valued Living Questionnaire: Defining and measuring valued action within a behavioral framework. <em>The Psychological Record, 60</em>(2), 249–272. <a href="https://doi.org/10.1007/BF03395706">doi.org/10.1007/BF03395706</a>',
 ];
@@ -176,7 +180,7 @@ export const aboutHTML = () => `
 
   <section aria-labelledby="credits-h">
     <h2 id="credits-h">Credits</h2>
-    <p>The value names draw on the common vocabulary of ACT values work and on the public-domain <em>Personal Values Card Sort</em> by Miller, C’de Baca, Matthews and Wilbourne (2001). All card descriptions, prompts and text in Lodestar are original. The reflection step is inspired by the structure of the Valued Living Questionnaire and the Values Bull’s-Eye; no items from those measures are reproduced. Fonts: Atkinson Hyperlegible (Braille Institute) and Fraunces (Undercase Type), both under the SIL Open Font License.</p>
+    <p>The value names draw on the common vocabulary of ACT values work and on the public-domain <em>Personal Values Card Sort</em> by Miller, C’de Baca, Matthews and Wilbourne (2001). All card descriptions, prompts and text in Lodestar are original. The reflection step is inspired by the structure of the Valued Living Questionnaire and the Values Bull’s-Eye; no items from those measures are reproduced. The deck’s coverage and wording were reviewed against Schwartz’s theory of basic values, the VIA character strengths, self-determination theory, and research on the language of values; see the <a href="docs/values-map.html">values map</a>. Fonts: Atkinson Hyperlegible (Braille Institute) and Fraunces (Undercase Type), both under the SIL Open Font License.</p>
   </section>
 
   <section aria-labelledby="refs-h">

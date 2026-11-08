@@ -1,6 +1,6 @@
 // Offline support. Pages are fetched network-first (so updates arrive quickly);
 // static assets are served from cache and refreshed in the background.
-const VERSION = 'lodestar-v1';
+const VERSION = 'lodestar-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -37,10 +37,18 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
 
   if (req.mode === 'navigate') {
+    // Only the app shell is cached as the offline page; other pages (like the
+    // docs) are cached under their own URL so they never replace it.
+    const scope = new URL(self.registration.scope).pathname;
+    const path = new URL(req.url).pathname;
+    const isShell = path === scope || path === `${scope}index.html`;
     event.respondWith(
       fetch(req)
-        .then((res) => { const copy = res.clone(); caches.open(VERSION).then((c) => c.put('./index.html', copy)); return res; })
-        .catch(() => caches.match('./index.html')),
+        .then((res) => {
+          if (res.ok) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(isShell ? './index.html' : req, copy)); }
+          return res;
+        })
+        .catch(() => (isShell ? caches.match('./index.html') : caches.match(req).then((r) => r || caches.match('./index.html')))),
     );
     return;
   }

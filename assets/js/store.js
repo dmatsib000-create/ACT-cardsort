@@ -2,10 +2,10 @@
 // browser's localStorage, and falls back to memory if storage is unavailable
 // (for example in some private browsing modes).
 
-import { VALUES } from './values.js';
+import { VALUES, RENAMED } from './values.js';
 
 const KEY = 'lodestar:v1';
-const SCHEMA = 1;
+const SCHEMA = 2;
 
 export const fresh = () => ({
   schema: SCHEMA,
@@ -18,7 +18,10 @@ export const fresh = () => ({
   custom: [],         // [{ id, name, desc, custom: true }]
   core: [],           // chosen core values, in ranked order
   ranked: false,
-  reflections: {},    // id -> { meaning, living }
+  ties: [],           // core ids ranked "on a par" with the value above them
+  bw: {},             // id -> best-minus-worst score from the narrowing round
+  reflections: {},    // id -> { meaning, living, why: 'own'|'means'|'both'|null, leadsTo }
+  deckUpdated: false, // true after migrating saved progress to a newer deck
   actions: [],        // [{ id, valueId, step, when, obstacles, response, done, created }]
   decisions: [],      // [{ id, question, options:[{id,label}], ratings:{optId:{valueId:-1|0|1}}, feelings, choice, created, updated }]
 });
@@ -28,7 +31,13 @@ export let persistent = true;
 export function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return normalize(JSON.parse(raw));
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      const state = normalize(parsed);
+      // Save migrated data straight away so it is never migrated twice.
+      if (!(Number(parsed && parsed.schema) >= 2)) save(state);
+      return state;
+    }
   } catch {
     persistent = false;
   }
@@ -54,9 +63,55 @@ export function clear() {
 
 // Accepts any object (from storage or an imported file) and returns a safe,
 // fully shaped state. Unknown keys are dropped; wrong types are reset.
+// Carries saved progress from deck version 1 (65 cards) to version 2, where
+// some cards were merged or renamed. Choices follow the card to its new id;
+// when two old cards merge, the stronger pile and both reflections are kept.
+const PILE_RANK = { very: 3, some: 2, not: 1 };
+function migrateV1(input) {
+  const to = (id) => RENAMED[id] || id;
+  const list = (v) => [...new Set((Array.isArray(v) ? v : []).map(to))];
+  const started = Array.isArray(input.order) && input.order.length > 0;
+  const out = { ...input, deckUpdated: started };
+  out.order = list(input.order);
+  out.history = list(input.history);
+  out.core = list(input.core);
+  out.piles = {};
+  for (const [id, p] of Object.entries(input.piles || {})) {
+    const n = to(id);
+    if (!out.piles[n] || (PILE_RANK[p] || 0) > (PILE_RANK[out.piles[n]] || 0)) out.piles[n] = p;
+  }
+  out.reflections = {};
+  for (const [id, r] of Object.entries(input.reflections || {})) {
+    if (!r || typeof r !== 'object') continue;
+    const n = to(id);
+    const prev = out.reflections[n];
+    if (!prev) { out.reflections[n] = { ...r }; continue; }
+    const a = (prev.meaning || '').trim(), b = (r.meaning || '').trim();
+    out.reflections[n] = {
+      meaning: a && b && a !== b ? `${a}\n\n${b}` : a || b,
+      living: prev.living ?? r.living ?? null,
+    };
+  }
+  out.actions = (Array.isArray(input.actions) ? input.actions : []).map((a) => (a && typeof a === 'object' ? { ...a, valueId: to(a.valueId) } : a));
+  out.decisions = (Array.isArray(input.decisions) ? input.decisions : []).map((d) => {
+    if (!d || typeof d !== 'object' || !d.ratings) return d;
+    const ratings = {};
+    for (const [opt, r] of Object.entries(d.ratings)) {
+      ratings[opt] = {};
+      for (const [vid, n] of Object.entries(r || {})) {
+        const k = to(vid);
+        if (!(k in ratings[opt])) ratings[opt][k] = n;
+      }
+    }
+    return { ...d, ratings };
+  });
+  return out;
+}
+
 export function normalize(input) {
   const base = fresh();
   if (!input || typeof input !== 'object') return base;
+  if (!(Number(input.schema) >= 2)) input = migrateV1(input);
   const str = (v, max = 2000) => (typeof v === 'string' ? v.slice(0, max) : '');
   const arr = (v) => (Array.isArray(v) ? v : []);
   const obj = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? v : {});
@@ -77,24 +132,39 @@ export function normalize(input) {
   for (const [id, r] of Object.entries(obj(input.reflections))) {
     if (!known.has(id) || !r || typeof r !== 'object') continue;
     const living = Number.isInteger(r.living) && r.living >= 0 && r.living <= 10 ? r.living : null;
-    reflections[id] = { meaning: str(r.meaning), living };
+    const why = ['own', 'means', 'both'].includes(r.why) ? r.why : null;
+    reflections[id] = { meaning: str(r.meaning), living, why, leadsTo: str(r.leadsTo, 500) };
   }
 
-  const order = ids(input.order);
+  // If the deck has gained cards since this sort began, keep the cards already
+  // placed in front and queue the new (or unplaced) ones after them.
+  let order = ids(input.order);
+  if (order.length) {
+    const placed = order.filter((id) => piles[id]);
+    const rest = order.filter((id) => !piles[id]);
+    const missing = shuffle(VALUES.map((v) => v.id).filter((id) => !order.includes(id)));
+    order = [...placed, ...rest, ...missing];
+  }
+  const pos = order.length ? order.filter((id) => piles[id]).length : 0;
   const core = ids(input.core).slice(0, 10);
+  const bw = {};
+  for (const [id, n] of Object.entries(obj(input.bw))) if (known.has(id) && Number.isInteger(n)) bw[id] = n;
 
   return {
     ...base,
     created: str(input.created, 40) || base.created,
     updated: str(input.updated, 40) || null,
     order,
-    pos: Math.min(Math.max(0, Number(input.pos) | 0), order.length),
+    pos,
     piles,
-    history: ids(input.history),
+    history: ids(input.history).filter((id) => piles[id]),
     custom,
     core,
     ranked: Boolean(input.ranked),
+    ties: ids(input.ties).filter((id) => core.includes(id) && core.indexOf(id) > 0),
+    bw,
     reflections,
+    deckUpdated: Boolean(input.deckUpdated),
     actions: arr(input.actions)
       .filter((a) => a && known.has(a.valueId))
       .map((a) => ({

@@ -52,6 +52,27 @@ function formatDate(iso) {
 
 const plural = (n, one, many = one + 's') => `${n} ${n === 1 ? one : many}`;
 
+// Rank numbers for the core values, where values marked "on a par" with the
+// one above share its number (1, 2, 2, 4...).
+function rankNums() {
+  const out = [];
+  state.core.forEach((id, i) => { out[i] = i > 0 && state.ties.includes(id) ? out[i - 1] : i + 1; });
+  return out;
+}
+const cleanTies = () => { state.ties = state.ties.filter((id) => state.core.indexOf(id) > 0); };
+
+function deckNotice() {
+  if (!state.deckUpdated) return '';
+  return `<aside class="notice notice--update" aria-labelledby="upd-h">
+    <h2 id="upd-h">The deck has been refined</h2>
+    <p>Some near-identical cards were combined, wording was sharpened, and 10 cards were added (including Hope, Vitality, Duty and Providing). Your choices have been carried over. If you had finished sorting, you\u2019ll be asked to sort just the new cards.</p>
+    <div class="inline-actions">
+      <a class="btn btn--ghost btn--sm" href="docs/values-map.html">See what changed and why</a>
+      <button type="button" class="btn btn--ghost btn--sm" data-action="dismiss-update">Dismiss</button>
+    </div>
+  </aside>`;
+}
+
 /* Progress through the five steps */
 function progress() {
   const sorted = state.order.length > 0 && state.pos >= state.order.length;
@@ -211,6 +232,7 @@ function viewHome() {
   else if (p.acted) { resume = '#/results'; resumeLabel = 'See my values'; }
 
   app.innerHTML = `
+  ${deckNotice()}
   <section class="hero">
     <div class="hero__text">
       <p class="eyebrow">An Acceptance and Commitment Therapy exercise</p>
@@ -234,7 +256,7 @@ function viewHome() {
   <section class="section" aria-labelledby="how">
     <h2 id="how">How it works</h2>
     <ol class="how-list">
-      <li><span class="how-list__n" aria-hidden="true">1</span><div><h3>Sort</h3><p>Go through the deck and place each card in one of three piles: very important, somewhat important, or not important to you. Go with your gut.</p></div></li>
+      <li><span class="how-list__n" aria-hidden="true">1</span><div><h3>Sort</h3><p>Go through the deck and place each card in one of three piles: very important, somewhat important, or less important to you. Go with your gut.</p></div></li>
       <li><span class="how-list__n" aria-hidden="true">2</span><div><h3>Choose</h3><p>From your “very important” pile, pick the handful that feel most like you at your best.</p></div></li>
       <li><span class="how-list__n" aria-hidden="true">3</span><div><h3>Rank</h3><p>Put them in order, by hand or with quick either/or questions.</p></div></li>
       <li><span class="how-list__n" aria-hidden="true">4</span><div><h3>Reflect</h3><p>Describe what each value means in your own words, and how fully you are living it right now.</p></div></li>
@@ -287,6 +309,7 @@ function viewSort() {
     <header class="page-head">
       <p class="eyebrow">Step 1 of 5</p>
       <h1>Sort the cards</h1>
+      ${state.deckUpdated && state.pos > 0 ? '<p class="notice notice--inline">The deck has new cards since you last sorted. Your earlier choices are kept; just sort the new ones.</p>' : ''}
       <p class="lede">For each card, ask: <em>how important is this to the way I want to live?</em> Go with your first reaction.</p>
     </header>
 
@@ -509,7 +532,10 @@ function viewCore() {
     app.innerHTML = `${stepper('core')}<h1 class="visually-hidden">Choose your core values</h1>${emptyState({ title: 'Sort the cards first', body: 'Once you have sorted the deck, your “very important” cards will appear here for you to choose from.', href: '#/sort', cta: p.started ? 'Continue sorting' : 'Begin the card sort' })}`;
     return;
   }
-  const very = inPile('very');
+  const scored = (ids) => (Object.keys(state.bw).length
+    ? [...ids].sort((a, b) => (state.bw[b] ?? -99) - (state.bw[a] ?? -99))
+    : ids);
+  const very = scored(inPile('very'));
   const some = inPile('some');
   // If someone has 10 or fewer "very important" cards and hasn't chosen yet, start with all of them selected.
   if (state.core.length === 0 && very.length > 0 && very.length <= MAX_CORE) {
@@ -533,6 +559,7 @@ function viewCore() {
       <p class="eyebrow">Step 2 of 5</p>
       <h1>Choose your core values</h1>
       <p class="lede">Choose up to ${MAX_CORE} values that feel most central to who you want to be. Around five is a good number to work with.</p>
+      ${state.bw && Object.keys(state.bw).length ? '<p class="muted">Your \u201cvery important\u201d cards are listed in the order suggested by your narrowing round.</p>' : ''}
     </header>
     <details class="prompts">
       <summary>Questions that can help you choose</summary>
@@ -544,6 +571,10 @@ function viewCore() {
       </ul>
     </details>
 
+    ${very.length > MAX_CORE ? `<div class="rank-help narrow-help">
+      <p><strong>You have ${very.length} \u201cvery important\u201d cards.</strong> A short narrowing round can help: you\u2019ll see a few cards at a time and pick the one that matters most and the one that matters least. It takes about ${narrowTrials(very.length)} rounds.</p>
+      <button type="button" class="btn btn--secondary" data-action="narrow">${Object.keys(state.bw).length ? 'Narrow again' : 'Start narrowing round'}</button>
+    </div>` : ''}
     <form class="core-form" id="core-form" novalidate>
       <fieldset>
         <legend><span class="legend-title">Very important to me</span> <span class="muted">(${very.length})</span></legend>
@@ -585,6 +616,7 @@ function viewCore() {
     } else {
       state.core = state.core.filter((id) => id !== cb.value);
     }
+    cleanTies();
     state.ranked = false;
     persist();
     updateStatus();
@@ -599,6 +631,84 @@ function viewCore() {
       err.focus();
     }
   });
+}
+
+// Best-worst narrowing (Lee, Soutar & Louviere, 2008): each card is shown about
+// twice, in sets of up to four. Picking the most and least important in each
+// set gives a score that separates a crowded "very important" pile.
+const narrowTrials = (n) => Math.ceil((n * 2) / 4);
+
+function buildTrials(ids) {
+  const seq = [...store.shuffle(ids), ...store.shuffle(ids)];
+  const trials = [];
+  for (let i = 0; i < seq.length; i += 4) trials.push(seq.slice(i, i + 4));
+  // Remove repeats inside a set by swapping with another set.
+  trials.forEach((t, ti) => {
+    t.forEach((id, k) => {
+      if (t.indexOf(id) === k) return;
+      for (let ui = 0; ui < trials.length; ui++) {
+        if (ui === ti || trials[ui].includes(id)) continue;
+        const m = trials[ui].findIndex((o) => !t.includes(o));
+        if (m > -1) { t[k] = trials[ui][m]; trials[ui][m] = id; return; }
+      }
+    });
+  });
+  return trials.map((t) => [...new Set(t)]).filter((t) => t.length >= 2);
+}
+
+async function runNarrowing() {
+  const ids = inPile('very');
+  const trials = buildTrials(ids);
+  const score = Object.fromEntries(ids.map((id) => [id, 0]));
+  const form = document.getElementById('core-form');
+  const help = app.querySelector('.narrow-help');
+  const host = document.createElement('section');
+  host.className = 'pairwise';
+  host.setAttribute('aria-labelledby', 'bw-title');
+  form.hidden = true;
+  if (help) help.hidden = true;
+  form.before(host);
+
+  const pick = (set, question, round, part) => new Promise((resolve, reject) => {
+    host.innerHTML = `
+      <p class="muted">Round ${round} of ${trials.length} \u00b7 ${part}</p>
+      <h2 id="bw-title" class="pairwise__q" tabindex="-1">${question}</h2>
+      <div class="bw__choices">${set.map((id) => `<button type="button" class="choice choice--compact" data-pick="${esc(id)}"><strong>${esc(val(id).name)}</strong><span>${esc(val(id).desc)}</span></button>`).join('')}</div>
+      <button type="button" class="btn btn--ghost btn--sm" data-pick="cancel">Stop and choose by hand</button>`;
+    host.querySelector('h2').focus();
+    host.onclick = (e) => {
+      const id = e.target.closest('[data-pick]')?.dataset.pick;
+      if (!id) return;
+      host.onclick = null;
+      if (id === 'cancel') reject(new Error('cancel')); else resolve(id);
+    };
+  });
+
+  try {
+    for (let t = 0; t < trials.length; t++) {
+      const set = trials[t];
+      const best = await pick(set, 'Which of these matters <em>most</em> to you?', t + 1, 'most');
+      score[best] += 1;
+      const rest = set.filter((id) => id !== best);
+      const worst = rest.length === 1 ? rest[0] : await pick(rest, 'And which matters <em>least</em>?', t + 1, 'least');
+      score[worst] -= 1;
+    }
+    state.bw = score;
+    const ordered = [...ids].sort((a, b) => score[b] - score[a]);
+    state.core = ordered.slice(0, 5);
+    state.ties = [];
+    state.ranked = false;
+    persist();
+    viewCore();
+    announce(`Done. Your top five have been selected: ${state.core.map((id) => val(id).name).join(', ')}. You can change them.`);
+    toast('Top five selected');
+  } catch {
+    host.remove();
+    form.hidden = false;
+    if (help) help.hidden = false;
+    announce('Stopped. You can choose by hand.');
+  }
+  app.querySelector('h1')?.focus();
 }
 
 /* ------------------------------------------------------------------ *
@@ -617,7 +727,7 @@ function viewRank() {
     <header class="page-head">
       <p class="eyebrow">Step 3 of 5</p>
       <h1>Rank your values</h1>
-      <p class="lede">Put the value that matters most at the top. Ranking is only a way to think more clearly about what matters; every value on this list is important.</p>
+      <p class="lede">Put the value that matters most at the top. Ranking is only a way to think more clearly about what matters; every value on this list is important. If two feel equally important, mark them as on a par.</p>
     </header>
     ${n > 1 ? `<div class="rank-help">
       <p>Finding it hard to order them? Answer a few quick either/or questions instead.</p>
@@ -634,6 +744,9 @@ function viewRank() {
     const i = Number(btn.dataset.index);
     const j = btn.dataset.move === 'up' ? i - 1 : i + 1;
     if (j < 0 || j >= state.core.length) return;
+    const lo = Math.min(i, j);
+    const touched = [state.core[lo], state.core[lo + 1], state.core[lo + 2]];
+    state.ties = state.ties.filter((id) => !touched.includes(id));
     [state.core[i], state.core[j]] = [state.core[j], state.core[i]];
     state.ranked = true;
     persist();
@@ -648,6 +761,20 @@ function viewRank() {
     target?.focus();
   });
 
+  document.getElementById('rank-list').addEventListener('change', (e) => {
+    const id = e.target.dataset.tie;
+    if (!id) return;
+    state.ties = e.target.checked ? [...new Set([...state.ties, id])] : state.ties.filter((x) => x !== id);
+    state.ranked = true;
+    persist();
+    drawRankList();
+    const i = state.core.indexOf(id);
+    announce(e.target.checked
+      ? `${val(id).name} is now on a par with ${val(state.core[i - 1]).name}, at number ${rankNums()[i]}.`
+      : `${val(id).name} is now ranked number ${rankNums()[i]} on its own.`);
+    document.querySelector(`#rank-list input[data-tie="${CSS.escape(id)}"]`)?.focus();
+  });
+
   document.getElementById('rank-next').addEventListener('click', () => {
     if (!state.ranked) { state.ranked = true; persist(); }
   });
@@ -656,11 +783,15 @@ function viewRank() {
 function drawRankList() {
   const list = document.getElementById('rank-list');
   const n = state.core.length;
+  const nums = rankNums();
   list.innerHTML = state.core.map((id, i) => {
     const v = val(id);
-    return `<li class="rank-item">
-      <span class="rank-item__n" aria-hidden="true">${i + 1}</span>
-      <span class="rank-item__text"><strong>${esc(v.name)}</strong><span>${esc(v.desc)}</span></span>
+    const tied = i > 0 && state.ties.includes(id);
+    return `<li class="rank-item${tied ? ' rank-item--tied' : ''}">
+      <span class="rank-item__n" aria-hidden="true">${nums[i]}</span>
+      <span class="rank-item__text"><strong>${esc(v.name)}</strong><span>${esc(v.desc)}</span>
+        ${i > 0 ? `<label class="tie"><input type="checkbox" data-tie="${esc(id)}" ${tied ? 'checked' : ''}> On a par with ${esc(val(state.core[i - 1]).name)}</label>` : ''}
+      </span>
       <span class="rank-item__btns">
         <button type="button" class="icon-btn" data-move="up" data-index="${i}" aria-label="Move ${esc(v.name)} up" aria-disabled="${i === 0}">${arrowIcon('up')}</button>
         <button type="button" class="icon-btn" data-move="down" data-index="${i}" aria-label="Move ${esc(v.name)} down" aria-disabled="${i === n - 1}">${arrowIcon('down')}</button>
@@ -717,6 +848,7 @@ async function runPairwise() {
       sorted.splice(lo, 0, items[i]);
     }
     state.core = sorted;
+    state.ties = [];
     state.ranked = true;
     persist();
     announce(`Ranking complete. Your top value is ${val(sorted[0]).name}.`);
@@ -766,12 +898,23 @@ function viewReflect() {
         const r = state.reflections[id] || { meaning: '', living: null };
         const living = r.living ?? 5;
         return `<fieldset class="reflect">
-          <legend><span class="reflect__rank" aria-hidden="true">${i + 1}</span><span class="legend-title">${esc(v.name)}</span></legend>
+          <legend><span class="reflect__rank" aria-hidden="true">${rankNums()[i]}</span><span class="legend-title">${esc(v.name)}</span></legend>
           <p class="reflect__desc">${esc(v.desc)}</p>
           <label for="m-${esc(id)}" class="field-label">What does ${esc(v.name.toLowerCase())} mean to you?</label>
           <p class="field-hint" id="mh-${esc(id)}">Try starting with: “${MEANING_PROMPTS[i % MEANING_PROMPTS.length]}”</p>
           <textarea id="m-${esc(id)}" data-meaning="${esc(id)}" rows="3" aria-describedby="mh-${esc(id)} sh-${esc(id)}">${esc(r.meaning)}</textarea>
           <p class="nudge" id="sh-${esc(id)}" ${shouldNudge(r.meaning) ? '' : 'hidden'}>${shouldNudge(r.meaning)}</p>
+          <fieldset class="why">
+            <legend class="field-label">Do you value this for its own sake, or for something it gives you? <span class="muted">(optional)</span></legend>
+            <div class="seg seg--why">
+              ${[['own', 'For its own sake'], ['means', 'For what it gives me'], ['both', 'Both']].map(([k, label]) => `<label class="seg__opt"><input type="radio" name="why-${esc(id)}" value="${k}" data-why="${esc(id)}" ${r.why === k ? 'checked' : ''}><span>${label}</span></label>`).join('')}
+            </div>
+            <div class="why-more" id="wm-${esc(id)}" ${r.why === 'means' || r.why === 'both' ? '' : 'hidden'}>
+              <label for="w-${esc(id)}" class="field-label">What does it give you?</label>
+              <p class="field-hint" id="wh-${esc(id)}">Whatever it gives you may be a deeper value. If it isn\u2019t in the deck, you can add it as your own card.</p>
+              <input type="text" id="w-${esc(id)}" data-leads="${esc(id)}" maxlength="500" autocomplete="off" aria-describedby="wh-${esc(id)}" value="${esc(r.leadsTo || '')}">
+            </div>
+          </fieldset>
           <div class="range-field">
             <label for="l-${esc(id)}" class="field-label">Over the past two weeks, how fully have you lived this value?</label>
             <div class="range-row">
@@ -805,6 +948,15 @@ function viewReflect() {
       const nudge = document.getElementById(`sh-${id}`);
       const msg = shouldNudge(t.value);
       if (nudge && nudge.textContent !== msg) { nudge.textContent = msg; nudge.hidden = !msg; }
+      persistSoon();
+    } else if (t.dataset.leads) {
+      const id = t.dataset.leads;
+      state.reflections[id] = { ...(state.reflections[id] || { meaning: '', living: null }), leadsTo: t.value.slice(0, 500) };
+      persistSoon();
+    } else if (t.dataset.why) {
+      const id = t.dataset.why;
+      state.reflections[id] = { ...(state.reflections[id] || { meaning: '', living: null }), why: t.value };
+      document.getElementById(`wm-${id}`).hidden = !(t.value === 'means' || t.value === 'both');
       persistSoon();
     } else if (t.dataset.living) {
       const id = t.dataset.living;
@@ -999,12 +1151,12 @@ function bullseyeSVG() {
     const angle = (-Math.PI / 2) + (2 * Math.PI * i) / n;
     const r = Math.max(0, (10 - living) / 10) * (R - 14);
     const x = c + r * Math.cos(angle), y = c + r * Math.sin(angle);
-    return `<g class="be-dot"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="13"/><text x="${x.toFixed(1)}" y="${(y + 4.5).toFixed(1)}" text-anchor="middle">${i + 1}</text></g>`;
+    return `<g class="be-dot"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="13"/><text x="${x.toFixed(1)}" y="${(y + 4.5).toFixed(1)}" text-anchor="middle">${rankNums()[i]}</text></g>`;
   }).join('');
   return `<figure class="bullseye">
     <svg viewBox="0 0 ${size} ${size}" role="img" aria-labelledby="be-title be-desc">
       <title id="be-title">Values bull’s-eye</title>
-      <desc id="be-desc">Each numbered dot is one of your ranked values. The closer to the center, the more fully you said you are living it. ${rated.map(({ id, i, living }) => `${i + 1}, ${val(id).name}: ${living} out of 10.`).join(' ')}</desc>
+      <desc id="be-desc">Each numbered dot is one of your ranked values. The closer to the center, the more fully you said you are living it. ${rated.map(({ id, i, living }) => `${rankNums()[i]}, ${val(id).name}: ${living} out of 10.`).join(' ')}</desc>
       ${rings}
       <line x1="${c}" y1="${c - R}" x2="${c}" y2="${c + R}" class="be-axis"/>
       <line x1="${c - R}" y1="${c}" x2="${c + R}" y2="${c}" class="be-axis"/>
@@ -1014,6 +1166,8 @@ function bullseyeSVG() {
   </figure>`;
 }
 
+const WHY_TEXT = { own: 'for its own sake', means: 'for what it gives me', both: 'for its own sake and for what it gives me' };
+
 function summaryText() {
   const lines = [];
   lines.push('MY VALUES (Lodestar ACT values card sort)');
@@ -1022,8 +1176,9 @@ function summaryText() {
   state.core.forEach((id, i) => {
     const v = val(id);
     const r = state.reflections[id];
-    lines.push(`${i + 1}. ${v.name}${r?.living != null ? ` (living it: ${r.living}/10)` : ''}`);
+    lines.push(`${rankNums()[i]}. ${v.name}${r?.living != null ? ` (living it: ${r.living}/10)` : ''}`);
     if (r?.meaning?.trim()) lines.push(`   ${r.meaning.trim()}`);
+    if (r?.why) lines.push(`   Valued ${WHY_TEXT[r.why]}${r.leadsTo?.trim() ? `: ${r.leadsTo.trim()}` : ''}`);
   });
   if (state.actions.length) {
     lines.push('', 'MY COMMITTED ACTIONS');
@@ -1066,10 +1221,11 @@ function viewResults() {
             const v = val(id);
             const r = state.reflections[id];
             return `<li class="value">
-              <span class="value__n" aria-hidden="true">${i + 1}</span>
+              <span class="value__n" aria-hidden="true">${rankNums()[i]}</span>
               <div class="value__body">
                 <h3 class="value__name">${esc(v.name)}</h3>
                 ${r?.meaning?.trim() ? `<p class="value__meaning">${esc(r.meaning.trim())}</p>` : `<p class="value__desc">${esc(v.desc)}</p>`}
+                ${r?.why ? `<p class="value__why">Valued ${WHY_TEXT[r.why]}${r.leadsTo?.trim() ? `: ${esc(r.leadsTo.trim())}` : ''}</p>` : ''}
                 ${r?.living != null ? `<div class="meter" aria-hidden="true"><span style="width:${r.living * 10}%"></span></div><p class="value__living">Living it: <strong>${r.living}</strong> out of 10</p>` : ''}
               </div>
             </li>`;
@@ -1270,7 +1426,8 @@ function viewDecision(id) {
     const host = document.getElementById('d-summary');
     if (!host) return;
     if (!values.length) { host.innerHTML = ''; return; }
-    const weights = values.map((_, i) => values.length - i); // higher rank, more weight
+    const nums = rankNums();
+    const weights = values.map((_, i) => values.length - (nums[i] - 1)); // higher rank, more weight; ties share
     const maxW = weights.reduce((a, b) => a + b, 0);
     const rows = d.options.map((o, oi) => {
       const r = d.ratings[o.id] || {};
@@ -1389,6 +1546,15 @@ document.addEventListener('click', (e) => {
       persist(); render();
     }); break;
     case 'pairwise': runPairwise(); break;
+    case 'narrow': runNarrowing(); break;
+    case 'dismiss-update': {
+      state.deckUpdated = false;
+      persist();
+      el.closest('.notice')?.remove();
+      announce('Notice dismissed.');
+      app.querySelector('h1')?.focus();
+      break;
+    }
     case 'start-over': confirmDialog({
       title: 'Start over?',
       body: 'This permanently erases your sorted cards, core values, reflections, actions and saved decisions from this device. You might want to download a backup first.',
@@ -1516,6 +1682,18 @@ function confirmDialog({ title, body, confirm, danger = false, hideCancel = fals
   });
 }
 
+// ACT treats outcomes (wealth, status) and feelings (happiness) as things we
+// hope for, not values. Rather than refuse them, invite a step "up the ladder".
+function customNudge(text) {
+  if (/\b(wealth|wealthy|money|rich|success|successful|fame|famous|status|power|powerful|popular|popularity|admired|respected|recognition|winning|prestige)\b/i.test(text)) {
+    return 'This sounds like something you\u2019d like to have. If you had it, what would it let you do, or how would you act? That quality may be the value underneath. You can still add this card.';
+  }
+  if (/\b(happy|happiness|calm|confident|confidence|content|contentment|relaxed|stress-free)\b/i.test(text)) {
+    return 'This sounds like a feeling, and feelings come and go on their own. If you felt this way, what would you be doing differently? That may be the value. You can still add this card.';
+  }
+  return '';
+}
+
 function openCustomDialog() {
   const dlg = document.createElement('dialog');
   dlg.className = 'dialog';
@@ -1527,6 +1705,7 @@ function openCustomDialog() {
       <label for="c-name" class="field-label">Value name</label>
       <input id="c-name" type="text" maxlength="40" autocomplete="off" required aria-describedby="c-err">
       <p class="error" id="c-err" hidden>Give your value a name.</p>
+      <p class="nudge" id="c-nudge" hidden></p>
     </div>
     <div class="field">
       <label for="c-desc" class="field-label">What it means to you <span class="muted">(optional)</span></label>
@@ -1546,6 +1725,15 @@ function openCustomDialog() {
   const opener = document.activeElement;
   document.body.append(dlg);
   const name = dlg.querySelector('#c-name');
+  const nudge = dlg.querySelector('#c-nudge');
+  const checkNudge = () => {
+    const text = `${name.value} ${dlg.querySelector('#c-desc').value}`;
+    const msg = customNudge(text);
+    nudge.textContent = msg;
+    nudge.hidden = !msg;
+  };
+  name.addEventListener('input', checkNudge);
+  dlg.querySelector('#c-desc').addEventListener('input', checkNudge);
   dlg.querySelector('#c-save').addEventListener('click', (e) => {
     if (!name.value.trim()) {
       e.preventDefault();

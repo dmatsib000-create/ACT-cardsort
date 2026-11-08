@@ -6,7 +6,7 @@ This summarizes a second research round (November 2026) into how semantics, prag
 - [`research/language-and-axiology.md`](research/language-and-axiology.md): philosophy of value, semantics, pragmatics, and card-level wording issues
 - [`research/values-and-wellbeing.md`](research/values-and-wellbeing.md): Schwartz's 19 values, wellbeing frameworks, character strengths, moral psychology, a crosswalk and coverage analysis
 
-**Status: proposal only.** The deck in `assets/js/values.js` has not been changed.
+**Status: adopted (deck version 2).** The deck below is now `assets/js/values.js`, and the sort changes are in the app. Saved progress from the 65-card deck is migrated automatically (see Implementation notes).
 
 ## What the map shows
 
@@ -18,7 +18,7 @@ This summarizes a second research round (November 2026) into how semantics, prag
 6. **The deck mixes kinds of things:** virtues, goods, a state, life areas and practices. ACT's own tools treat life areas separately from the qualities a person brings to them.
 7. **About 20 descriptions are double-barreled** (two acts or two targets). Several are directionally ambiguous (Trust, Respect) and several use circular words such as "what matters".
 
-## Proposed changes to the deck
+## Changes to the deck
 
 Five merges, two splits, two renames, eight additions and reworded descriptions give **71 cards** (from 65).
 
@@ -102,14 +102,14 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 | **Vitality** | Throwing myself into life with energy and wholeheartedness. | New | Stimulation |
 | **Wisdom** | Acting with good judgment, especially when things are complicated. | Reworded | Universalism: tolerance |
 
-## Proposed changes to the sort
+## Changes to the sort
 
 - Rename "Not important to me" to "Less important to me".
 - When the "very important" pile passes about a third of the deck, offer a most/least step: pick the three that matter most and the three that matter least (McCarty & Shrum, 2000).
 - Allow ties ("on a par") when ranking (Chang, 2002).
 - In Reflect, ask "Do I value this for its own sake, or for something it gives me?" (Korsgaard, 1983).
 - For custom cards such as Wealth or Success, ask what having it would let the person do or be, rather than rejecting it.
-- Longer term: treat life areas (family, work, health, community) as areas that values attach to, as the Valued Living Questionnaire does.
+- Not yet implemented: treat life areas (family, work, health, community) as areas that values attach to, as the Valued Living Questionnaire does.
 - Use the wellbeing findings for coverage only. Never steer people toward "healthy" values: the effects are small and depend on culture, and steering invites choosing values to please others.
 
 ## Wording rules
@@ -197,4 +197,4 @@ These codings are judgment calls based on the frameworks, not published mappings
 
 ## Implementation notes
 
-If adopted, ids change for merged and renamed cards, so `store.normalize` should migrate saved data: caring to kindness, encouragement to nurturing, connection and mindfulness to presence, persistence to self-discipline, diligence to excellence, peace to harmony, and trust to trusting-others. Bump `VERSION` in `sw.js`.
+Ids changed for merged and renamed cards, and `store.normalize` migrates saved data from schema 1: caring to kindness, encouragement to nurturing, connection and mindfulness to presence, persistence to self-discipline, diligence to excellence, peace to harmony, and trust to trusting-others. When two old cards merge, the stronger pile wins and both reflections are kept. New cards are queued for sorting after the ones already placed.

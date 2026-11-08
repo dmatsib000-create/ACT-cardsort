@@ -6,10 +6,10 @@ It works on phones and desktops, can be installed to a home screen, works offlin
 
 ## What it does
 
-1. **Sort**: 65 value cards, one at a time, into *very important*, *somewhat important* or *not important to me*. People can add their own values, undo, and review or move cards afterwards.
-2. **Choose**: narrow the "very important" pile to up to 10 core values, with prompts that check whether each value is truly theirs (ACT's "pliance" check).
-3. **Rank**: order the core values by hand, or answer a few either/or questions (a binary-insertion ranking that keeps the number of questions small).
-4. **Reflect**: write what each value means to them, and rate how fully they have lived it over the past two weeks (inspired by the Valued Living Questionnaire and the Values Bull's-Eye). A gentle nudge appears if a value starts sounding like a "should".
+1. **Sort**: 71 value cards, one at a time, into *very important*, *somewhat important* or *less important to me*. People can add their own values (with a gentle prompt if a card names an outcome like wealth or a feeling like happiness), undo, and review or move cards afterwards.
+2. **Choose**: narrow the "very important" pile to up to 10 core values, with prompts that check whether each value is truly theirs (ACT's "pliance" check). If the pile is large, an optional best-worst round (pick the most and least important of a few cards at a time) suggests a top five.
+3. **Rank**: order the core values by hand, or answer a few either/or questions (a binary-insertion ranking that keeps the number of questions small). Values can be marked "on a par" when they can't honestly be ordered.
+4. **Reflect**: write what each value means to them, say whether they hold it for its own sake or for what it gives them, and rate how fully they have lived it over the past two weeks (inspired by the Valued Living Questionnaire and the Values Bull's-Eye). A gentle nudge appears if a value starts sounding like a "should".
 5. **Act**: plan a small, specific committed action, with what might get in the way and how they will respond (ACT willingness).
 
 It also includes:
