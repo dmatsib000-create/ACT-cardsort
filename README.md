@@ -15,6 +15,7 @@ It works on phones and desktops, can be installed to a home screen, works offlin
 It also includes:
 
 - **My values**: a summary with a bull's-eye chart, action plan, print or save as PDF, copy as text, share, and backup or restore to a file.
+- **Life areas** (optional): after planning an action, people can map their values to the areas of life that fit them (family, work, health, their own areas…), say an area is hard right now or not part of their life, and plan a step in a chosen area. No scores are shown.
 - **Decision helper**: a values-based "choice point" tool. Rate each option as moving toward or away from each core value, see a summary weighted by rank, then reflect on willingness and next steps.
 - **Learn**: a plain-language guide to ACT, values vs goals, feelings and rules, choice points, and the research evidence.
 - **About**: crisis resources, a "this is not therapy" statement, privacy details, an accessibility statement, credits and references.
@@ -58,7 +59,7 @@ Lodestar targets **WCAG 2.2 AA**:
 - Touch targets are at least 44×44 px. Layouts reflow at 320 px wide (400% zoom) without horizontal scrolling.
 - Body text uses **Atkinson Hyperlegible**, designed by the Braille Institute for low-vision readers.
 
-Every page has been tested end to end with Playwright and axe-core (WCAG 2.0, 2.1 and 2.2 A/AA rules plus best practices), in light and dark mode, at desktop and phone sizes, with zero violations. Automated checks can't catch everything, so testing with real assistive technology users is still welcome.
+Every page is tested end to end with Playwright and axe-core (see [`tests/`](tests/)) (WCAG 2.0, 2.1 and 2.2 A/AA rules plus best practices), in light and dark mode, at desktop and phone sizes, with zero violations. Automated checks can't catch everything, so testing with real assistive technology users is still welcome.
 
 ## Project structure
 
@@ -77,11 +78,23 @@ docs/research/          Research briefs with verified citations
 docs/VALUES-MAP.md      Values map findings and proposed deck changes
 docs/values-map.html    Interactive values map
 scripts/check-deck.mjs  Checks every card against ACT's definition of a value
+tests/                  End-to-end and accessibility tests (npm test)
 ```
 
 ### Editing the deck
 
 Cards live in `assets/js/values.js`. Each one needs a unique `id`, a `name` and a short `desc`. Keep descriptions as **qualities of action** (how someone wants to behave), not outcomes or feelings; that is how ACT defines values. Then run `node scripts/check-deck.mjs`, which checks every card against ACT's definition of a value: a chosen quality of ongoing action, never completed, within the person's control, and not an outcome, feeling or rule. The same check runs automatically on GitHub whenever the deck changes. After changing any file, bump `VERSION` in `sw.js` so returning visitors get the update.
+
+## Running the tests
+
+```sh
+cd tests
+npm ci
+npx playwright install chromium
+npm test
+```
+
+This checks the deck against ACT's definition of a value, then runs the end-to-end tests in a light desktop window and a dark phone-sized one, with an accessibility check on every screen. See [`tests/README.md`](tests/README.md).
 
 ## Credits and licenses
 

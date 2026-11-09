@@ -17,6 +17,7 @@ export const learnHTML = (deckSize) => `
       <li><a href="#/learn#compass">Values are a compass, goals are destinations</a></li>
       <li><a href="#/learn#not">What values are not</a></li>
       <li><a href="#/learn#sort">How the card sort works</a></li>
+      <li><a href="#/learn#areas">Values and life areas</a></li>
       <li><a href="#/learn#living">Living your values day to day</a></li>
       <li><a href="#/learn#evidence">What the research says</a></li>
     </ol>
@@ -87,6 +88,12 @@ export const learnHTML = (deckSize) => `
     </ol>
     <p>The deck was reviewed against Shalom Schwartz’s map of basic human values, which has been found across dozens of cultures, so that it covers the full range of what people care about, not only the most admired values. It deliberately leaves out outcomes such as wealth, status and fame. If something like that matters to you, try asking what having it would let you do or be: that quality is often the value underneath. You can always add your own cards.</p>
     <p>Your answers may change over time, and that is normal. Many people find it useful to repeat the sort every few months or after a big life change.</p>
+  </section>
+
+  <section id="areas" aria-labelledby="areas-h">
+    <h2 id="areas-h">Values and life areas</h2>
+    <p>Values are qualities you bring to how you act. Life areas, such as family, work, friendships or health, are the places where you bring them. ACT tools like the Valued Living Questionnaire and the Values Bull’s-Eye ask about values area by area, because the same value can look different in different places: you might want to be bold at work and gentle at home.</p>
+    <p>That is why Lodestar’s cards are all qualities, and life areas are a separate, optional exercise you can do from <a href="#/results">My values</a>. You choose only the areas that fit your life, can add your own, and can say an area matters but is hard right now. There are no scores: the point is to help you decide where your next small step could go.</p>
   </section>
 
   <section id="living" aria-labelledby="living-h">

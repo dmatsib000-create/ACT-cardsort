@@ -1,4 +1,4 @@
-import { VALUES, PILES, PILE_ORDER, MAX_CORE } from './values.js';
+import { VALUES, PILES, PILE_ORDER, MAX_CORE, AREAS, MAX_AREA_VALUES } from './values.js';
 import * as store from './store.js';
 import { learnHTML, aboutHTML } from './content.js';
 
@@ -140,6 +140,7 @@ const routes = {
   rank: viewRank,
   reflect: viewReflect,
   act: viewAct,
+  areas: viewAreas,
   results: viewResults,
   decide: viewDecide,
   learn: viewLearn,
@@ -1023,13 +1024,17 @@ function suggestedValue() {
   return best;
 }
 
-function viewAct() {
+function viewAct(param) {
   setTitle('Plan a committed action');
   if (!state.core.length) {
     app.innerHTML = `${stepper('act')}<h1 class="visually-hidden">Plan a committed action</h1>${emptyState({ title: 'Choose your core values first', body: 'Committed action means taking steps guided by your values, so start by finding them.', href: progress().sorted ? '#/core' : '#/sort', cta: progress().sorted ? 'Choose core values' : 'Begin the card sort' })}`;
     return;
   }
-  const suggest = suggestedValue();
+  // Arriving from the life areas summary ("Plan a step here") pre-selects that
+  // area and, if the person linked values to it, the first of those values.
+  const fromArea = param && areaById(param) && state.areas[param]?.status !== 'notnow' ? param : '';
+  const areaValue = fromArea && state.areas[fromArea] && areaValues(state.areas[fromArea])[0];
+  const suggest = areaValue || suggestedValue();
   app.innerHTML = `
     ${stepper('act')}
     <header class="page-head">
@@ -1046,6 +1051,13 @@ function viewAct() {
           ${state.core.map((id) => `<option value="${esc(id)}" ${id === suggest ? 'selected' : ''}>${esc(val(id).name)}${id === suggest && state.reflections[id]?.living != null ? ' (suggested: room to grow)' : ''}</option>`).join('')}
         </select>
       </div>
+      <fieldset class="field">
+        <legend class="field-label">Where in your life? <span class="muted">(optional)</span></legend>
+        <div class="area-chips" id="a-area">
+          <label class="chip-opt"><input type="radio" name="a-area" value="" ${fromArea ? '' : 'checked'}><span>No particular area</span></label>
+          ${allAreas().map((a) => `<label class="chip-opt"><input type="radio" name="a-area" value="${esc(a.id)}" ${a.id === fromArea ? 'checked' : ''}><span>${esc(a.name)}</span></label>`).join('')}
+        </div>
+      </fieldset>
       <div class="field">
         <label for="a-step" class="field-label">One small step I will take</label>
         <p class="field-hint" id="a-step-hint">Make it specific enough that you would know when you have done it. For example: “Call my sister and ask about her week.”</p>
@@ -1103,6 +1115,7 @@ function viewAct() {
     state.actions.push({
       id: store.uid('a'),
       valueId: document.getElementById('a-value').value,
+      areaId: document.querySelector('input[name="a-area"]:checked')?.value || '',
       step: step.value.trim().slice(0, 500),
       when: document.getElementById('a-when').value.trim().slice(0, 300),
       obstacles: document.getElementById('a-obst').value.trim().slice(0, 800),
@@ -1113,6 +1126,8 @@ function viewAct() {
     persist();
     e.target.reset();
     document.getElementById('a-value').value = suggest;
+    const none = document.querySelector('input[name="a-area"][value=""]');
+    if (none) none.checked = true;
     drawPlan();
     announce('Action added to your plan.');
     document.getElementById('plan-title').setAttribute('tabindex', '-1');
@@ -1124,7 +1139,7 @@ function actionHTML(a, { editable = true } = {}) {
   const v = val(a.valueId);
   return `<li class="action${a.done ? ' action--done' : ''}">
     <div class="action__head">
-      <span class="tag">${esc(v?.name || 'Value')}</span>
+      <span class="tags-inline"><span class="tag">${esc(v?.name || 'Value')}</span>${a.areaId && areaById(a.areaId) ? `<span class="tag tag--area">${esc(areaById(a.areaId).name)}</span>` : ''}</span>
       ${editable ? `<label class="done-toggle"><input type="checkbox" data-done="${esc(a.id)}" ${a.done ? 'checked' : ''}><span>Done</span></label>` : (a.done ? '<span class="tag tag--done">Done</span>' : '')}
     </div>
     <p class="action__step">${esc(a.step)}</p>
@@ -1210,11 +1225,13 @@ function summaryText() {
   if (state.actions.length) {
     lines.push('', 'MY COMMITTED ACTIONS');
     state.actions.forEach((a) => {
-      lines.push(`- [${a.done ? 'x' : ' '}] ${val(a.valueId)?.name}: ${a.step}${a.when ? ` (${a.when})` : ''}`);
+      lines.push(`- [${a.done ? 'x' : ' '}] ${val(a.valueId)?.name}${a.areaId && areaById(a.areaId) ? ` (${areaById(a.areaId).name})` : ''}: ${a.step}${a.when ? ` (${a.when})` : ''}`);
       if (a.obstacles) lines.push(`    What might show up: ${a.obstacles}`);
       if (a.response) lines.push(`    What I'll do then: ${a.response}`);
     });
   }
+  const areaLines = areaSummaryLines();
+  if (areaLines.length) lines.push('', 'MY LIFE AREAS', ...areaLines);
   const others = inPile('very').filter((id) => !state.core.includes(id));
   if (others.length) lines.push('', `Also very important to me: ${others.map((id) => val(id).name).join(', ')}`);
   return lines.join('\n');
@@ -1289,6 +1306,8 @@ function viewResults() {
       </div>
     </section>
 
+    ${resultsAreasSection()}
+
     <section class="section tiles no-print" aria-label="Next">
       <a class="tile" href="#/decide">
         <h2 class="tile__title">Facing a decision?</h2>
@@ -1301,6 +1320,323 @@ function viewResults() {
         <span class="tile__go">Read more ${arrowIcon('right')}</span>
       </a>
     </section>`;
+}
+
+/* ------------------------------------------------------------------ *
+ * Life areas (optional, offered after the action plan exists)
+ *
+ * ACT treats life areas as the places where values are lived, not as values.
+ * Research notes (docs/research/, reports on the life areas step) shaped this:
+ * people pick only the areas that fit their life, rate one area per screen on
+ * plain 5-point scales, can say an area is painful or not part of their life
+ * without it counting against them, and never see a combined or "gap" score.
+ * ------------------------------------------------------------------ */
+
+const AREA_STATUS = {
+  active: 'This matters to me',
+  hard: 'Matters to me, but it’s hard right now',
+  notnow: 'Not part of my life right now',
+};
+const IMPORTANCE = ['Slightly', 'Somewhat', 'Quite', 'Very', 'Extremely'];
+const LIVING = ['Not at all', 'A little', 'Somewhat', 'Mostly', 'Fully'];
+
+const allAreas = () => [...AREAS, ...state.customAreas];
+// An area's linked values, limited to current core values. A value dropped
+// from the core list no longer shows or counts toward the cap, but its link is
+// kept in storage so it returns if the value is chosen again.
+const areaValues = (a) => a.values.filter((v) => state.core.includes(v));
+const areaById = (id) => allAreas().find((a) => a.id === id);
+const pickedAreas = () => Object.keys(state.areas).filter((id) => areaById(id));
+
+function areaSummaryLines() {
+  return pickedAreas().map((id) => {
+    const a = state.areas[id];
+    const bits = [];
+    if (a.status !== 'active') bits.push(AREA_STATUS[a.status].toLowerCase());
+    if (a.status !== 'notnow' && a.importance) bits.push(`importance: ${IMPORTANCE[a.importance - 1].toLowerCase()}`);
+    if (a.status !== 'notnow' && a.living) bits.push(`living it lately: ${LIVING[a.living - 1].toLowerCase()}`);
+    const vals = areaValues(a).map((v) => val(v)?.name).filter(Boolean);
+    return `- ${areaById(id).name}${bits.length ? ` (${bits.join('; ')})` : ''}${vals.length ? `: ${vals.join(', ')}` : ''}`;
+  });
+}
+
+function viewAreas(param = '') {
+  setTitle('My life areas');
+  const [mode, n] = param.split('/');
+  if (mode === 'pick' || !pickedAreas().length) return areasPick();
+  if (mode === 'rate') return areasRate(Math.max(1, Number(n) || 1));
+  return areasSummary();
+}
+
+const MAX_CUSTOM_AREAS = 20;
+
+// `pending` holds ticks that haven't been confirmed with Continue yet, so that
+// adding or removing a custom area doesn't save picks the person may back out of.
+function areasPick(pending) {
+  const picked = pending || new Set(pickedAreas());
+  const atLimit = state.customAreas.length >= MAX_CUSTOM_AREAS;
+  app.innerHTML = `
+    <p class="crumb no-print"><a href="#/results">${arrowIcon('left')} My values</a></p>
+    <header class="page-head">
+      <p class="eyebrow">Optional · about 3 minutes</p>
+      <h1>Map your values to your life</h1>
+      <p class="lede">Values are lived in particular places: at home, at work, with friends, in your body. Choose the areas of life you’d like to look at, then decide which of your values each one most needs from you.</p>
+    </header>
+    <form id="areas-form" class="core-form" novalidate>
+      <fieldset>
+        <legend><span class="legend-title">Which areas would you like to look at?</span></legend>
+        <p class="field-hint">Pick a few that matter right now; around three to five works well. Leave out any that don’t fit your life. You can also add your own.</p>
+        <ul class="pick-list">
+          ${allAreas().map((a) => `<li class="area-pick">
+            <label class="pick">
+              <input type="checkbox" value="${esc(a.id)}" ${picked.has(a.id) ? 'checked' : ''}>
+              <span class="pick__box" aria-hidden="true">${checkIcon()}</span>
+              <span class="pick__text"><strong>${esc(a.name)}</strong>${a.def ? `<span>${esc(a.def)}</span>` : '<span>Your own area</span>'}</span>
+            </label>
+            ${a.id.startsWith('area-') ? `<button type="button" class="icon-btn area-pick__remove" data-remove-area="${esc(a.id)}" aria-label="Remove ${esc(a.name)}"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>` : ''}
+          </li>`).join('')}
+        </ul>
+      </fieldset>
+      <div class="field add-area">
+        <label for="new-area" class="field-label">Add your own area <span class="muted">(optional)</span></label>
+        <div class="add-area__row">
+          <input id="new-area" type="text" maxlength="40" autocomplete="off" placeholder="e.g. My garden, Caring for Dad, Music" ${atLimit ? 'disabled aria-describedby="area-limit"' : ''}>
+          <button type="button" class="btn btn--ghost btn--sm" id="add-area-btn" ${atLimit ? 'aria-disabled="true"' : ''}>Add</button>
+        </div>
+        ${atLimit ? `<p class="field-hint" id="area-limit">You’ve added ${MAX_CUSTOM_AREAS} of your own areas, the most allowed. Remove one to add another.</p>` : ''}
+      </div>
+      <p class="error" id="areas-err" hidden></p>
+      <div class="nav-row">
+        <a class="btn btn--ghost" href="#/results">Not now</a>
+        <button type="submit" class="btn btn--primary"><span>Continue</span>${arrowIcon('right')}</button>
+      </div>
+    </form>`;
+
+  const form = document.getElementById('areas-form');
+  const ticked = () => new Set([...form.querySelectorAll('input[type=checkbox]:checked')].map((c) => c.value));
+
+  document.getElementById('add-area-btn').addEventListener('click', () => {
+    const input = document.getElementById('new-area');
+    if (state.customAreas.length >= MAX_CUSTOM_AREAS) return;
+    const name = input.value.trim().slice(0, 40);
+    if (!name) { input.focus(); return; }
+    const keep = ticked();
+    const area = { id: store.uid('area-'), name, def: '' };
+    // The area's name is saved so it stays in the list; whether it's picked is
+    // only saved when the person presses Continue.
+    state.customAreas.push(area);
+    persist();
+    keep.add(area.id);
+    areasPick(keep);
+    announce(`${name} added and selected.`);
+    // At the limit the text field is disabled, so move focus to the new area instead.
+    const field = document.getElementById('new-area');
+    if (field && !field.disabled) field.focus();
+    else document.querySelector(`#areas-form input[value="${CSS.escape(area.id)}"]`)?.focus();
+  });
+  document.getElementById('new-area').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('add-area-btn').click(); }
+  });
+  form.addEventListener('click', (e) => {
+    const id = e.target.closest('[data-remove-area]')?.dataset.removeArea;
+    if (!id) return;
+    const area = areaById(id);
+    confirmDialog({
+      title: `Remove “${area.name}”?`,
+      body: 'This removes the area and anything you noted for it. Actions linked to it keep their value but lose the area tag.',
+      confirm: 'Remove area',
+      danger: true,
+    }).then((ok) => {
+      if (!ok) return;
+      const keep = ticked();
+      keep.delete(id);
+      state.customAreas = state.customAreas.filter((a) => a.id !== id);
+      delete state.areas[id];
+      state.actions.forEach((a) => { if (a.areaId === id) a.areaId = ''; });
+      persist();
+      areasPick(keep);
+      announce(`${area.name} removed.`);
+      document.getElementById('new-area')?.focus();
+    });
+  });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const chosen = [...ticked()];
+    const err = document.getElementById('areas-err');
+    if (!chosen.length) {
+      err.textContent = 'Choose at least one area, or select “Not now” to go back.';
+      err.hidden = false;
+      err.setAttribute('tabindex', '-1');
+      err.focus();
+      return;
+    }
+    const next = {};
+    for (const id of chosen) next[id] = state.areas[id] || { status: 'active', importance: null, living: null, values: [] };
+    state.areas = next;
+    persist();
+    location.hash = '#/areas/rate/1';
+  });
+}
+
+function seg(name, labels, current, legend, hint = '') {
+  return `<fieldset class="field">
+    <legend class="field-label">${legend}</legend>
+    ${hint ? `<p class="field-hint">${hint}</p>` : ''}
+    <div class="seg seg--scale">
+      ${labels.map((label, i) => `<label class="seg__opt"><input type="radio" name="${name}" value="${i + 1}" ${current === i + 1 ? 'checked' : ''}><span>${label}</span></label>`).join('')}
+    </div>
+  </fieldset>`;
+}
+
+function areasRate(n) {
+  const ids = pickedAreas();
+  if (n > ids.length) { location.hash = '#/areas'; return; }
+  const id = ids[n - 1];
+  const area = areaById(id);
+  const a = state.areas[id];
+  const last = n === ids.length;
+  setTitle(`${area.name} · Life areas`);
+
+  app.innerHTML = `
+    <p class="crumb no-print"><a href="#/areas/pick">${arrowIcon('left')} Choose areas</a></p>
+    <header class="page-head">
+      <p class="eyebrow">Life area ${n} of ${ids.length}</p>
+      <h1>${esc(area.name)}</h1>
+      ${area.def ? `<p class="lede">${esc(area.def)}</p>` : ''}
+    </header>
+    <form id="area-form" class="card-form area-form" novalidate>
+      <fieldset class="field">
+        <legend class="field-label">How is this area for you right now?</legend>
+        <div class="radio-row">
+          ${Object.entries(AREA_STATUS).map(([k, label]) => `<label class="radio"><input type="radio" name="status" value="${k}" ${a.status === k ? 'checked' : ''}><span>${label}</span></label>`).join('')}
+        </div>
+      </fieldset>
+      <p class="nudge" id="hard-note" ${a.status === 'hard' ? '' : 'hidden'}>That’s okay. Areas that hurt are often where our values run deepest. Answer only what feels right, and skip the rest. If you need support, <a href="#/about">help is available</a>.</p>
+      <div id="area-details" ${a.status === 'notnow' ? 'hidden' : ''}>
+        ${seg('importance', IMPORTANCE, a.importance, 'How important is this area to you?')}
+        ${seg('living', LIVING, a.living, 'Lately, how much have you been living the way you want here? <span class="muted">(optional)</span>', 'Think about the past two weeks. There’s no right answer, and a low number isn’t a failure.')}
+        <fieldset class="field">
+          <legend class="field-label">Which of your values does this area most need from you? <span class="muted">(up to ${MAX_AREA_VALUES})</span></legend>
+          ${state.core.length ? `<div class="area-chips">
+            ${state.core.map((vid) => `<label class="chip-opt"><input type="checkbox" name="values" value="${esc(vid)}" ${a.values.includes(vid) ? 'checked' : ''}><span>${esc(val(vid).name)}</span></label>`).join('')}
+          </div>
+          <p class="error" id="vals-err" hidden></p>` : '<p class="muted">Once you have chosen your core values, you can link them to this area.</p>'}
+        </fieldset>
+      </div>
+      <div class="nav-row">
+        <a class="btn btn--ghost" href="${n === 1 ? '#/areas/pick' : `#/areas/rate/${n - 1}`}">${arrowIcon('left')}<span>Back</span></a>
+        <a class="btn btn--primary" href="${last ? '#/areas' : `#/areas/rate/${n + 1}`}"><span>${last ? 'See my life areas' : 'Next area'}</span>${arrowIcon('right')}</a>
+      </div>
+    </form>`;
+
+  const form = document.getElementById('area-form');
+  form.addEventListener('change', (e) => {
+    const t = e.target;
+    if (t.name === 'status') {
+      a.status = t.value;
+      document.getElementById('area-details').hidden = t.value === 'notnow';
+      document.getElementById('hard-note').hidden = t.value !== 'hard';
+    } else if (t.name === 'importance') {
+      a.importance = Number(t.value);
+    } else if (t.name === 'living') {
+      a.living = Number(t.value);
+    } else if (t.name === 'values') {
+      const err = document.getElementById('vals-err');
+      err.hidden = true;
+      if (t.checked && areaValues(a).length >= MAX_AREA_VALUES) {
+        t.checked = false;
+        err.textContent = `Choose up to ${MAX_AREA_VALUES}. Unselect one to make room.`;
+        err.hidden = false;
+        announce(err.textContent);
+        return;
+      }
+      if (t.checked) {
+        // Links to values that are no longer core values are kept, so they come
+        // back if the value is chosen again. They are only replaced once the
+        // person actively fills a slot they were holding.
+        const hidden = a.values.filter((v) => !state.core.includes(v));
+        const keepHidden = hidden.slice(0, Math.max(0, MAX_AREA_VALUES - areaValues(a).length - 1));
+        a.values = [...new Set([...areaValues(a), t.value, ...keepHidden])];
+      } else {
+        a.values = a.values.filter((v) => v !== t.value);
+      }
+    }
+    persist();
+  });
+}
+
+function areaBars(a) {
+  const bar = (label, value, labels) => (value ? `<div class="area-bar">
+      <span class="area-bar__label">${label}: <strong>${labels[value - 1]}</strong></span>
+      <span class="area-bar__track" aria-hidden="true"><span style="width:${value * 20}%"></span></span>
+    </div>` : '');
+  return bar('Importance', a.importance, IMPORTANCE) + bar('Living it lately', a.living, LIVING);
+}
+
+function areasSummary() {
+  const ids = pickedAreas();
+  // Gently point to areas that matter a lot but have had little room lately.
+  // Shown as a suggestion only; never as a score.
+  const roomToGrow = ids.filter((id) => {
+    const a = state.areas[id];
+    return a.status === 'active' && a.importance >= 4 && a.living && a.living <= 2;
+  });
+  app.innerHTML = `
+    <p class="crumb no-print"><a href="#/results">${arrowIcon('left')} My values</a></p>
+    <header class="page-head">
+      <p class="eyebrow">Optional</p>
+      <h1>My life areas</h1>
+      <p class="lede">Where your values live. Use this to choose where your next small step could go.</p>
+    </header>
+    ${roomToGrow.length ? `<div class="insight">${starIcon(18)}<span>${roomToGrow.map((id) => `<strong>${esc(areaById(id).name)}</strong>`).join(' and ')} ${roomToGrow.length > 1 ? 'matter' : 'matters'} a lot to you, and there hasn’t been much room for ${roomToGrow.length > 1 ? 'them' : 'it'} lately. That could be a good place for one small step.</span></div>` : ''}
+    <ul class="area-list">
+      ${ids.map((id, i) => {
+        const area = areaById(id);
+        const a = state.areas[id];
+        return `<li class="area-card${a.status === 'notnow' ? ' area-card--quiet' : ''}">
+          <div class="area-card__head">
+            <h2 class="area-card__name">${esc(area.name)}</h2>
+            ${a.status !== 'active' ? `<span class="tag tag--status">${esc(AREA_STATUS[a.status])}</span>` : ''}
+          </div>
+          ${a.status !== 'notnow' ? areaBars(a) : ''}
+          ${areaValues(a).length ? `<p class="area-card__values">${areaValues(a).map((v) => `<span class="tag">${esc(val(v).name)}</span>`).join(' ')}</p>` : ''}
+          <p class="area-card__links no-print">
+            <a href="#/areas/rate/${i + 1}">Edit<span class="visually-hidden"> ${esc(area.name)}</span></a>
+            ${a.status !== 'notnow' && state.core.length ? ` · <a href="#/act/${esc(id)}">Plan a step here<span class="visually-hidden">: ${esc(area.name)}</span></a>` : ''}
+          </p>
+        </li>`;
+      }).join('')}
+    </ul>
+    <div class="inline-actions no-print">
+      <a class="btn btn--ghost btn--sm" href="#/areas/pick">Change areas</a>
+      <button type="button" class="btn btn--ghost btn--sm btn--danger" data-action="clear-areas">Remove life areas</button>
+    </div>
+    <div class="nav-row">
+      <a class="btn btn--ghost" href="#/results">${arrowIcon('left')}<span>My values</span></a>
+      ${state.core.length ? `<a class="btn btn--primary" href="#/act${roomToGrow[0] ? `/${esc(roomToGrow[0])}` : ''}"><span>Plan a step</span>${arrowIcon('right')}</a>` : ''}
+    </div>`;
+}
+
+function resultsAreasSection() {
+  const ids = pickedAreas();
+  if (!ids.length) {
+    return `<section class="section no-print area-invite" aria-labelledby="areas-h">
+      <h2 id="areas-h">Map your values to your life</h2>
+      <p>Optional, about 3 minutes. Choose a few areas of life, such as family, work or health, and decide which of your values each one most needs from you. It can help you see where your next step could go.</p>
+      <a class="btn btn--secondary" href="#/areas/pick">Add life areas</a>
+    </section>`;
+  }
+  return `<section class="section" aria-labelledby="areas-h">
+    <h2 id="areas-h">My life areas</h2>
+    <ul class="area-mini">
+      ${ids.map((id) => {
+        const a = state.areas[id];
+        const names = areaValues(a).map((v) => val(v)?.name).filter(Boolean);
+        return `<li><strong>${esc(areaById(id).name)}</strong>${a.status !== 'active' ? ` <span class="muted">(${esc(AREA_STATUS[a.status].toLowerCase())})</span>` : ''}${names.length ? `: ${names.map(esc).join(', ')}` : ''}</li>`;
+      }).join('')}
+    </ul>
+    <p class="no-print"><a href="#/areas">See and edit life areas</a></p>
+  </section>`;
 }
 
 /* ------------------------------------------------------------------ *
@@ -1575,6 +1911,20 @@ document.addEventListener('click', (e) => {
     }); break;
     case 'pairwise': runPairwise(); break;
     case 'narrow': runNarrowing(); break;
+    case 'clear-areas': confirmDialog({
+      title: 'Remove your life areas?',
+      body: 'This removes the areas you chose and what you noted for each. Your values, reflections and actions stay as they are.',
+      confirm: 'Remove life areas',
+      danger: true,
+    }).then((ok) => {
+      if (!ok) return;
+      state.areas = {};
+      state.customAreas = [];
+      state.actions.forEach((a) => { a.areaId = ''; });
+      persist();
+      location.hash = '#/results';
+      announce('Life areas removed.');
+    }); break;
     case 'use-top5': confirmDialog({
       title: 'Use the suggested five?',
       body: 'This replaces your current core values and resets their order. Your reflections are kept and come back if you choose those values again.',
