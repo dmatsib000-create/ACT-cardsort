@@ -88,6 +88,9 @@ export const VALUES = [
 // Questionnaire and Bull's-Eye use similar areas). They are not values
 // themselves, so they are never sorted as cards. Definitions are deliberately
 // inclusive: family by choice, unpaid work, health "as it is", and so on.
+// Area ids live in their own namespace: the "family" area and the "family"
+// value card share an id on purpose, but are stored in separate places
+// (state.areas vs state.piles/core) and must never be looked up in each other.
 export const AREAS = [
   { id: 'family', name: 'Family', def: 'The people I count as family, by birth, choice or circumstance.' },
   { id: 'partner', name: 'Partner and intimacy', def: 'A romantic or intimate relationship, now or in the future.' },

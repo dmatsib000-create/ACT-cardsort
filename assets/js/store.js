@@ -154,7 +154,8 @@ export function normalize(input) {
 
   const customAreas = arr(input.customAreas)
     .filter((a) => a && typeof a.id === 'string' && a.id.startsWith('area-') && str(a.name).trim())
-    .map((a) => ({ id: a.id.slice(0, 80), name: str(a.name, 40).trim(), def: str(a.def, 120).trim() }));
+    .map((a) => ({ id: a.id.slice(0, 80), name: str(a.name, 40).trim(), def: str(a.def, 120).trim() }))
+    .slice(0, 20);
   const areaIds = new Set([...AREAS.map((a) => a.id), ...customAreas.map((a) => a.id)]);
   const scale = (n) => (Number.isInteger(n) && n >= 1 && n <= 5 ? n : null);
   const areas = {};
@@ -164,7 +165,7 @@ export function normalize(input) {
       status: ['active', 'hard', 'notnow'].includes(a.status) ? a.status : 'active',
       importance: scale(a.importance),
       living: scale(a.living),
-      values: ids(a.values).slice(0, MAX_AREA_VALUES),
+      values: ids(a.values).filter((v) => core.includes(v)).slice(0, MAX_AREA_VALUES),
     };
   }
   const bw = {};

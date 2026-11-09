@@ -1,0 +1,12 @@
+{
+  "name": "lodestar-tests",
+  "private": true,
+  "description": "End-to-end and accessibility tests for Lodestar. The app itself has no build step or dependencies.",
+  "scripts": {
+    "test": "bash run.sh"
+  },
+  "devDependencies": {
+    "axe-core": "4.10.2",
+    "playwright": "1.49.1"
+  }
+}
