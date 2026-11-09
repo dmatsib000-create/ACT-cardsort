@@ -1,0 +1,30 @@
+name: Check offline cache
+
+# The service worker's cached file list and version are maintained by hand.
+# This check makes sure every file the app needs offline is cached, and that
+# the cache version changes whenever a cached file does. See
+# scripts/check-offline-cache.mjs.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Cached files are complete
+        if: github.event_name != 'pull_request'
+        run: node scripts/check-offline-cache.mjs
+      - name: Cached files are complete and the version was bumped
+        if: github.event_name == 'pull_request'
+        run: node scripts/check-offline-cache.mjs "origin/${{ github.base_ref }}"

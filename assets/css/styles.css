@@ -248,7 +248,8 @@ h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus { outline: none; }
 @media (max-width: 30rem) {
   .brand__name { font-size: 1.1rem; }
   .site-nav a { padding: 0 .5rem; font-size: .9rem; }
-  .theme-label { display: none; }
+  /* Keep the word in the accessible name (WCAG 2.5.3) while hiding it visually. */
+  .theme-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .theme-btn { padding: 0; justify-content: center; }
 }
 @media (max-width: 27rem) {
