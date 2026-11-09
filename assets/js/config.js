@@ -6,7 +6,7 @@
 // 'https://docs.google.com/forms/d/e/.../viewform'.
 // While this is empty, the feedback links are hidden.
 // After changing it, bump VERSION in sw.js so returning visitors get the update.
-export const FEEDBACK_FORM_URL = '';
+export const FEEDBACK_FORM_URL = 'https://forms.gle/rrVtZw1mJEuewH6n7';
 
 // Returns the form link if it is a Google Forms address, otherwise ''.
 // Anything else is ignored so a typo can't send people somewhere unexpected.
