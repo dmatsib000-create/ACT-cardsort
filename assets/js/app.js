@@ -1197,7 +1197,7 @@ function bullseyeSVG() {
   return `<figure class="bullseye">
     <svg viewBox="0 0 ${size} ${size}" role="img" aria-labelledby="be-title be-desc">
       <title id="be-title">Values bull’s-eye</title>
-      <desc id="be-desc">Each numbered dot is one of your ranked values. The closer to the center, the more fully you said you are living it. ${rated.map(({ id, i, living }) => `${nums[i]}, ${val(id).name}: ${living} out of 10.`).join(' ')}</desc>
+      <desc id="be-desc">Each numbered dot is one of your ranked values. The closer to the center, the more fully you said you are living it. ${rated.map(({ id, i, living }) => `${nums[i]}, ${esc(val(id).name)}: ${living} out of 10.`).join(' ')}</desc>
       ${rings}
       <line x1="${c}" y1="${c - R}" x2="${c}" y2="${c + R}" class="be-axis"/>
       <line x1="${c - R}" y1="${c}" x2="${c + R}" y2="${c}" class="be-axis"/>

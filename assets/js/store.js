@@ -5,7 +5,7 @@
 import { VALUES, RENAMED, AREAS, LIMITS } from './values.js';
 
 const KEY = 'lodestar:v1';
-const SCHEMA = 2;
+export const SCHEMA = 2;
 
 export const fresh = () => ({
   schema: SCHEMA,
@@ -37,7 +37,7 @@ export function load() {
       const parsed = JSON.parse(raw);
       const state = normalize(parsed);
       // Save migrated data straight away so it is never migrated twice.
-      if (!(Number(parsed && parsed.schema) >= 2)) save(state);
+      if (schemaOf(parsed) < SCHEMA) save(state);
       return state;
     }
   } catch {
@@ -110,12 +110,34 @@ function migrateV1(input) {
   return out;
 }
 
+// Migrations, in order. Each step takes saved data at schema `from` and returns
+// it at schema `to`. To change the saved format: bump SCHEMA, add a step here,
+// and add unit tests for it in tests/unit/store.test.mjs.
+export const MIGRATIONS = [
+  { from: 1, to: 2, run: migrateV1 },
+];
+
+// Data saved before schema numbers existed counts as schema 1.
+const schemaOf = (input) => (Number.isInteger(Number(input?.schema)) && Number(input.schema) >= 1 ? Number(input.schema) : 1);
+
+export function migrate(input) {
+  let data = input;
+  let version = schemaOf(input);
+  for (const step of MIGRATIONS) {
+    if (version === step.from) {
+      data = { ...step.run(data), schema: step.to };
+      version = step.to;
+    }
+  }
+  return data;
+}
+
 // Accepts any object (from storage or an imported file) and returns a safe,
 // fully shaped state. Unknown keys are dropped; wrong types are reset.
 export function normalize(input) {
   const base = fresh();
   if (!input || typeof input !== 'object') return base;
-  if (!(Number(input.schema) >= 2)) input = migrateV1(input);
+  input = migrate(input);
   const str = (v, max = 2000) => (typeof v === 'string' ? v.slice(0, max) : '');
   const arr = (v) => (Array.isArray(v) ? v : []);
   const obj = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? v : {});

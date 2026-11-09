@@ -36,10 +36,19 @@ async function open(variant) {
 }
 
 async function axe(page, label) {
+  // axe's target-size rule counts a control as too small when the sticky
+  // header happens to cover part of it, which depends only on where the page
+  // is scrolled. Check from the top so results don't change from run to run.
+  await page.evaluate(() => window.scrollTo(0, 0));
   await page.addScriptTag({ content: axeSource });
   const violations = await page.evaluate(async () => (await window.axe.run(document, {
     runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'] },
-  })).violations.map((v) => `${v.id} x${v.nodes.length}`));
+  })).violations.map((v) => {
+    const target = v.nodes[0].target.join(' ');
+    const box = document.querySelector(target)?.getBoundingClientRect();
+    const size = box ? ` (${Math.round(box.width)}x${Math.round(box.height)} at ${Math.round(box.x)},${Math.round(box.y)})` : '';
+    return `${v.id} x${v.nodes.length} at ${target}${size}: ${v.nodes[0].failureSummary.split('\n').slice(1).join(' ').trim().slice(0, 160)}`;
+  }));
   check(violations.length === 0, `no accessibility violations: ${label}${violations.length ? ` (${violations.join(', ')})` : ''}`);
 }
 

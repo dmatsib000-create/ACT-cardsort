@@ -94,7 +94,7 @@ npx playwright install chromium
 npm test
 ```
 
-This checks the deck against ACT's definition of a value, then runs the end-to-end tests in a light desktop window and a dark phone-sized one, with an accessibility check on every screen. See [`tests/README.md`](tests/README.md).
+This checks the deck against ACT's definition of a value, checks the offline cache and the values map, runs the unit tests for saved data, then runs the end-to-end tests in a light desktop window and a dark phone-sized one, with an accessibility check on every screen. See [`tests/README.md`](tests/README.md).
 
 ## Credits and licenses
 

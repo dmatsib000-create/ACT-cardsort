@@ -8,7 +8,9 @@ This summarizes a second research round (November 2026) into how semantics, prag
 
 **Status: adopted (deck version 2).** The deck below is now `assets/js/values.js`, and the sort changes are in the app. Saved progress from the 65-card deck is migrated automatically (see Implementation notes).
 
-## What the map shows
+The interactive map now opens with a before-and-after count of the original and current decks, calculated from the map's own data. In short: conservation values went from 11 cards to 15 and self-enhancement from 4 to 6, the crowded caring region shrank from 13 to 11, and the Schwartz values with no card fell from 4 to 1 (Face, left out on purpose).
+
+## What the review found in the original deck
 
 1. **The deck leans to one half of the circle.** On Schwartz's refined theory of 19 basic values (Schwartz et al., 2012; replicated in 49 cultural groups), 31 cards are self-transcendence, 15 openness to change, 11 conservation and only 4 self-enhancement. Four have no home on the circle (Courage, Gratitude, Mindfulness, Self-compassion). People whose priorities are achievement, duty, security or tradition find few cards that describe them honestly.
 2. **One region is overcrowded.** 13 cards sit in benevolence: caring. Caring, Kindness, Compassion, Empathy, Love and Nurturing share one core idea, which splits people's choices among near-synonyms.
@@ -30,7 +32,7 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 
 | Card | Proposed wording | Change | Schwartz region |
 |---|---|---|---|
-| **Acceptance** | Making room for feelings and situations I can't change, instead of fighting them. | Reworded | Universalism: tolerance |
+| **Acceptance** | Making room for feelings and situations I can’t change, instead of fighting them. | Reworded | Universalism: tolerance |
 | **Adventure** | Seeking out new experiences and exploring the unfamiliar. | Unchanged | Stimulation |
 | **Assertiveness** | Saying clearly what I need, while staying respectful. | Reworded | Self-direction: action |
 | **Authenticity** | Acting in ways that fit who I really am. | Reworded | Self-direction: action |
@@ -50,7 +52,7 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 | **Excellence** | Putting care and skill into the work I do. | Renamed from Diligence | Achievement |
 | **Fairness** | Treating people even-handedly, without favoritism. | Reworded | Universalism: concern |
 | **Faith** | Practicing my religion and letting it guide how I live. | New (split from Spirituality) | Tradition |
-| **Family** | Showing up for the people I consider family. | Reworded | Benevolence: caring |
+| **Family** | Caring for the people I count as family. | Reworded | Benevolence: caring |
 | **Flexibility** | Adapting with grace when plans or circumstances change. | Unchanged | Self-direction: action |
 | **Forgiveness** | Letting go of resentment toward people who hurt me, without excusing the harm. | Reworded | Benevolence: caring |
 | **Freedom** | Making my own choices about how I live. | Reworded | Self-direction: action |
@@ -83,7 +85,7 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 | **Order** | Creating structure and organization in my life and spaces. | Unchanged | Security: personal |
 | **Patience** | Giving things and people the time they need. | Reworded | Conformity: interpersonal |
 | **Pleasure** | Savoring the good things my senses and body can enjoy. | Unchanged | Hedonism |
-| **Presence** | Giving my full attention to what I'm doing and who I'm with. | Merges Connection + Mindfulness | Benevolence: caring |
+| **Presence** | Giving my full attention to what I’m doing and who I’m with. | Merges Connection + Mindfulness | Benevolence: caring |
 | **Providing** | Working to provide for the people who depend on me. | New | Power: resources |
 | **Prudence** | Thinking ahead and making careful, considered choices. | New | Security: personal |
 | **Reliability** | Keeping my word to people. | Reworded | Benevolence: dependability |

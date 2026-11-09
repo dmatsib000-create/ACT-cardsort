@@ -3,9 +3,9 @@ name: Check values deck
 # Every card must fit ACT's definition of a value. See scripts/check-deck.mjs.
 on:
   push:
-    paths: ['assets/js/values.js', 'scripts/check-deck.mjs']
+    paths: ['assets/js/values.js', 'scripts/check-deck.mjs', 'scripts/sync-values-map.mjs', 'docs/values-map.html', 'docs/VALUES-MAP.md']
   pull_request:
-    paths: ['assets/js/values.js', 'scripts/check-deck.mjs']
+    paths: ['assets/js/values.js', 'scripts/check-deck.mjs', 'scripts/sync-values-map.mjs', 'docs/values-map.html', 'docs/VALUES-MAP.md']
 
 permissions:
   contents: read
@@ -19,3 +19,5 @@ jobs:
         with:
           node-version: '22'
       - run: node scripts/check-deck.mjs
+      - name: The values map matches the deck
+        run: node scripts/sync-values-map.mjs

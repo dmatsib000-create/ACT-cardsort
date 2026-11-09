@@ -5,12 +5,12 @@ An assessment from November 2026, scored with Priority = (Impact + Risk) Ã— (6 â
 | # | Item | Type | Priority | Status |
 |---|------|------|:-:|---|
 | 1 | Service-worker cache list and version maintained by hand | Infrastructure | 28 | Done (phase 1): `scripts/check-offline-cache.mjs` checks the list and, on pull requests, the version bump |
-| 2 | No unit tests for `store.normalize` and migrations; migrations are a one-off branch | Test / Architecture | 28 | Phase 2 |
+| 2 | No unit tests for `store.normalize` and migrations; migrations are a one-off branch | Test / Architecture | 28 | Done (phase 2): `tests/unit/store.test.mjs` (21 tests) and `MIGRATIONS` in `store.js` |
 | 3 | Limits duplicated as magic numbers in the app and storage | Code | 25 | Done (phase 1): `LIMITS` in `assets/js/values.js` |
 | 4 | CI on Node 20 (past end-of-life), test tools from late 2024, no Dependabot | Dependency | 25 | Done (phase 1): Node 22, Playwright 1.64.1, axe-core 4.14.0, `.github/dependabot.yml` |
 | 5 | `assets/js/app.js` holds every page in one 2,200-line file with shared mutable state | Architecture | 21 | Phase 3 |
-| 6 | Escaping relies on remembering `esc()` at about 35 HTML-building sites, with no regression test | Test / Security | 20 | Phase 2 |
-| 7 | The values map (`docs/values-map.html`, `docs/VALUES-MAP.md`) copies the deck, and its generator isn't in the repo | Documentation | 20 | Phase 2 |
+| 6 | Escaping relies on remembering `esc()` at about 35 HTML-building sites, with no regression test | Test / Security | 20 | Done (phase 2): `tests/escaping.js`, which found and fixed one unescaped name in the results chart |
+| 7 | The values map (`docs/values-map.html`, `docs/VALUES-MAP.md`) copies the deck, and its generator isn't in the repo | Documentation | 20 | Done (phase 2): `scripts/sync-values-map.mjs` checks and syncs the map in CI; it found and fixed the stale Family wording |
 | 8 | The Content Security Policy allows `'unsafe-inline'` styles for three inline widths | Security | 12 | Phase 3 |
 | 9 | Dark-theme tokens are written twice in the CSS | Code | 12 | Deferred |
 | 10 | End-to-end tests sort 71 cards by clicking in every test, which is slow | Test | 12 | Phase 3 |
@@ -19,7 +19,7 @@ An assessment from November 2026, scored with Priority = (Impact + Risk) Ã— (6 â
 ## Plan
 
 - **Phase 1 (done):** items 3, 4 and 1. While upgrading axe-core, its newer rules found a real accessibility problem: the theme button's visible word ("Auto") wasn't part of its accessible name (WCAG 2.5.3, Label in Name). That is now fixed.
-- **Phase 2 (with the next feature):**
+- **Phase 2 (done):** items 2, 6 and 7. The new checks found three real problems, all fixed: an unescaped value name in the results chart, long unbroken words in typed text covering neighbouring controls, and the values map still showing Family's old wording.
   - Item 2: unit tests with Node's built-in test runner, and migrations as an ordered list of steps.
   - Item 6: an end-to-end test that enters HTML-like text everywhere people can type.
   - Item 7: commit the map generator and check the map against `values.js` in CI.
