@@ -174,6 +174,13 @@ td strong { font-family: var(--font-display); font-size: 1.05rem; font-weight: 6
 .refs { font-size: .9rem; list-style: none; padding: 0; max-width: 50rem; }
 .refs li { padding-left: 1.5rem; text-indent: -1.5rem; margin-bottom: .55rem; overflow-wrap: anywhere; }
 .note-box { background: var(--surface-2); border-radius: 14px; padding: 1.1rem 1.3rem; max-width: 46rem; margin-top: 1.25rem; }
+.stats-label { font-size: .85rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); margin: 2rem 0 .5rem; }
+.stats-label + .stats { margin-top: 0; }
+.ba-wrap { max-width: 36rem; }
+.ba-table { min-width: 0; }
+.ba-table th[scope="row"] { text-transform: none; letter-spacing: 0; font-size: .95rem; color: var(--ink); background: transparent; font-weight: 400; }
+.ba-table td { font-variant-numeric: tabular-nums; font-weight: 700; }
+.ba-delta { font-weight: 400; color: var(--ink-2); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
 </style>
 </head>
@@ -182,7 +189,8 @@ td strong { font-family: var(--font-display); font-size: 1.05rem; font-weight: 6
   <header class="masthead">
     <p class="eyebrow">Lodestar research · November 2026</p>
     <h1>Lodestar Values Map</h1>
-    <p class="lede">How the 65 cards relate to each other and to the science of values and wellbeing, and what to merge, split, reword or add. Built from two research briefs covering the philosophy of value, linguistics, and the psychology of values and wellbeing.</p>
+    <p class="lede">How Lodestar’s values deck relates to the science of values and wellbeing: what a review of the original 65 cards found, and the 71-card deck now in use. Built from two research briefs covering the philosophy of value, linguistics, and the psychology of values and wellbeing.</p>
+    <p class="stats-label">What the review found in the original 65-card deck</p>
     <div class="stats" role="list">
       <div class="stat" role="listitem"><b>31 of 65</b><span>cards sit in self-transcendence, concern for others</span></div>
       <div class="stat" role="listitem"><b>13</b><span>cards crowd one region: caring for the people close to you</span></div>
@@ -194,7 +202,7 @@ td strong { font-family: var(--font-display); font-size: 1.05rem; font-weight: 6
 
   <h2 id="map">The map</h2>
   <div class="prose">
-    <p>The ring is Shalom Schwartz’s circle of 19 basic human values, the most widely replicated map of what people value. It has been found in 49 cultural groups. Values next to each other can be pursued together; values on opposite sides pull against each other. The colored band shows the four families. Each dot is a card, placed in its closest region and colored by what the research suggests doing with it. Dashed rings are proposed new cards. The center holds cards with no home on the circle: virtues and ACT processes that can serve any value.</p>
+    <p>The ring is Shalom Schwartz’s circle of 19 basic human values, the most widely replicated map of what people value. It has been found in 49 cultural groups. Values next to each other can be pursued together; values on opposite sides pull against each other. The colored band shows the four families. Each dot is a card, placed in its closest region and colored by what the research suggests doing with it. Dashed rings are cards added in version 2. The center holds cards with no home on the circle: virtues and ACT processes that can serve any value.</p>
   </div>
 
   <div class="map">
@@ -222,7 +230,16 @@ td strong { font-family: var(--font-display); font-size: 1.05rem; font-weight: 6
     <aside class="detail" id="detail" aria-live="polite" aria-label="Selected card"></aside>
   </div>
 
-  <h2>What the map shows</h2>
+  <h2>Before and after</h2>
+  <div class="prose"><p>How the deck changed, counted from this map’s data. Each card sits in its closest region of Schwartz’s circle.</p></div>
+  <div class="table-wrap ba-wrap" tabindex="0" role="region" aria-label="Before and after table">
+    <table class="ba-table" aria-label="Card counts in the original and current decks">
+      <thead><tr><th scope="col">Cards</th><th scope="col">Original deck</th><th scope="col">Current deck</th></tr></thead>
+      <tbody id="before-after"></tbody>
+    </table>
+  </div>
+
+  <h2>What the review found in the original deck</h2>
   <div class="findings">
     <article class="finding">
       <h3>The deck leans hard toward one half of the circle</h3>
@@ -298,26 +315,36 @@ td strong { font-family: var(--font-display); font-size: 1.05rem; font-weight: 6
   <p class="muted prose">Each Schwartz value with its definition and the cards that sit there. Select a card to see it on the map.</p>
   <div class="families" id="families"></div>
 
-  <h2>The proposed deck</h2>
+  <h2>The deck now in use</h2>
   <div class="prose">
     <p>These recommendations were adopted as Lodestar’s deck version 2 in November 2026. Applying them gives <strong><span id="deck-count"></span> cards</strong>, up from 65. Five merges remove near-duplicates, two splits separate cards that held two values, and eight additions fill the empty and thin regions. All descriptions follow the wording rules below.</p>
   </div>
   <div class="table-wrap" tabindex="0" role="region" aria-label="Proposed deck table">
-    <table>
-      <caption class="visually-hidden">All proposed cards with wording and type of change</caption>
+    <table aria-label="All cards in the current deck, with their wording and how each changed">
       <thead><tr><th scope="col">Card</th><th scope="col">Proposed wording</th><th scope="col">Change</th></tr></thead>
       <tbody id="deck-table"></tbody>
     </table>
   </div>
 
-  <h2>Changes to the sort itself</h2>
+  <h2>Changes to the sort, now built</h2>
   <div class="process">
-    <div class="proc"><h3>Soften the bottom pile</h3><p>Rename “Not important to me” to “Less important to me”. It separates low priority from rejection and lowers the cost of using the pile honestly.</p></div>
-    <div class="proc"><h3>Anchor the extremes</h3><p>When the “very important” pile passes about a third of the deck, offer a quick step: pick the three that matter most and the three that matter least. This reduces end-piling.</p></div>
-    <div class="proc"><h3>Allow ties when ranking</h3><p>Let people mark two values as “on a par” instead of forcing an order that can feel arbitrary or wrong.</p></div>
-    <div class="proc"><h3>Ask what it’s for</h3><p>In Reflect, add an optional question: “Do I value this for its own sake, or for something it gives me?” If the answer is the latter, that something may be the deeper value.</p></div>
-    <div class="proc"><h3>Ladder up from outcomes</h3><p>If someone adds a custom card like Wealth, Success or Being respected, gently ask what having it would let them do or be, rather than rejecting it.</p></div>
-    <div class="proc"><h3>Treat life areas as areas</h3><p>Longer term: let people attach their values to life areas (family, work, health, community) as ACT’s Valued Living Questionnaire does, instead of sorting areas as cards.</p></div>
+    <div class="proc"><h3>A softer bottom pile</h3><p>The bottom pile is now “Less important to me”. It separates low priority from rejection, so people can use it honestly.</p></div>
+    <div class="proc"><h3>Narrowing a crowded pile</h3><p>When more than ten cards are very important, an optional round shows a few at a time and asks which matters most and which least, then suggests a top five. It never replaces values someone has already chosen.</p></div>
+    <div class="proc"><h3>Ties when ranking</h3><p>Two values can be marked “on a par”. They share a rank number and count equally in the decision helper.</p></div>
+    <div class="proc"><h3>What it’s for</h3><p>Reflect asks, optionally, whether each value is held for its own sake or for what it gives, and what that is. That may be the deeper value.</p></div>
+    <div class="proc"><h3>Laddering up from outcomes</h3><p>If someone adds a custom card that names an outcome (Wealth, Success) or a feeling (Being happy), a gentle prompt asks what lies underneath. The card can still be added.</p></div>
+    <div class="proc"><h3>Life areas as areas</h3><p>An optional exercise after the action plan: people pick the life areas that fit them, link up to three values to each, and can say an area is hard right now. Actions can be tagged with an area. No scores are shown.</p></div>
+  </div>
+
+  <h2>Every card fits ACT’s definition of a value</h2>
+  <div class="prose">
+    <p>In ACT, a value is a freely chosen, desired quality of ongoing action. After version 2 was adopted, every card was checked against that definition. A card must describe how a person acts, never be something that can be finished, stay within the person’s control, not be a feeling, not be a rule, and name one action at a time.</p>
+    <p>Fourteen cards were reworded in that pass, for example Excellence (“to a high standard” became “Putting care and skill into the work I do”) and Influence (“Having a say”, which depends on others, became “Speaking up and getting involved in decisions”). An automatic check now tests every card against these rules whenever the deck changes.</p>
+  </div>
+
+  <h2>Life areas</h2>
+  <div class="prose">
+    <p>Family, work and health are places where values are lived, not values themselves. A third research brief found strong support in ACT theory for keeping them separate, but warned against scoring them and against long rating grids late in a session. So life areas became a separate, optional layer offered after the action plan. People pick only the areas that fit their life, can add their own, can say an area “matters to me, but it’s hard right now”, and never see a combined or gap score. The Family card stays in the deck, reworded as a quality: “Caring for the people I count as family”.</p>
   </div>
 
   <h2>Wording rules for every card</h2>
@@ -341,6 +368,7 @@ td strong { font-family: var(--font-display); font-size: 1.05rem; font-weight: 6
   <div class="prose">
     <p>Two research briefs were written for this project, with citations checked against PubMed and publisher records. The card codings on this map are judgment calls based on those frameworks, not published mappings. A future option is to rebuild the map from real data, by looking at which cards people tend to place together, the same way Schwartz derived his circle.</p>
     <p>The full briefs, with verification notes, are in the Lodestar repository under <code>docs/research/</code>.</p>
+    <p>Card names and wording on this page are kept in step with the app automatically: a check compares them with the deck whenever either changes. The codings, notes and the original deck’s counts are a record of the review and stay as they were. A third brief, on life areas, informed that feature.</p>
   </div>
 
   <h2>Key references</h2>
@@ -1433,7 +1461,7 @@ const ADDITIONS = [
   const $ = (s, el = document) => el.querySelector(s);
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const NS = 'http://www.w3.org/2000/svg';
-  const REC = { keep: 'Keep', reword: 'Reword', split: 'Split', merge: 'Merge', add: 'Proposed addition' };
+  const REC = { keep: 'Keep', reword: 'Reword', split: 'Split', merge: 'Merge', add: 'Added in version 2' };
   const HUB = { code: 'HUB', name: 'No single home', short: '', hi: 'hub', defn: 'Virtues and ACT processes that can serve any value.' };
   const sectorOf = (code) => (code === 'HUB' ? HUB : SECTORS.find((s) => s.code === code));
   const all = [...VALUES.map((v) => ({ ...v, kind: 'deck' })), ...ADDITIONS.map((v) => ({ ...v, kind: 'add' }))];
@@ -1461,7 +1489,7 @@ const ADDITIONS = [
   function addDot(parent, v, x, y) {
     const g = el('g', {
       class: `dot dot--${v.rec}`, tabindex: '0', role: 'button', 'data-id': v.id,
-      'aria-label': `${v.name}${v.kind === 'add' ? ', proposed new card' : ''}. ${sectorOf(v.s).name}. ${REC[v.rec]}.`,
+      'aria-label': `${v.name}${v.kind === 'add' ? ', card added in version 2' : ''}. ${sectorOf(v.s).name}. ${REC[v.rec]}.`,
     }, parent);
     el('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: 7 }, g);
     const right = x >= c;
@@ -1541,8 +1569,8 @@ const ADDITIONS = [
       <p class="detail__eyebrow"><span class="swatch swatch--${s.hi}"></span>${esc(HIGHER[s.hi].name)}</p>
       <h3 class="detail__name" tabindex="-1">${esc(v.name)}</h3>
       <p class="rec rec--${v.rec}">${esc(REC[v.rec])}${v.target ? `<span class="rec__target">${esc(v.target)}</span>` : ''}</p>
-      ${v.kind === 'deck' ? `<p class="wording"><span class="wording__k">Now</span>${esc(v.desc)}</p>` : ''}
-      ${changed || v.kind === 'add' ? `<p class="wording wording--new"><span class="wording__k">Proposed</span>${v.pname !== v.name ? `<strong>${esc(v.pname)}:</strong> ` : ''}${esc(v.pdesc)}</p>` : ''}
+      ${v.kind === 'deck' ? `<p class="wording"><span class="wording__k">Original wording</span>${esc(v.desc)}</p>` : ''}
+      ${changed || v.kind === 'add' ? `<p class="wording wording--new"><span class="wording__k">Current wording</span>${v.pname !== v.name ? `<strong>${esc(v.pname)}:</strong> ` : ''}${esc(v.pdesc)}</p>` : ''}
       <p class="detail__note">${esc(v.note)}</p>
       <dl class="detail__grid">
         <div><dt>Schwartz value</dt><dd>${esc(s.name)}</dd></div>
@@ -1582,6 +1610,25 @@ const ADDITIONS = [
     }));
   }
 
+  // Counts for the original deck and the current one, from the map's own data.
+  function drawBeforeAfter() {
+    const host = $('#before-after');
+    if (!host) return;
+    const family = (code) => sectorOf(code).hi;
+    const seen = new Set();
+    const current = all.filter((v) => (seen.has(v.pname) ? false : seen.add(v.pname)));
+    const original = all.filter((v) => v.kind === 'deck');
+    const count = (list, test) => list.filter(test).length;
+    const empty = (list) => SECTORS.filter((s) => !list.some((v) => v.s === s.code)).length;
+    const rows = [
+      ['In the deck', original.length, current.length],
+      ...Object.entries(HIGHER).map(([key, h]) => [h.name, count(original, (v) => family(v.s) === key), count(current, (v) => family(v.s) === key)]),
+      ['In the crowded caring region', count(original, (v) => v.s === 'BEC'), count(current, (v) => v.s === 'BEC')],
+      ['Schwartz values with no card', empty(original), empty(current)],
+    ];
+    host.innerHTML = rows.map(([label, a, b]) => `<tr><th scope="row">${esc(label)}</th><td>${a}</td><td>${b}${b !== a ? ` <span class="ba-delta">(${b > a ? '+' : ''}${b - a})</span>` : ''}</td></tr>`).join('');
+  }
+
   function drawDeckTable() {
     const seen = new Set();
     const rows = [];
@@ -1614,6 +1661,7 @@ const ADDITIONS = [
   drawWheel();
   drawFamilies();
   drawDeckTable();
+  drawBeforeAfter();
   select('caring', false);
 })();
 

@@ -8,7 +8,9 @@ This summarizes a second research round (November 2026) into how semantics, prag
 
 **Status: adopted (deck version 2).** The deck below is now `assets/js/values.js`, and the sort changes are in the app. Saved progress from the 65-card deck is migrated automatically (see Implementation notes).
 
-## What the map shows
+The interactive map now opens with a before-and-after count of the original and current decks, calculated from the map's own data. In short: conservation values went from 11 cards to 15 and self-enhancement from 4 to 6, the crowded caring region shrank from 13 to 11, and the Schwartz values with no card fell from 4 to 1 (Face, left out on purpose).
+
+## What the review found in the original deck
 
 1. **The deck leans to one half of the circle.** On Schwartz's refined theory of 19 basic values (Schwartz et al., 2012; replicated in 49 cultural groups), 31 cards are self-transcendence, 15 openness to change, 11 conservation and only 4 self-enhancement. Four have no home on the circle (Courage, Gratitude, Mindfulness, Self-compassion). People whose priorities are achievement, duty, security or tradition find few cards that describe them honestly.
 2. **One region is overcrowded.** 13 cards sit in benevolence: caring. Caring, Kindness, Compassion, Empathy, Love and Nurturing share one core idea, which splits people's choices among near-synonyms.
