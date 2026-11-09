@@ -31,6 +31,21 @@ The site is plain HTML, CSS and JavaScript with no build step.
 3. Under **Build and deployment**, set **Source** to *Deploy from a branch*, choose **`main`** and **`/ (root)`**, then **Save**.
 4. After a minute or two the site will be live at `https://<your-username>.github.io/<repository-name>/`.
 
+## Collect feedback and bug reports
+
+People can leave comments and report problems through a Google Form, with no GitHub account needed. The links stay hidden until you add a form.
+
+1. Create a form at [forms.google.com](https://forms.google.com). Suggested questions:
+   - **What kind of feedback is this?** (multiple choice: Something isn't working / Idea or suggestion / Comment)
+   - **What happened, or what would you like to tell us?** (paragraph)
+   - **Which device and browser were you using?** (short answer, optional)
+   - **Email, if you'd like a reply** (short answer, optional)
+2. In the form's **Settings → Responses**, leave **Collect email addresses** off so people can stay anonymous, and keep **Limit to 1 response** off (it would force people to sign in to Google), and don't add a file upload question, which also requires sign-in. Turn on email notifications for new responses under the **Responses** tab if you want them.
+3. Click **Send**, choose the link tab, copy the link and paste it into `FEEDBACK_FORM_URL` in `assets/js/config.js`. Only `forms.gle` and `docs.google.com/forms` links are accepted.
+4. Bump `VERSION` in `sw.js`, then commit.
+
+A "Send feedback or report a problem" link then appears in the footer of every page, and a Feedback section appears on the About page. Both ask people not to include their answers or anything that identifies them. Responses go to your Google account; nothing from the card sort is attached.
+
 ## Run it locally
 
 Any static web server works. For example:
@@ -71,6 +86,7 @@ assets/css/styles.css   Design system: tokens, components, themes, print
 assets/js/app.js        Router, views and interactions
 assets/js/values.js     The values deck (edit here to change the cards)
 assets/js/content.js    Learn and About page content and references
+assets/js/config.js     Site settings: the feedback form link
 assets/js/store.js      Local storage, import validation
 assets/fonts/           Self-hosted fonts (SIL Open Font License)
 assets/icons/           App icons

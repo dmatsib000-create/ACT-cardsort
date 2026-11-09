@@ -1,6 +1,7 @@
 import { VALUES, PILES, PILE_ORDER, MAX_CORE, AREAS, MAX_AREA_VALUES, LIMITS } from './values.js';
 import * as store from './store.js';
 import { learnHTML, aboutHTML } from './content.js';
+import { feedbackUrl } from './config.js';
 
 /* ------------------------------------------------------------------ *
  * State and helpers
@@ -1879,7 +1880,7 @@ function viewLearn() {
 
 function viewAbout() {
   setTitle('About, privacy and support');
-  app.innerHTML = aboutHTML();
+  app.innerHTML = aboutHTML(feedbackUrl());
 }
 
 function viewNotFound() {
@@ -2201,6 +2202,11 @@ function cycleTheme() {
   applyTheme(theme);
   if (!store.persistent) {
     document.getElementById('storage-warning')?.removeAttribute('hidden');
+  }
+  const form = feedbackUrl();
+  if (form) {
+    document.getElementById('feedback-link')?.setAttribute('href', form);
+    document.getElementById('feedback-footer')?.removeAttribute('hidden');
   }
   render();
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {

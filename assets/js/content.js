@@ -147,7 +147,7 @@ const REFS = [
   'Wilson, K. G., Sandoz, E. K., Kitchens, J., & Roberts, M. (2010). The Valued Living Questionnaire: Defining and measuring valued action within a behavioral framework. <em>The Psychological Record, 60</em>(2), 249–272. <a href="https://doi.org/10.1007/BF03395706">doi.org/10.1007/BF03395706</a>',
 ];
 
-export const aboutHTML = () => `
+export const aboutHTML = (feedback = '') => `
 <article class="prose">
   <header class="page-head">
     <p class="eyebrow">About Lodestar</p>
@@ -176,14 +176,22 @@ export const aboutHTML = () => `
       <li><strong>Nothing leaves your device.</strong> Your cards, reflections, plans and decisions are saved only in this browser’s local storage. There are no accounts, no analytics, no cookies and no third-party scripts or fonts.</li>
       <li><strong>Shared devices:</strong> anyone using this browser on this device could open your results. Use <em>Start over</em> on the My values page to erase everything.</li>
       <li><strong>Backups:</strong> a downloaded backup file contains everything you wrote, in plain text. Store it somewhere private.</li>
-      <li><strong>Clearing your browser data</strong> will also erase your results, so download a backup if you want to keep them.</li>
+      <li><strong>Clearing your browser data</strong> will also erase your results, so download a backup if you want to keep them.</li>${feedback ? `
+      <li><strong>Feedback is separate:</strong> the feedback form is run by Google, not Lodestar. Only what you type into the form is sent; Lodestar never attaches your cards, reflections or plans.</li>` : ''}
     </ul>
   </section>
 
   <section aria-labelledby="a11y-h">
     <h2 id="a11y-h">Accessibility</h2>
-    <p>Lodestar aims to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA. It works with a keyboard alone and with screen readers; every action is a button (no dragging needed); it follows your device’s light or dark mode, reduced-motion and high-contrast settings; it reflows for zoom up to 400%; and it uses Atkinson Hyperlegible, a typeface designed by the Braille Institute for readers with low vision. If something doesn’t work for you, please open an issue on the project’s GitHub page.</p>
+    <p>Lodestar aims to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA. It works with a keyboard alone and with screen readers; every action is a button (no dragging needed); it follows your device’s light or dark mode, reduced-motion and high-contrast settings; it reflows for zoom up to 400%; and it uses Atkinson Hyperlegible, a typeface designed by the Braille Institute for readers with low vision. If something doesn’t work for you, please ${feedback ? 'tell us using the feedback form below' : 'open an issue on the project’s GitHub page'}.</p>
   </section>
+${feedback ? `
+  <section id="feedback" aria-labelledby="feedback-h">
+    <h2 id="feedback-h">Feedback and bug reports</h2>
+    <p>Comments, ideas and problem reports are welcome, and you don’t need an account. Use the <a href="${feedback}" target="_blank" rel="noopener noreferrer">feedback form<span class="visually-hidden"> (opens a Google Form in a new tab)</span></a>.</p>
+    <p>If something went wrong, it helps to say what you were doing, what you expected and which device and browser you use. Please don’t include your values, reflections or anything that identifies you; this form is for improving Lodestar, not for support. If you need help now, see <a href="#/about#support">If you need help now</a> above.</p>
+  </section>
+` : ''}
 
   <section aria-labelledby="credits-h">
     <h2 id="credits-h">Credits</h2>
