@@ -71,6 +71,36 @@ const { BASE, VARIANTS, check, open, axe, state, sortDeck, finish, exit } = requ
     await page.locator('#area-form .chip-opt:not(:has(input:checked))').first().click();
     check((await page.locator('#area-form input[name=values]:checked').count()) === linked + 1, 'a value removed from the core list frees its slot');
 
+    // Choosing the value again brings its link back (it was kept, only hidden)
+    await page.evaluate(() => {
+      const s = JSON.parse(localStorage.getItem('lodestar:v1'));
+      const hidden = s.areas.family.values.find((id) => !s.core.includes(id));
+      if (hidden) { s.core.push(hidden); s.__restored = hidden; }
+      localStorage.setItem('lodestar:v1', JSON.stringify(s));
+    });
+    const restored = await page.evaluate(() => JSON.parse(localStorage.getItem('lodestar:v1')).__restored || null);
+    await page.goto(`${BASE}#/areas/rate/1`); await page.reload(); await page.waitForSelector('#area-form');
+    check(restored === null, 'filling the freed slot replaced the hidden link, keeping the area at three values');
+    check((await page.locator('#area-form input[name=values]:checked').count()) === 3, 'the area shows three linked values');
+
+    // A hidden link survives a reload and returns when the value is chosen again
+    await page.evaluate(() => {
+      const s = JSON.parse(localStorage.getItem('lodestar:v1'));
+      const first = s.areas.family.values[0];
+      s.core = s.core.filter((id) => id !== first);
+      s.__dropped = first;
+      localStorage.setItem('lodestar:v1', JSON.stringify(s));
+    });
+    await page.reload(); await page.waitForSelector('#area-form');
+    check((await page.locator('#area-form input[name=values]:checked').count()) === 2, 'a dropped value stops showing as linked');
+    await page.evaluate(() => {
+      const s = JSON.parse(localStorage.getItem('lodestar:v1'));
+      s.core.push(s.__dropped);
+      localStorage.setItem('lodestar:v1', JSON.stringify(s));
+    });
+    await page.reload(); await page.waitForSelector('#area-form');
+    check((await page.locator('#area-form input[name=values]:checked').count()) === 3, 'choosing the value again restores its link');
+
     // Removing a custom area
     await page.goto(`${BASE}#/areas/pick`); await page.waitForSelector('#areas-form');
     await page.click('[data-remove-area]'); await page.click('dialog button[value="ok"]'); await page.waitForTimeout(150);

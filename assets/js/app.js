@@ -1342,7 +1342,8 @@ const LIVING = ['Not at all', 'A little', 'Somewhat', 'Mostly', 'Fully'];
 
 const allAreas = () => [...AREAS, ...state.customAreas];
 // An area's linked values, limited to current core values. A value dropped
-// from the core list no longer counts toward the cap or shows as linked.
+// from the core list no longer shows or counts toward the cap, but its link is
+// kept in storage so it returns if the value is chosen again.
 const areaValues = (a) => a.values.filter((v) => state.core.includes(v));
 const areaById = (id) => allAreas().find((a) => a.id === id);
 const pickedAreas = () => Object.keys(state.areas).filter((id) => areaById(id));
@@ -1428,7 +1429,10 @@ function areasPick(pending) {
     keep.add(area.id);
     areasPick(keep);
     announce(`${name} added and selected.`);
-    document.getElementById('new-area')?.focus();
+    // At the limit the text field is disabled, so move focus to the new area instead.
+    const field = document.getElementById('new-area');
+    if (field && !field.disabled) field.focus();
+    else document.querySelector(`#areas-form input[value="${CSS.escape(area.id)}"]`)?.focus();
   });
   document.getElementById('new-area').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); document.getElementById('add-area-btn').click(); }
@@ -1490,8 +1494,6 @@ function areasRate(n) {
   const id = ids[n - 1];
   const area = areaById(id);
   const a = state.areas[id];
-  // Drop links to values that are no longer core values (see areaValues).
-  if (a.values.some((v) => !state.core.includes(v))) { a.values = areaValues(a); persist(); }
   const last = n === ids.length;
   setTitle(`${area.name} · Life areas`);
 
@@ -1541,14 +1543,23 @@ function areasRate(n) {
     } else if (t.name === 'values') {
       const err = document.getElementById('vals-err');
       err.hidden = true;
-      if (t.checked && a.values.length >= MAX_AREA_VALUES) {
+      if (t.checked && areaValues(a).length >= MAX_AREA_VALUES) {
         t.checked = false;
         err.textContent = `Choose up to ${MAX_AREA_VALUES}. Unselect one to make room.`;
         err.hidden = false;
         announce(err.textContent);
         return;
       }
-      a.values = t.checked ? [...new Set([...a.values, t.value])] : a.values.filter((v) => v !== t.value);
+      if (t.checked) {
+        // Links to values that are no longer core values are kept, so they come
+        // back if the value is chosen again. They are only replaced once the
+        // person actively fills a slot they were holding.
+        const hidden = a.values.filter((v) => !state.core.includes(v));
+        const keepHidden = hidden.slice(0, Math.max(0, MAX_AREA_VALUES - areaValues(a).length - 1));
+        a.values = [...new Set([...areaValues(a), t.value, ...keepHidden])];
+      } else {
+        a.values = a.values.filter((v) => v !== t.value);
+      }
     }
     persist();
   });

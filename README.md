@@ -89,7 +89,7 @@ Cards live in `assets/js/values.js`. Each one needs a unique `id`, a `name` and 
 
 ```sh
 cd tests
-npm install
+npm ci
 npx playwright install chromium
 npm test
 ```

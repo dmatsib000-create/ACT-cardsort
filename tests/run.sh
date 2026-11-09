@@ -5,6 +5,12 @@ set -u
 cd "$(dirname "$0")"
 PORT="${PORT:-8123}"
 export BASE_URL="http://localhost:${PORT}/"
+# Refuse to run against some other server that happens to be on this port.
+if (exec 3<>"/dev/tcp/127.0.0.1/${PORT}") 2>/dev/null; then
+  echo "Port ${PORT} is already in use. Stop that server or run: PORT=8200 npm test" >&2
+  exit 1
+fi
+command -v python3 >/dev/null || { echo "These tests need Python 3 to serve the site locally." >&2; exit 1; }
 python3 -m http.server "$PORT" --directory .. >/dev/null 2>&1 &
 SERVER=$!
 trap 'kill $SERVER 2>/dev/null' EXIT

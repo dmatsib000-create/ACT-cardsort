@@ -165,7 +165,9 @@ export function normalize(input) {
       status: ['active', 'hard', 'notnow'].includes(a.status) ? a.status : 'active',
       importance: scale(a.importance),
       living: scale(a.living),
-      values: ids(a.values).filter((v) => core.includes(v)).slice(0, MAX_AREA_VALUES),
+      // Links to values not currently in the core list are kept (the app hides
+      // them) so they return if the value is chosen again.
+      values: ids(a.values).slice(0, MAX_AREA_VALUES),
     };
   }
   const bw = {};

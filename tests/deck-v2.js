@@ -2,6 +2,7 @@
 const { BASE, VARIANTS, check, open, axe, state, sortDeck, finish, exit } = require('./lib');
 
 (async () => {
+  const { VALUES } = await import('../assets/js/values.js');
   for (const v of VARIANTS) {
     console.log(`\n# Deck v2 (${v.name})`);
     const { browser, page, errors } = await open(v);
@@ -9,7 +10,7 @@ const { BASE, VARIANTS, check, open, axe, state, sortDeck, finish, exit } = requ
     check((await page.locator('.notice--update').count()) === 0, 'new visitors see no "deck updated" notice');
 
     const total = await sortDeck(page, (i) => (i % 5 === 0 ? 'some' : i % 4 === 0 ? 'not' : 'very'));
-    check(total === 71, 'the deck has 71 cards');
+    check(total === VALUES.length, `the sort covers every card in the deck (${VALUES.length})`);
 
     // Custom card nudges
     await page.click('[data-action="add-custom"]');
@@ -67,7 +68,7 @@ const { BASE, VARIANTS, check, open, axe, state, sortDeck, finish, exit } = requ
     check(st.piles.kindness === 'very' && st.piles.presence === 'very', 'merged cards keep the stronger pile');
     check(st.reflections.kindness.meaning.includes('Looking out') && st.reflections.kindness.meaning.includes('Being warm'), 'both reflections are kept when cards merge');
     check(st.actions[0].valueId === 'kindness', 'actions follow their card');
-    check(st.order.length === 71 && st.pos === 6, 'new cards are queued after the ones already sorted');
+    check(st.order.length === VALUES.length && st.pos === 6, 'new cards are queued after the ones already sorted');
     await axe(page, 'home with update notice');
     await page.click('[data-action="dismiss-update"]');
     check((await state(page)).deckUpdated === false, 'the notice can be dismissed');

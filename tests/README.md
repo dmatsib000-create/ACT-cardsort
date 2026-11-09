@@ -2,22 +2,26 @@
 
 End-to-end and accessibility tests. The app has no build step or dependencies; these tests are the only part of the project that needs Node packages.
 
+Requirements: Node.js 20 or later, and Python 3 (used only to serve the site locally).
+
 ```sh
 cd tests
-npm install
+npm ci
 npx playwright install chromium
 npm test
 ```
 
-`npm test` starts a local static server for the repository, then runs:
+`npm test` starts a local static server for the repository on port 8123 (set `PORT` to change it; it stops if the port is already in use), then runs:
 
 | Test | What it covers |
 |---|---|
 | `../scripts/check-deck.mjs` | Every card fits ACT's definition of a value. |
 | `core-flow.js` | Sort, choose, rank (with ties), reflect, act, results, decide, learn, about; reload persistence; no horizontal scrolling. |
 | `deck-v2.js` | 71-card deck, custom-card prompts, the narrowing round (fills an empty list, otherwise only suggests), clearing scores on reshuffle, and migration from the original 65-card deck. |
-| `life-areas.js` | The optional life areas exercise: picking (saved only on Continue), custom areas (add and remove), the three statuses, the three-value cap, the summary's suggestion (no scores), planning a step from an area, and freeing a value's slot when it leaves the core list. |
+| `life-areas.js` | The optional life areas exercise: picking (saved only on Continue), custom areas (add and remove), the three statuses, the three-value cap, the summary's suggestion (no scores), planning a step from an area, freeing a value's slot when it leaves the core list, and restoring the link when it returns. |
 
 Each test runs twice: light theme on a desktop-sized window, and dark theme on a phone-sized one. Every screen is checked with axe-core against WCAG 2.0, 2.1 and 2.2 A/AA rules plus best practices, and any console error fails the run. Screenshots, if a test takes any, go to `tests/output/` (not committed).
+
+The same suite runs on GitHub for every pull request (`.github/workflows/tests.yml`).
 
 Set `BASE_URL` to test a different server, for example a deployed copy: `BASE_URL=https://example.github.io/ACT-cardsort/ node life-areas.js`.
