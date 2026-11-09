@@ -6,7 +6,7 @@ This summarizes a second research round (November 2026) into how semantics, prag
 - [`research/language-and-axiology.md`](research/language-and-axiology.md): philosophy of value, semantics, pragmatics, and card-level wording issues
 - [`research/values-and-wellbeing.md`](research/values-and-wellbeing.md): Schwartz's 19 values, wellbeing frameworks, character strengths, moral psychology, a crosswalk and coverage analysis
 
-**Status: adopted (deck version 2).** The deck below is now `assets/js/values.js`, and the sort changes are in the app. Saved progress from the 65-card deck is migrated automatically (see Implementation notes).
+**Status: adopted (deck version 3).** The deck below is now `assets/js/values.js`, and the sort changes are in the app. Version 3 split Mastery into Craft and Resourcefulness (see "Deck version 3" below). Saved progress from earlier decks is migrated automatically (see Implementation notes).
 
 The interactive map now opens with a before-and-after count of the original and current decks, calculated from the map's own data. In short: conservation values went from 11 cards to 15 and self-enhancement from 4 to 6, the crowded caring region shrank from 13 to 11, and the Schwartz values with no card fell from 4 to 1 (Face, left out on purpose).
 
@@ -22,7 +22,7 @@ The interactive map now opens with a before-and-after count of the original and 
 
 ## Changes to the deck
 
-Five merges, two splits, two renames, eight additions and reworded descriptions give **71 cards** (from 65).
+Five merges, two splits, two renames, eight additions and reworded descriptions gave **71 cards** (from 65) in version 2. Version 3 split Mastery in two, for **72 cards**.
 
 - **Merges:** Caring into Kindness; Encouragement into Nurturing; Connection and Mindfulness into Presence; Persistence into Self-discipline; the "being trustworthy" half of Trust into Reliability.
 - **Splits:** Nature into Nature and Stewardship; Spirituality into Spirituality and Faith. Trust becomes Trusting others.
@@ -45,6 +45,7 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 | **Cooperation** | Working well with others toward shared aims. | Unchanged | Benevolence: dependability |
 | **Courage** | Doing hard or frightening things when they are worth doing to me. | Reworded | No single home |
 | **Courtesy** | Showing good manners and consideration in everyday dealings with people. | New | Conformity: interpersonal |
+| **Craft** | Refining my skills through steady practice. | New (split from Mastery) | Achievement |
 | **Creativity** | Imagining, making and expressing things in my own way. | Unchanged | Self-direction: thought |
 | **Curiosity** | Asking questions, exploring and staying open to discovery. | Unchanged | Self-direction: thought |
 | **Duty** | Honoring the commitments that come with my roles and relationships. | New | Conformity: rules |
@@ -78,7 +79,6 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 | **Learning** | Building my knowledge, skills and understanding. | Unchanged | Self-direction: thought |
 | **Love** | Showing affection and devotion to the people closest to me. | Reworded | Benevolence: caring |
 | **Loyalty** | Standing by the people I am committed to. | Reworded | Benevolence: dependability |
-| **Mastery** | Practicing and refining my skills in the things I care about. | Reworded | Achievement |
 | **Nature** | Spending time in the natural world. | Split | Universalism: nature |
 | **Nurturing** | Helping others grow and flourish by teaching, guiding and encouraging them. | Merges Encouragement + Nurturing | Benevolence: caring |
 | **Open-mindedness** | Considering other viewpoints and staying open to being wrong. | Reworded | Universalism: tolerance |
@@ -89,6 +89,7 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 | **Providing** | Working to provide for the people who depend on me. | New | Power: resources |
 | **Prudence** | Thinking ahead and making careful, considered choices. | New | Security: personal |
 | **Reliability** | Keeping my word to people. | Reworded | Benevolence: dependability |
+| **Resourcefulness** | Looking for practical ways to deal with problems as they come. | New (split from Mastery) | Self-direction: action |
 | **Respect** | Treating others with consideration and dignity. | Unchanged | Conformity: interpersonal |
 | **Responsibility** | Owning my choices and their consequences. | Unchanged | Benevolence: dependability |
 | **Safety** | Protecting the people in my care from harm. | Reworded | Security: personal |
@@ -103,6 +104,19 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 | **Trusting others** | Giving people the benefit of the doubt and letting them in. | Renamed from Trust | Benevolence: dependability |
 | **Vitality** | Throwing myself fully into what I do. | New | Stimulation |
 | **Wisdom** | Acting with good judgment, especially when things are complicated. | Reworded | Universalism: tolerance |
+
+## Deck version 3: Mastery split in two
+
+**Why.** Feedback flagged *Mastery* as a word some people hear through "master" and its history in slavery. Other fields have been retiring "master" in technical terms for the same reason, for example in software. The word's skill sense is old and still standard in psychology (mastery goals, Pearlin's Mastery Scale, and the "mastery criteria" of behavioral treatments such as Parent-Child Interaction Therapy). Feedback also mentioned that PCIT has moved away from the term; the PCIT training materials we could find still use "mastery criteria", so we have not relied on that. The decision rests on two simpler points. A values deck asks people to describe themselves with its words, so a word that lands badly for some people has a cost, and a plainer word has none. And the card held two different ideas, which breaks the "one act, one target" rule.
+
+**The two ideas.**
+
+- **Skill built through practice.** Achievement-goal research calls the aim of developing competence, rather than outperforming others, a *mastery goal* (Ames, 1992). This becomes **Craft**: "Refining my skills through steady practice." It keeps Mastery's wording and its place in Achievement, so self-enhancement still has 6 cards.
+- **An active, practical stance toward life's problems.** Pearlin and Schooler (1978) define mastery as how far people see their life chances as under their own control, and Ryff's (1989) *environmental mastery* is managing the demands of everyday life. A sense of control is a belief, not an action, so the card names what a person does: **Resourcefulness**, "Looking for practical ways to deal with problems as they come." It sits in Self-direction: action, and pairs with Acceptance: acting on what I can change, and making room for what I can't.
+
+**Overlaps checked.** Craft deepens a skill a person has chosen, where Learning takes in new knowledge, Excellence is care in one's work, and Self-discipline is following through. Resourcefulness can include asking for help, unlike Independence, and works on the problem, where Flexibility adapts the person to it.
+
+**Names considered.** For the skill half, *Skill* and *Competence* name something a person has rather than a way of acting, *Practice* is ambiguous (medical or religious practice) and *Craftsmanship* is gendered. For the other half, *Self-efficacy* is a belief, *Agency* is abstract, and *Problem-solving* reads as a technique.
 
 ## Changes to the sort
 
@@ -194,7 +208,7 @@ These codings are judgment calls based on the frameworks, not published mappings
 | Learning | Self-direction: thought | Love of learning | Competence | Education | Keep |
 | Love | Benevolence: caring | Love | Relatedness | Family, couples, parenting, friends | Reword |
 | Loyalty | Benevolence: dependability | Teamwork | Relatedness | Family, friends, citizenship | Reword |
-| Mastery | Achievement | Perseverance | Competence | Work, education, recreation | Reword |
+| Mastery | Achievement | Perseverance | Competence | Work, education, recreation | Reword; later split: Into Craft and Resourcefulness (version 3) |
 | Mindfulness | No single home | None (an ACT process) | Autonomy | Spirituality | Merge: With Connection, into Presence |
 | Nature | Universalism: nature | Appreciation of beauty | None | Recreation, citizenship | Split: Into Nature and Stewardship |
 | Nurturing | Benevolence: caring | Kindness, love | Relatedness, beneficence | Parenting, work | Reword: Absorbs Encouragement |
@@ -221,6 +235,8 @@ These codings are judgment calls based on the frameworks, not published mappings
 ## Implementation notes
 
 Ids changed for merged and renamed cards, and `store.normalize` migrates saved data from schema 1: caring to kindness, encouragement to nurturing, connection and mindfulness to presence, persistence to self-discipline, diligence to excellence, peace to harmony, and trust to trusting-others. When two old cards merge, the stronger pile wins and both reflections are kept. New cards are queued for sorting after the ones already placed.
+
+Deck version 3 moves saved data to schema 3 with the same step. Everything saved for Mastery (its pile, place in the core list, tie, narrowing score, reflection, life-area links, actions and decision ratings) moves to Craft, which keeps Mastery's wording. Resourcefulness is queued for sorting, and people who had started see the "deck updated" notice again. `RENAMED` in `values.js` lists every old id with its current card.
 
 ## Life areas
 

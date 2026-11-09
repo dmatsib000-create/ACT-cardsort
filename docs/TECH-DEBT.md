@@ -13,7 +13,7 @@ An assessment from November 2026, scored with Priority = (Impact + Risk) Ã— (6 â
 | 7 | The values map (`docs/values-map.html`, `docs/VALUES-MAP.md`) copies the deck, and its generator isn't in the repo | Documentation | 20 | Done (phase 2): `scripts/sync-values-map.mjs` checks and syncs the map in CI; it found and fixed the stale Family wording |
 | 8 | The Content Security Policy allows `'unsafe-inline'` styles for three inline widths | Security | 12 | Phase 3 |
 | 9 | Dark-theme tokens are written twice in the CSS | Code | 12 | Deferred |
-| 10 | End-to-end tests sort 71 cards by clicking in every test, which is slow | Test | 12 | Phase 3 |
+| 10 | End-to-end tests sort 72 cards by clicking in every test, which is slow | Test | 12 | Phase 3 |
 | 11 | Interface text lives in the JavaScript, so translation would be hard | Architecture | 4 | Deferred until a translation is planned |
 
 ## Plan
