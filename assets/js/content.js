@@ -189,7 +189,7 @@ ${feedback ? `
   <section id="feedback" aria-labelledby="feedback-h">
     <h2 id="feedback-h">Feedback and bug reports</h2>
     <p>Comments, ideas and problem reports are welcome, and you don’t need an account. Use the <a href="${feedback}" target="_blank" rel="noopener noreferrer">feedback form<span class="visually-hidden"> (opens a Google Form in a new tab)</span></a>.</p>
-    <p>If something went wrong, it helps to say what you were doing, what you expected and which device and browser you use. Please don’t include your values, reflections or anything that identifies you; this form is for improving Lodestar, not for support. If you need help now, see <a href="#/about#support">If you need help now</a> above.</p>
+    <p>If something went wrong, it helps to say what you were doing, what you expected and which device and browser you use. The form is anonymous by default. If you’d like a reply, there’s an optional place for your name and how to reach you; leave it blank to stay anonymous. Please don’t include your values or reflections. This form is for improving Lodestar, not for support. If you need help now, see <a href="#/about#support">If you need help now</a> above.</p>
   </section>
 ` : ''}
 

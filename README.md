@@ -39,7 +39,8 @@ People can leave comments and report problems through a Google Form, with no Git
    - **What kind of feedback is this?** (multiple choice: Something isn't working / Idea or suggestion / Comment)
    - **What happened, or what would you like to tell us?** (paragraph)
    - **Which device and browser were you using?** (short answer, optional)
-   - **Email, if you'd like a reply** (short answer, optional)
+   - **May we contact you about your feedback?** (multiple choice, optional: No, keep me anonymous / Yes, I'm happy to be contacted)
+   - **If yes, your name and email or phone number** (short answer, optional)
 2. In the form's **Settings → Responses**, leave **Collect email addresses** off so people can stay anonymous. Keep **Limit to 1 response** off (it would force people to sign in to Google), and don't add a file upload question, which also requires sign-in. Turn on email notifications for new responses under the **Responses** tab if you want them.
 3. Click **Send**, choose the link tab, copy the link and paste it into `FEEDBACK_FORM_URL` in `assets/js/config.js`. Only `forms.gle` and `docs.google.com/forms` links are accepted.
 4. Bump `VERSION` in `sw.js`, then commit.
