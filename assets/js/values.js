@@ -104,7 +104,6 @@ export const AREAS = [
   { id: 'spirit', name: 'Spirituality and faith', def: 'Faith, spiritual practice, or connection to something larger.' },
 ];
 
-export const MAX_AREA_VALUES = 3;
 
 export const PILES = {
   very: { label: 'Very important', short: 'Very', key: '3' },
@@ -114,7 +113,16 @@ export const PILES = {
 
 export const PILE_ORDER = ['very', 'some', 'not'];
 
-export const MAX_CORE = 10;
+// Every limit in one place, so the interface and storage can't drift apart.
+// store.normalize enforces these when loading saved data or a backup file.
+export const LIMITS = {
+  core: 10,           // core values a person can choose
+  suggestedCore: 5,   // values the narrowing round suggests (copy says "five")
+  areaValues: 3,      // core values linked to one life area
+  customAreas: 20,    // life areas a person can add themselves
+};
+export const MAX_CORE = LIMITS.core;
+export const MAX_AREA_VALUES = LIMITS.areaValues;
 
 // Cards that were merged or renamed in deck version 2, so saved progress can be
 // carried over. Old id -> new id.

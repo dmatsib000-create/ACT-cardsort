@@ -1,4 +1,4 @@
-import { VALUES, PILES, PILE_ORDER, MAX_CORE, AREAS, MAX_AREA_VALUES } from './values.js';
+import { VALUES, PILES, PILE_ORDER, MAX_CORE, AREAS, MAX_AREA_VALUES, LIMITS } from './values.js';
 import * as store from './store.js';
 import { learnHTML, aboutHTML } from './content.js';
 
@@ -655,7 +655,7 @@ function topFive() {
   return inPile('very')
     .filter((id) => id in state.bw)
     .sort((a, b) => state.bw[b] - state.bw[a])
-    .slice(0, 5);
+    .slice(0, LIMITS.suggestedCore);
 }
 
 function buildTrials(ids) {
@@ -1368,7 +1368,7 @@ function viewAreas(param = '') {
   return areasSummary();
 }
 
-const MAX_CUSTOM_AREAS = 20;
+const MAX_CUSTOM_AREAS = LIMITS.customAreas;
 
 // `pending` holds ticks that haven't been confirmed with Continue yet, so that
 // adding or removing a custom area doesn't save picks the person may back out of.
@@ -2176,7 +2176,8 @@ function applyTheme(t) {
   const btn = document.querySelector('[data-action="theme"]');
   if (btn) {
     btn.querySelector('.theme-label').textContent = { system: 'Auto', light: 'Light', dark: 'Dark' }[t];
-    btn.setAttribute('aria-label', `Color theme: ${{ system: 'automatic', light: 'light', dark: 'dark' }[t]}. Activate to change.`);
+    // The visible word is the button's name ("Color theme: Auto"), so voice
+    // control users can say what they see (WCAG 2.5.3, Label in Name).
   }
   const meta = document.querySelector('meta[name="theme-color"]:not([media])');
   if (meta) meta.remove();

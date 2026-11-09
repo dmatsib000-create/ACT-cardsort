@@ -2,7 +2,7 @@
 // browser's localStorage, and falls back to memory if storage is unavailable
 // (for example in some private browsing modes).
 
-import { VALUES, RENAMED, AREAS, MAX_AREA_VALUES } from './values.js';
+import { VALUES, RENAMED, AREAS, LIMITS } from './values.js';
 
 const KEY = 'lodestar:v1';
 const SCHEMA = 2;
@@ -150,12 +150,12 @@ export function normalize(input) {
     order = [...placed, ...rest, ...missing];
   }
   const pos = order.length ? order.filter((id) => piles[id]).length : 0;
-  const core = ids(input.core).slice(0, 10);
+  const core = ids(input.core).slice(0, LIMITS.core);
 
   const customAreas = arr(input.customAreas)
     .filter((a) => a && typeof a.id === 'string' && a.id.startsWith('area-') && str(a.name).trim())
     .map((a) => ({ id: a.id.slice(0, 80), name: str(a.name, 40).trim(), def: str(a.def, 120).trim() }))
-    .slice(0, 20);
+    .slice(0, LIMITS.customAreas);
   const areaIds = new Set([...AREAS.map((a) => a.id), ...customAreas.map((a) => a.id)]);
   const scale = (n) => (Number.isInteger(n) && n >= 1 && n <= 5 ? n : null);
   const areas = {};
@@ -167,7 +167,7 @@ export function normalize(input) {
       living: scale(a.living),
       // Links to values not currently in the core list are kept (the app hides
       // them) so they return if the value is chosen again.
-      values: ids(a.values).slice(0, MAX_AREA_VALUES),
+      values: ids(a.values).slice(0, LIMITS.areaValues),
     };
   }
   const bw = {};

@@ -6,7 +6,10 @@
     "test": "bash run.sh"
   },
   "devDependencies": {
-    "axe-core": "4.10.2",
-    "playwright": "1.49.1"
+    "axe-core": "4.14.0",
+    "playwright": "1.64.1"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

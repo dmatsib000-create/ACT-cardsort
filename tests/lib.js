@@ -21,7 +21,9 @@ const VARIANTS = [
 ];
 
 async function open(variant) {
-  const browser = await chromium.launch();
+  // CHROMIUM_PATH lets the tests use an already-installed Chromium instead of
+  // the one `npx playwright install` downloads.
+  const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
   // bypassCSP lets axe be injected; serviceWorkers are blocked so every run
   // loads the files on disk rather than an old cached copy.
   const context = await browser.newContext({ colorScheme: variant.scheme, viewport: variant.viewport, serviceWorkers: 'block', bypassCSP: true });

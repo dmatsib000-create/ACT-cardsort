@@ -17,6 +17,7 @@ trap 'kill $SERVER 2>/dev/null' EXIT
 sleep 1
 status=0
 node ../scripts/check-deck.mjs || status=1
+node ../scripts/check-offline-cache.mjs || status=1
 for t in core-flow.js deck-v2.js life-areas.js; do
   echo "== $t"
   node "$t" || status=1
