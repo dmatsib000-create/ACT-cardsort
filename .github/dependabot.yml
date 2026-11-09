@@ -1,11 +1,17 @@
 # Keeps the test tools and GitHub Actions up to date. The app itself has no
 # dependencies.
+#
+# cooldown: only propose a release once it has been out for 14 days, so a
+# broken or compromised release has time to be caught and pulled first. This
+# delays routine version updates only; security updates still arrive at once.
 version: 2
 updates:
   - package-ecosystem: npm
     directory: /tests
     schedule:
       interval: monthly
+    cooldown:
+      default-days: 14
     groups:
       test-tools:
         patterns: ['*']
@@ -13,3 +19,5 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    cooldown:
+      default-days: 14
