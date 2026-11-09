@@ -6,7 +6,7 @@ This summarizes a second research round (November 2026) into how semantics, prag
 - [`research/language-and-axiology.md`](research/language-and-axiology.md): philosophy of value, semantics, pragmatics, and card-level wording issues
 - [`research/values-and-wellbeing.md`](research/values-and-wellbeing.md): Schwartz's 19 values, wellbeing frameworks, character strengths, moral psychology, a crosswalk and coverage analysis
 
-**Status: adopted (deck version 3).** The deck below is now `assets/js/values.js`, and the sort changes are in the app. Version 3 split Mastery into Craft and Resourcefulness (see "Deck version 3" below). Saved progress from earlier decks is migrated automatically (see Implementation notes).
+**Status: adopted (deck version 3).** The deck below is now `assets/js/values.js`, and the sort changes are in the app. Version 3 split Mastery into Expertise and Resourcefulness (see "Deck version 3" below). Saved progress from earlier decks is migrated automatically (see Implementation notes).
 
 The interactive map now opens with a before-and-after count of the original and current decks, calculated from the map's own data. In short: conservation values went from 11 cards to 15 and self-enhancement from 4 to 6, the crowded caring region shrank from 13 to 11, and the Schwartz values with no card fell from 4 to 1 (Face, left out on purpose).
 
@@ -45,12 +45,12 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 | **Cooperation** | Working well with others toward shared aims. | Unchanged | Benevolence: dependability |
 | **Courage** | Doing hard or frightening things when they are worth doing to me. | Reworded | No single home |
 | **Courtesy** | Showing good manners and consideration in everyday dealings with people. | New | Conformity: interpersonal |
-| **Craft** | Refining my skills through steady practice. | New (split from Mastery) | Achievement |
 | **Creativity** | Imagining, making and expressing things in my own way. | Unchanged | Self-direction: thought |
 | **Curiosity** | Asking questions, exploring and staying open to discovery. | Unchanged | Self-direction: thought |
 | **Duty** | Honoring the commitments that come with my roles and relationships. | New | Conformity: rules |
 | **Empathy** | Trying to understand how things are for other people. | Reworded | Universalism: tolerance |
 | **Excellence** | Putting care and skill into the work I do. | Renamed from Diligence | Achievement |
+| **Expertise** | Refining my skills through steady practice. | New (split from Mastery) | Achievement |
 | **Fairness** | Treating people even-handedly, without favoritism. | Reworded | Universalism: concern |
 | **Faith** | Practicing my religion and letting it guide how I live. | New (split from Spirituality) | Tradition |
 | **Family** | Caring for the people I count as family. | Reworded | Benevolence: caring |
@@ -111,12 +111,12 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 
 **The two ideas.**
 
-- **Skill built through practice.** Achievement-goal research calls the aim of developing competence, rather than outperforming others, a *mastery goal* (Ames, 1992). This becomes **Craft**: "Refining my skills through steady practice." It keeps Mastery's wording and its place in Achievement, so self-enhancement still has 6 cards.
+- **Skill built through practice.** Achievement-goal research calls the aim of developing competence, rather than outperforming others, a *mastery goal* (Ames, 1992). This becomes **Expertise**: "Refining my skills through steady practice." It keeps Mastery's wording and its place in Achievement, so self-enhancement still has 6 cards.
 - **An active, practical stance toward life's problems.** Pearlin and Schooler (1978) define mastery as how far people see their life chances as under their own control, and Ryff's (1989) *environmental mastery* is managing the demands of everyday life. A sense of control is a belief, not an action, so the card names what a person does: **Resourcefulness**, "Looking for practical ways to deal with problems as they come." It sits in Self-direction: action, and pairs with Acceptance: acting on what I can change, and making room for what I can't.
 
-**Overlaps checked.** Craft deepens a skill a person has chosen, where Learning takes in new knowledge, Excellence is care in one's work, and Self-discipline is following through. Resourcefulness can include asking for help, unlike Independence, and works on the problem, where Flexibility adapts the person to it.
+**Overlaps checked.** Expertise deepens a skill a person has chosen, where Learning takes in new knowledge, Excellence is care in one's work, and Self-discipline is following through. Resourcefulness can include asking for help, unlike Independence, and works on the problem, where Flexibility adapts the person to it.
 
-**Names considered.** For the skill half, *Skill* and *Competence* name something a person has rather than a way of acting, *Practice* is ambiguous (medical or religious practice) and *Craftsmanship* is gendered. For the other half, *Self-efficacy* is a belief, *Agency* is abstract, and *Problem-solving* reads as a technique.
+**Names considered.** For the skill half, review chose *Expertise* over a first draft, *Craft*, because it is the plainer everyday word. Like *Skill* and *Competence*, it names something a person has or reaches, so the description carries the ongoing action: refining, not arriving. *Practice* is ambiguous (medical or religious practice) and *Craftsmanship* is gendered. For the other half, *Self-efficacy* is a belief, *Agency* is abstract, and *Problem-solving* reads as a technique.
 
 ## Changes to the sort
 
@@ -208,7 +208,7 @@ These codings are judgment calls based on the frameworks, not published mappings
 | Learning | Self-direction: thought | Love of learning | Competence | Education | Keep |
 | Love | Benevolence: caring | Love | Relatedness | Family, couples, parenting, friends | Reword |
 | Loyalty | Benevolence: dependability | Teamwork | Relatedness | Family, friends, citizenship | Reword |
-| Mastery | Achievement | Perseverance | Competence | Work, education, recreation | Reword; later split: Into Craft and Resourcefulness (version 3) |
+| Mastery | Achievement | Perseverance | Competence | Work, education, recreation | Reword; later split: Into Expertise and Resourcefulness (version 3) |
 | Mindfulness | No single home | None (an ACT process) | Autonomy | Spirituality | Merge: With Connection, into Presence |
 | Nature | Universalism: nature | Appreciation of beauty | None | Recreation, citizenship | Split: Into Nature and Stewardship |
 | Nurturing | Benevolence: caring | Kindness, love | Relatedness, beneficence | Parenting, work | Reword: Absorbs Encouragement |
@@ -236,7 +236,7 @@ These codings are judgment calls based on the frameworks, not published mappings
 
 Ids changed for merged and renamed cards, and `store.normalize` migrates saved data from schema 1: caring to kindness, encouragement to nurturing, connection and mindfulness to presence, persistence to self-discipline, diligence to excellence, peace to harmony, and trust to trusting-others. When two old cards merge, the stronger pile wins and both reflections are kept. New cards are queued for sorting after the ones already placed.
 
-Deck version 3 moves saved data to schema 3 with the same step. Everything saved for Mastery (its pile, place in the core list, tie, narrowing score, reflection, life-area links, actions and decision ratings) moves to Craft, which keeps Mastery's wording. Resourcefulness is queued for sorting, and people who had started see the "deck updated" notice again. `RENAMED` in `values.js` lists every old id with its current card.
+Deck version 3 moves saved data to schema 3 with the same step. Everything saved for Mastery (its pile, place in the core list, tie, narrowing score, reflection, life-area links, actions and decision ratings) moves to Expertise, which keeps Mastery's wording. Resourcefulness is queued for sorting, and people who had started see the "deck updated" notice again. `RENAMED` in `values.js` lists every old id with its current card.
 
 ## Life areas
 

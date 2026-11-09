@@ -65,7 +65,7 @@ const { BASE, VARIANTS, check, open, axe, state, sortDeck, finish, exit } = requ
     await page.goto(BASE); await page.reload(); await page.waitForSelector('.notice--update');
     const st = await state(page);
     check(st.schema === SCHEMA, `saved data is migrated and saved as schema ${SCHEMA}`);
-    check(/Mastery became two cards, Craft and Resourcefulness/.test(await page.locator('.notice--update').textContent()), 'the notice says where Mastery went');
+    check(/Mastery became two cards, Expertise and Resourcefulness/.test(await page.locator('.notice--update').textContent()), 'the notice says where Mastery went');
     check(st.core.join() === 'kindness,trusting-others,presence,honesty', 'merged and renamed core values carry over without duplicates');
     check(st.piles.kindness === 'very' && st.piles.presence === 'very', 'merged cards keep the stronger pile');
     check(st.reflections.kindness.meaning.includes('Looking out') && st.reflections.kindness.meaning.includes('Being warm'), 'both reflections are kept when cards merge');

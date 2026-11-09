@@ -10,7 +10,7 @@
 // one act and one target, verbs rather than "being", the person as the giver,
 // no circular words, no absolutes, and no feelings as values.
 //
-// Version 3 (November 2026) split Mastery into Craft and Resourcefulness: the
+// Version 3 (November 2026) split Mastery into Expertise and Resourcefulness: the
 // word was flagged as one some people hear through "master", and the card held
 // two different ideas (see "Deck version 3" in docs/VALUES-MAP.md).
 
@@ -28,12 +28,12 @@ export const VALUES = [
   { id: 'cooperation', name: 'Cooperation', desc: 'Working well with others toward shared aims.' },
   { id: 'courage', name: 'Courage', desc: 'Doing hard or frightening things when they are worth doing to me.' },
   { id: 'courtesy', name: 'Courtesy', desc: 'Showing good manners and consideration in everyday dealings with people.' },
-  { id: 'craft', name: 'Craft', desc: 'Refining my skills through steady practice.' },
   { id: 'creativity', name: 'Creativity', desc: 'Imagining, making and expressing things in my own way.' },
   { id: 'curiosity', name: 'Curiosity', desc: 'Asking questions, exploring and staying open to discovery.' },
   { id: 'duty', name: 'Duty', desc: 'Honoring the commitments that come with my roles and relationships.' },
   { id: 'empathy', name: 'Empathy', desc: 'Trying to understand how things are for other people.' },
   { id: 'excellence', name: 'Excellence', desc: 'Putting care and skill into the work I do.' },
+  { id: 'expertise', name: 'Expertise', desc: 'Refining my skills through steady practice.' },
   { id: 'fairness', name: 'Fairness', desc: 'Treating people even-handedly, without favoritism.' },
   { id: 'faith', name: 'Faith', desc: 'Practicing my religion and letting it guide how I live.' },
   { id: 'family', name: 'Family', desc: 'Caring for the people I count as family.' },
@@ -142,7 +142,7 @@ export const RENAMED = {
   'diligence': 'excellence',
   'peace': 'harmony',
   'trust': 'trusting-others',
-  // Deck version 3: Mastery's choices move to Craft, the half that keeps its
+  // Deck version 3: Mastery's choices move to Expertise, the half that keeps its
   // wording. Resourcefulness is new, so it is queued for sorting.
-  'mastery': 'craft',
+  'mastery': 'expertise',
 };

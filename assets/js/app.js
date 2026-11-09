@@ -66,7 +66,7 @@ function deckNotice() {
   if (!state.deckUpdated) return '';
   return `<aside class="notice notice--update" aria-labelledby="upd-h">
     <h2 id="upd-h">The deck has been refined</h2>
-    <p>Cards have been reworded, combined, split or added since you started. Most recently, Mastery became two cards, Craft and Resourcefulness, and anything you chose for Mastery is now on Craft. Your other choices have been carried over too. If you had finished sorting, you\u2019ll be asked to sort just the new cards.</p>
+    <p>Cards have been reworded, combined, split or added since you started. Most recently, Mastery became two cards, Expertise and Resourcefulness, and anything you chose for Mastery is now on Expertise. Your other choices have been carried over too. If you had finished sorting, you\u2019ll be asked to sort just the new cards.</p>
     <div class="inline-actions">
       <a class="btn btn--ghost btn--sm" href="docs/values-map.html">See what changed and why</a>
       <button type="button" class="btn btn--ghost btn--sm" data-action="dismiss-update">Dismiss</button>

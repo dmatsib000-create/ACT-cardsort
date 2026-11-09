@@ -130,7 +130,7 @@ function carryOver(input) {
 // and add unit tests for it in tests/unit/store.test.mjs.
 export const MIGRATIONS = [
   { from: 1, to: 2, run: carryOver }, // deck version 2: merges, renames, new cards
-  { from: 2, to: 3, run: carryOver }, // deck version 3: Mastery split into Craft and Resourcefulness
+  { from: 2, to: 3, run: carryOver }, // deck version 3: Mastery split into Expertise and Resourcefulness
 ];
 
 // Data saved before schema numbers existed counts as schema 1.
