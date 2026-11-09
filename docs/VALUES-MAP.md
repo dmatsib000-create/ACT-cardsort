@@ -30,7 +30,7 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 
 | Card | Proposed wording | Change | Schwartz region |
 |---|---|---|---|
-| **Acceptance** | Making room for feelings and situations I can't change, instead of fighting them. | Reworded | Universalism: tolerance |
+| **Acceptance** | Making room for feelings and situations I can’t change, instead of fighting them. | Reworded | Universalism: tolerance |
 | **Adventure** | Seeking out new experiences and exploring the unfamiliar. | Unchanged | Stimulation |
 | **Assertiveness** | Saying clearly what I need, while staying respectful. | Reworded | Self-direction: action |
 | **Authenticity** | Acting in ways that fit who I really am. | Reworded | Self-direction: action |
@@ -50,7 +50,7 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 | **Excellence** | Putting care and skill into the work I do. | Renamed from Diligence | Achievement |
 | **Fairness** | Treating people even-handedly, without favoritism. | Reworded | Universalism: concern |
 | **Faith** | Practicing my religion and letting it guide how I live. | New (split from Spirituality) | Tradition |
-| **Family** | Showing up for the people I consider family. | Reworded | Benevolence: caring |
+| **Family** | Caring for the people I count as family. | Reworded | Benevolence: caring |
 | **Flexibility** | Adapting with grace when plans or circumstances change. | Unchanged | Self-direction: action |
 | **Forgiveness** | Letting go of resentment toward people who hurt me, without excusing the harm. | Reworded | Benevolence: caring |
 | **Freedom** | Making my own choices about how I live. | Reworded | Self-direction: action |
@@ -83,7 +83,7 @@ Five merges, two splits, two renames, eight additions and reworded descriptions 
 | **Order** | Creating structure and organization in my life and spaces. | Unchanged | Security: personal |
 | **Patience** | Giving things and people the time they need. | Reworded | Conformity: interpersonal |
 | **Pleasure** | Savoring the good things my senses and body can enjoy. | Unchanged | Hedonism |
-| **Presence** | Giving my full attention to what I'm doing and who I'm with. | Merges Connection + Mindfulness | Benevolence: caring |
+| **Presence** | Giving my full attention to what I’m doing and who I’m with. | Merges Connection + Mindfulness | Benevolence: caring |
 | **Providing** | Working to provide for the people who depend on me. | New | Power: resources |
 | **Prudence** | Thinking ahead and making careful, considered choices. | New | Security: personal |
 | **Reliability** | Keeping my word to people. | Reworded | Benevolence: dependability |

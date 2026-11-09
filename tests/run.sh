@@ -18,7 +18,10 @@ sleep 1
 status=0
 node ../scripts/check-deck.mjs || status=1
 node ../scripts/check-offline-cache.mjs || status=1
-for t in core-flow.js deck-v2.js life-areas.js; do
+node ../scripts/sync-values-map.mjs || status=1
+echo "== unit tests"
+node --test unit/*.test.mjs || status=1
+for t in core-flow.js deck-v2.js life-areas.js escaping.js; do
   echo "== $t"
   node "$t" || status=1
 done

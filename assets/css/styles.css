@@ -534,7 +534,7 @@ h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus { outline: none; }
   font: inherit; color: var(--ink); background: var(--surface);
   border: 1.5px solid var(--line-strong); border-radius: var(--radius-s);
 }
-.chip__select { min-height: 44px; padding: 0 .4rem; font-size: .9rem; max-width: 7.5rem; }
+.chip__select { flex: none; min-height: 44px; padding: 0 .4rem; font-size: .9rem; max-width: 7.5rem; }
 
 /* ---------- Forms ---------- */
 fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
@@ -797,6 +797,13 @@ input[type="range"][data-unset] { accent-color: var(--line-strong); }
 .notice--update .inline-actions { margin-top: var(--space-3); }
 .notice--inline { padding: var(--space-3) var(--space-4); margin-bottom: var(--space-3); font-size: .95rem; }
 .value__why { font-size: .9rem; color: var(--ink-2); margin-bottom: var(--space-2); }
+
+/* Text people type (value and area names, reflections, actions) can contain
+   long unbroken words or links; let them wrap instead of spilling over
+   neighbouring controls. */
+.pick__text, .chip__text, .rank-item__text, .value__body, .action__step, .action__meta dd,
+.area-card__name, .area-card__values, .decision-link, .summary__name, .opt-matrix__legend,
+.vcard__desc, .tag, .chip-opt span, .detail__name, .page-head h1 { min-width: 0; overflow-wrap: anywhere; }
 
 /* Life areas */
 .area-pick { display: flex; align-items: stretch; gap: var(--space-2); }
