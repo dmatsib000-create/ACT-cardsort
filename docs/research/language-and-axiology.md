@@ -159,13 +159,21 @@ Issue types: **DB** = double-barreled (two acts or two targets); **DIR** = direc
 | Self-care / Self-compassion / Health | OVL | Unclear boundaries. Define Health as body, Self-care as routines and rest, and Self-compassion as stance. |
 | Fun / Humor / Pleasure | OVL | Hedonic cluster. Fine; make sure the descriptions differ clearly. |
 
-Cards not listed (Adventure, Caring, Compassion, Cooperation, Creativity, Curiosity, Encouragement, Flexibility, Fun, Generosity, Hospitality, Humor, Learning, Mastery, Open-mindedness, Pleasure, Self-awareness, Self-compassion, Self-discipline) raised no significant linguistic or axiological problem beyond the cluster overlaps above. Hospitality norms vary across cultures, but the description is neutral enough.
+Cards not listed (Adventure, Caring, Compassion, Cooperation, Creativity, Curiosity, Encouragement, Flexibility, Fun, Generosity, Hospitality, Humor, Learning, Mastery, Open-mindedness, Pleasure, Self-awareness, Self-compassion, Self-discipline) raised no significant linguistic or axiological problem beyond the cluster overlaps above. Mastery was later flagged in feedback; see the addendum below. Hospitality norms vary across cultures, but the description is neutral enough.
+
+### Addendum (November 2026): Mastery
+
+Feedback flagged *Mastery* as a word some people hear through "master" and its history in slavery. This is a culturally loaded (CULT) problem the review above missed: the card's description was sound, but the name carries associations for some readers that its intended sense does not. Etymology does not settle it, because the skill sense ("mastery of a craft") and the dominion sense ("master of others") share a root, and readers meet the name before the description. Other fields have been retiring "master" in technical terms, while psychology still uses "mastery" widely (mastery goals; Pearlin's Mastery Scale; the "mastery criteria" of behavioral treatments). Reports that Parent-Child Interaction Therapy has dropped the term could not be confirmed from the PCIT training materials we found, which still use "mastery criteria".
+
+The name was also polysemous (POLY) in a way that matters for sorting. In psychology, "mastery" covers both skill built through practice (a *mastery goal*; Ames, 1992) and a sense of control over one's life (Pearlin & Schooler, 1978; Ryff's "environmental mastery"). Deck version 3 splits the card: **Expertise** ("Refining my skills through steady practice.") and **Resourcefulness** ("Looking for practical ways to deal with problems as they come."). See `docs/VALUES-MAP.md` for the full rationale.
 
 ---
 
 ## References
 
 Alwin, D. F., & Krosnick, J. A. (1985). The measurement of values in surveys: A comparison of ratings and rankings. *Public Opinion Quarterly, 49*(4), 535–552. https://doi.org/10.1086/268949 **[DOI unconfirmed]**
+
+Ames, C. (1992). Classrooms: Goals, structures, and student motivation. *Journal of Educational Psychology, 84*(3), 261–271. https://doi.org/10.1037/0022-0663.84.3.261 **[DOI unconfirmed]**
 
 Baier, A. (1986). Trust and antitrust. *Ethics, 96*(2), 231–260. https://doi.org/10.1086/292745 **[DOI unconfirmed]**
 
@@ -238,6 +246,8 @@ Moore, G. E. (1903). *Principia ethica*. Cambridge University Press.
 Parfit, D. (1984). *Reasons and persons*. Oxford University Press. (Appendix I, "What makes someone's life go best," pp. 493–502.)
 
 Paulhus, D. L. (1984). Two-component models of socially desirable responding. *Journal of Personality and Social Psychology, 46*(3), 598–609. https://doi.org/10.1037/0022-3514.46.3.598
+
+Pearlin, L. I., & Schooler, C. (1978). The structure of coping. *Journal of Health and Social Behavior, 19*(1), 2–21. https://doi.org/10.2307/2136319 (PMID 649936) **[DOI unconfirmed]**
 
 Potts, C. (2007). The expressive dimension. *Theoretical Linguistics, 33*(2), 165–198. **[DOI unconfirmed; one source gives the end page as 197]**
 

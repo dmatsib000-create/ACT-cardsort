@@ -5,7 +5,7 @@
 import { VALUES, RENAMED, AREAS, LIMITS } from './values.js';
 
 const KEY = 'lodestar:v1';
-export const SCHEMA = 2;
+export const SCHEMA = 3;
 
 export const fresh = () => ({
   schema: SCHEMA,
@@ -63,24 +63,28 @@ export function clear() {
   return fresh();
 }
 
-// Carries saved progress from deck version 1 (65 cards) to version 2, where
-// some cards were merged or renamed. Choices follow the card to its new id;
-// when two old cards merge, the stronger pile and both reflections are kept.
+// Carries saved progress over to a newer deck, where some cards were merged,
+// renamed or split (RENAMED in values.js). Choices follow the card to its new
+// id; when two old cards merge, the stronger pile and both reflections are
+// kept. Cards new to the deck are queued for sorting later, by normalize.
+// Used for deck version 2 (65 cards to 71) and version 3 (Mastery split).
 const PILE_RANK = { very: 3, some: 2, not: 1 };
-function migrateV1(input) {
-  const to = (id) => RENAMED[id] || id;
+// Prototype-free maps, so a "__proto__" key in a backup file stays a plain key.
+const dict = () => Object.create(null);
+function carryOver(input) {
+  const to = (id) => (Object.prototype.hasOwnProperty.call(RENAMED, id) ? RENAMED[id] : id);
   const list = (v) => [...new Set((Array.isArray(v) ? v : []).map(to))];
   const started = Array.isArray(input.order) && input.order.length > 0;
   const out = { ...input, deckUpdated: started };
   out.order = list(input.order);
   out.history = list(input.history);
   out.core = list(input.core);
-  out.piles = {};
+  out.piles = dict();
   for (const [id, p] of Object.entries(input.piles || {})) {
     const n = to(id);
     if (!out.piles[n] || (PILE_RANK[p] || 0) > (PILE_RANK[out.piles[n]] || 0)) out.piles[n] = p;
   }
-  out.reflections = {};
+  out.reflections = dict();
   for (const [id, r] of Object.entries(input.reflections || {})) {
     if (!r || typeof r !== 'object') continue;
     const n = to(id);
@@ -95,9 +99,9 @@ function migrateV1(input) {
   out.actions = (Array.isArray(input.actions) ? input.actions : []).map((a) => (a && typeof a === 'object' ? { ...a, valueId: to(a.valueId) } : a));
   out.decisions = (Array.isArray(input.decisions) ? input.decisions : []).map((d) => {
     if (!d || typeof d !== 'object' || !d.ratings) return d;
-    const ratings = {};
+    const ratings = dict();
     for (const [opt, r] of Object.entries(d.ratings)) {
-      ratings[opt] = {};
+      ratings[opt] = dict();
       for (const [vid, n] of Object.entries(r || {})) {
         const k = to(vid);
         // Deliberate: if two merged cards were rated differently on one option,
@@ -107,6 +111,17 @@ function migrateV1(input) {
     }
     return { ...d, ratings };
   });
+  // Fields added in deck version 2, so only schema 2 data has them.
+  out.ties = list(input.ties);
+  out.bw = dict();
+  for (const [id, n] of Object.entries(input.bw && typeof input.bw === 'object' ? input.bw : {})) {
+    const k = to(id);
+    if (!(k in out.bw) || n > out.bw[k]) out.bw[k] = n;
+  }
+  out.areas = dict();
+  for (const [id, a] of Object.entries(input.areas && typeof input.areas === 'object' ? input.areas : {})) {
+    out.areas[id] = a && typeof a === 'object' ? { ...a, values: list(a.values) } : a;
+  }
   return out;
 }
 
@@ -114,7 +129,8 @@ function migrateV1(input) {
 // it at schema `to`. To change the saved format: bump SCHEMA, add a step here,
 // and add unit tests for it in tests/unit/store.test.mjs.
 export const MIGRATIONS = [
-  { from: 1, to: 2, run: migrateV1 },
+  { from: 1, to: 2, run: carryOver }, // deck version 2: merges, renames, new cards
+  { from: 2, to: 3, run: carryOver }, // deck version 3: Mastery split into Expertise and Resourcefulness
 ];
 
 // Data saved before schema numbers existed counts as schema 1.

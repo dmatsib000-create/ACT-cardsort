@@ -189,7 +189,7 @@ td strong { font-family: var(--font-display); font-size: 1.05rem; font-weight: 6
   <header class="masthead">
     <p class="eyebrow">Lodestar research · November 2026</p>
     <h1>Lodestar Values Map</h1>
-    <p class="lede">How Lodestar’s values deck relates to the science of values and wellbeing: what a review of the original 65 cards found, and the 71-card deck now in use. Built from two research briefs covering the philosophy of value, linguistics, and the psychology of values and wellbeing.</p>
+    <p class="lede">How Lodestar’s values deck relates to the science of values and wellbeing: what a review of the original 65 cards found, and the 72-card deck now in use. Built from two research briefs covering the philosophy of value, linguistics, and the psychology of values and wellbeing.</p>
     <p class="stats-label">What the review found in the original 65-card deck</p>
     <div class="stats" role="list">
       <div class="stat" role="listitem"><b>31 of 65</b><span>cards sit in self-transcendence, concern for others</span></div>
@@ -317,7 +317,7 @@ td strong { font-family: var(--font-display); font-size: 1.05rem; font-weight: 6
 
   <h2>The deck now in use</h2>
   <div class="prose">
-    <p>These recommendations were adopted as Lodestar’s deck version 2 in November 2026. Applying them gives <strong><span id="deck-count"></span> cards</strong>, up from 65. Five merges remove near-duplicates, two splits separate cards that held two values, and eight additions fill the empty and thin regions. All descriptions follow the wording rules below.</p>
+    <p>These recommendations were adopted as Lodestar’s deck version 2 in November 2026. Applying them gives <strong><span id="deck-count"></span> cards</strong>, up from 65. Five merges remove near-duplicates, two splits separate cards that held two values, and eight additions fill the empty and thin regions. Version 3 then split Mastery into Expertise and Resourcefulness, because the word was flagged as one some people hear through “master” and the card held two different ideas. All descriptions follow the wording rules below.</p>
   </div>
   <div class="table-wrap" tabindex="0" role="region" aria-label="Proposed deck table">
     <table aria-label="All cards in the current deck, with their wording and how each changed">
@@ -386,9 +386,11 @@ td strong { font-family: var(--font-display); font-size: 1.05rem; font-weight: 6
     <li>McCarty, J. A., &amp; Shrum, L. J. (2000). The measurement of personal values in survey research: A test of alternative rating procedures. <em>Public Opinion Quarterly, 64</em>(3), 271–298.</li>
     <li>Menold, N. (2020). Double barreled questions: An analysis of the similarity of elements and effects on measurement quality. <em>Journal of Official Statistics, 36</em>(4), 855–886.</li>
     <li>Park, N., Peterson, C., &amp; Seligman, M. E. P. (2004). Strengths of character and well-being. <em>Journal of Social and Clinical Psychology, 23</em>(5), 603–619.</li>
+    <li>Pearlin, L. I., &amp; Schooler, C. (1978). The structure of coping. <em>Journal of Health and Social Behavior, 19</em>(1), 2–21.</li>
     <li>Peterson, C., &amp; Seligman, M. E. P. (2004). <em>Character strengths and virtues: A handbook and classification.</em> APA / Oxford University Press.</li>
     <li>Raz, J. (1986). <em>The morality of freedom.</em> Clarendon Press.</li>
     <li>Ryan, R. M., &amp; Deci, E. L. (2000). Self-determination theory and the facilitation of intrinsic motivation, social development, and well-being. <em>American Psychologist, 55</em>(1), 68–78.</li>
+    <li>Ryff, C. D. (1989). Happiness is everything, or is it? Explorations on the meaning of psychological well-being. <em>Journal of Personality and Social Psychology, 57</em>(6), 1069–1081.</li>
     <li>Schwartz, S. H., Cieciuch, J., Vecchione, M., et al. (2012). Refining the theory of basic individual values. <em>Journal of Personality and Social Psychology, 103</em>(4), 663–688.</li>
     <li>Schwartz, S. H., &amp; Cieciuch, J. (2022). Measuring the refined theory of individual values in 49 cultural groups. <em>Assessment, 29</em>(5), 1005–1019.</li>
     <li>Sortheix, F. M., &amp; Schwartz, S. H. (2017). Values that underlie and undermine well-being: Variability across countries. <em>European Journal of Personality, 31</em>(2), 187–201.</li>
@@ -998,11 +1000,11 @@ const VALUES = [
 "via": "Perseverance",
 "sdt": "Competence",
 "domain": "Work, education, recreation",
-"rec": "reword",
-"target": "",
-"pname": "Mastery",
-"pdesc": "Practicing and refining my skills in the things I care about.",
-"note": "One of only four cards in the achievement half. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule."
+"rec": "split",
+"target": "Into Expertise and Resourcefulness (version 3)",
+"pname": "Expertise",
+"pdesc": "Refining my skills through steady practice.",
+"note": "Split in version 3. The word was flagged in feedback as one some people hear through “master” and its history in slavery, and the card held two ideas: building skill through practice (what achievement-goal research calls a mastery goal) and taking a practical, active hand in life’s problems (mastery as Pearlin and Ryff use it). Expertise keeps the first, and saved choices for Mastery move to it; Resourcefulness is new."
 },
 {
 "id": "mindfulness",
@@ -1324,7 +1326,7 @@ const ADDITIONS = [
 "pdesc": "Keeping a better future in view and working toward it.",
 "note": "Hope is one of the five character strengths most strongly linked to life satisfaction (Park, Peterson & Seligman, 2004), and the deck has no card for it. Worded as an action so it is not a feeling to be had.",
 "rec": "add",
-"target": "",
+"target": "In version 2",
 "pname": "Hope",
 "desc": ""
 },
@@ -1338,7 +1340,7 @@ const ADDITIONS = [
 "pdesc": "Throwing myself fully into what I do.",
 "note": "Zest is the other top life-satisfaction strength missing from the deck. Worded as a way of engaging rather than a feeling of energy. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule.",
 "rec": "add",
-"target": "",
+"target": "In version 2",
 "pname": "Vitality",
 "desc": ""
 },
@@ -1352,7 +1354,7 @@ const ADDITIONS = [
 "pdesc": "Speaking up and getting involved in decisions that affect me and others.",
 "note": "Power is absent by design, but some people genuinely value having a say. This action form gives them an honest card and makes endorsing the others more meaningful, which helps with ceiling effects. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule.",
 "rec": "add",
-"target": "",
+"target": "In version 2",
 "pname": "Influence",
 "desc": ""
 },
@@ -1366,7 +1368,7 @@ const ADDITIONS = [
 "pdesc": "Working to provide for the people who depend on me.",
 "note": "The action form of material stability, which VanderWeele treats as enabling flourishing. It is what \"wealth\" usually turns out to mean when an ACT therapist asks what it would give you. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule.",
 "rec": "add",
-"target": "",
+"target": "In version 2",
 "pname": "Providing",
 "desc": ""
 },
@@ -1380,7 +1382,7 @@ const ADDITIONS = [
 "pdesc": "Honoring the commitments that come with my roles and relationships.",
 "note": "Conformity values and the binding moral foundations have almost no cards, so people with these priorities see few cards that describe them. A relational counterpart to Independence. Watch for pliance in reflection. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule.",
 "rec": "add",
-"target": "",
+"target": "In version 2",
 "pname": "Duty",
 "desc": ""
 },
@@ -1394,7 +1396,7 @@ const ADDITIONS = [
 "pdesc": "Showing good manners and consideration in everyday dealings with people.",
 "note": "Interpersonal conformity (avoiding upsetting others) is thin in the deck.",
 "rec": "add",
-"target": "",
+"target": "In version 2",
 "pname": "Courtesy",
 "desc": ""
 },
@@ -1408,7 +1410,7 @@ const ADDITIONS = [
 "pdesc": "Thinking ahead and making careful, considered choices.",
 "note": "Prudence is one of the 24 VIA strengths with no card.",
 "rec": "add",
-"target": "",
+"target": "In version 2",
 "pname": "Prudence",
 "desc": ""
 },
@@ -1422,7 +1424,7 @@ const ADDITIONS = [
 "pdesc": "Doing my part as a member of my community and society.",
 "note": "Societal security has no card, and citizenship is a thin VLQ domain. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule.",
 "rec": "add",
-"target": "",
+"target": "In version 2",
 "pname": "Citizenship",
 "desc": ""
 },
@@ -1436,7 +1438,7 @@ const ADDITIONS = [
 "pdesc": "Protecting the natural world for the people who come after me.",
 "note": "Split from Nature: protecting the environment is a different value from enjoying it.",
 "rec": "add",
-"target": "",
+"target": "In version 2",
 "pname": "Stewardship",
 "desc": ""
 },
@@ -1450,8 +1452,22 @@ const ADDITIONS = [
 "pdesc": "Practicing my religion and letting it guide how I live.",
 "note": "Split from Spirituality: religious practice differs from a general sense of connection to something larger. Final wording revised so the card fits ACT’s definition of a value: a quality of ongoing action within the person’s control, not an outcome, feeling or rule.",
 "rec": "add",
-"target": "",
+"target": "In version 2",
 "pname": "Faith",
+"desc": ""
+},
+{
+"id": "add-resourcefulness",
+"name": "Resourcefulness",
+"s": "SDA",
+"via": "Creativity, perseverance",
+"sdt": "Competence",
+"domain": "Any",
+"pdesc": "Looking for practical ways to deal with problems as they come.",
+"note": "Split from Mastery: looking for practical ways through problems is the sense of mastery as agency over one’s life (Pearlin & Schooler, 1978; Ryff, 1989), a different value from refining a skill. It pairs with Acceptance: acting on what I can change, and making room for what I can’t.",
+"rec": "add",
+"target": "In version 3",
+"pname": "Resourcefulness",
 "desc": ""
 }
 ];
@@ -1461,7 +1477,7 @@ const ADDITIONS = [
   const $ = (s, el = document) => el.querySelector(s);
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const NS = 'http://www.w3.org/2000/svg';
-  const REC = { keep: 'Keep', reword: 'Reword', split: 'Split', merge: 'Merge', add: 'Added in version 2' };
+  const REC = { keep: 'Keep', reword: 'Reword', split: 'Split', merge: 'Merge', add: 'Added' };
   const HUB = { code: 'HUB', name: 'No single home', short: '', hi: 'hub', defn: 'Virtues and ACT processes that can serve any value.' };
   const sectorOf = (code) => (code === 'HUB' ? HUB : SECTORS.find((s) => s.code === code));
   const all = [...VALUES.map((v) => ({ ...v, kind: 'deck' })), ...ADDITIONS.map((v) => ({ ...v, kind: 'add' }))];
@@ -1641,6 +1657,7 @@ const ADDITIONS = [
       let change = 'Unchanged';
       if (v.kind === 'add') change = sources[0].note.startsWith('Split from') ? `New (split from ${sources[0].note.match(/Split from (\w+)/)[1]})` : 'New';
       else if (sources.length > 1) change = `Merges ${sources.map((x) => x.name).join(' + ')}`;
+      else if (v.rec === 'split' && v.target.startsWith('Into ') && v.pname !== v.name) change = `New (split from ${v.name})`;
       else if (v.pname !== v.name) change = `Renamed from ${v.name}`;
       else if (recs.includes('split')) change = 'Split';
       else if (v.pdesc !== v.desc) change = 'Reworded';

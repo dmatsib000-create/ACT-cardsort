@@ -177,6 +177,45 @@ test('v1 to v2: the "deck updated" notice is only for people who had started', (
   assert.equal(normalize({ schema: 1 }).deckUpdated, false);
 });
 
+test('v2 to v3: Mastery choices move to Expertise everywhere they were saved', () => {
+  const s = normalize({ schema: 2,
+    order: ['mastery', 'honesty'], piles: { mastery: 'very', honesty: 'very' }, history: ['mastery', 'honesty'],
+    core: ['honesty', 'mastery'], ties: ['mastery'], bw: { mastery: 2, honesty: -1 },
+    reflections: { mastery: { meaning: 'Getting better at piano', living: 7, why: 'own' } },
+    areas: { work: { status: 'active', values: ['mastery', 'honesty'] } },
+    actions: [{ valueId: 'mastery', step: 'Practice scales' }],
+    decisions: [{ id: 'd1', options: [{ id: 'o1', label: 'A' }], ratings: { o1: { mastery: 1, honesty: -1 } } }],
+  });
+  assert.equal(s.schema, SCHEMA);
+  assert.ok(!ids.includes('mastery'), 'Mastery is no longer in the deck');
+  assert.equal(s.piles.expertise, 'very');
+  assert.deepEqual(s.history, ['expertise', 'honesty']);
+  assert.deepEqual(s.core, ['honesty', 'expertise']);
+  assert.deepEqual(s.ties, ['expertise']);
+  assert.deepEqual(s.bw, { expertise: 2, honesty: -1 });
+  assert.equal(s.reflections.expertise.meaning, 'Getting better at piano');
+  assert.equal(s.reflections.expertise.living, 7);
+  assert.equal(s.reflections.expertise.why, 'own');
+  assert.deepEqual(s.areas.work.values, ['expertise', 'honesty']);
+  assert.equal(s.actions[0].valueId, 'expertise');
+  assert.deepEqual(s.decisions[0].ratings.o1, { expertise: 1, honesty: -1 });
+});
+
+test('v2 to v3: Resourcefulness is queued after the cards already sorted', () => {
+  const v2 = VALUES.map((v) => (v.id === 'expertise' ? 'mastery' : v.id)).filter((id) => id !== 'resourcefulness');
+  const piles = Object.fromEntries(v2.map((id) => [id, 'some']));
+  const s = normalize({ schema: 2, order: v2, pos: v2.length, piles });
+  assert.equal(s.order.length, VALUES.length);
+  assert.equal(s.pos, VALUES.length - 1, 'every card but the new one is already sorted');
+  assert.equal(s.order.at(-1), 'resourcefulness');
+  assert.equal(s.piles.resourcefulness, undefined);
+  assert.equal(s.deckUpdated, true);
+});
+
+test('v2 to v3: people who had not started see no "deck updated" notice', () => {
+  assert.equal(normalize({ schema: 2 }).deckUpdated, false);
+});
+
 test('built-in areas and values are separate namespaces', () => {
   // "family" is both an area and a value id on purpose (see values.js).
   assert.ok(AREAS.some((a) => a.id === 'family'));

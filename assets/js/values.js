@@ -9,6 +9,10 @@
 // of ongoing action, and follows the wording rules in docs/VALUES-MAP.md:
 // one act and one target, verbs rather than "being", the person as the giver,
 // no circular words, no absolutes, and no feelings as values.
+//
+// Version 3 (November 2026) split Mastery into Expertise and Resourcefulness: the
+// word was flagged as one some people hear through "master", and the card held
+// two different ideas (see "Deck version 3" in docs/VALUES-MAP.md).
 
 export const VALUES = [
   { id: 'acceptance', name: 'Acceptance', desc: 'Making room for feelings and situations I can\u2019t change, instead of fighting them.' },
@@ -29,6 +33,7 @@ export const VALUES = [
   { id: 'duty', name: 'Duty', desc: 'Honoring the commitments that come with my roles and relationships.' },
   { id: 'empathy', name: 'Empathy', desc: 'Trying to understand how things are for other people.' },
   { id: 'excellence', name: 'Excellence', desc: 'Putting care and skill into the work I do.' },
+  { id: 'expertise', name: 'Expertise', desc: 'Refining my skills through steady practice.' },
   { id: 'fairness', name: 'Fairness', desc: 'Treating people even-handedly, without favoritism.' },
   { id: 'faith', name: 'Faith', desc: 'Practicing my religion and letting it guide how I live.' },
   { id: 'family', name: 'Family', desc: 'Caring for the people I count as family.' },
@@ -57,7 +62,6 @@ export const VALUES = [
   { id: 'learning', name: 'Learning', desc: 'Building my knowledge, skills and understanding.' },
   { id: 'love', name: 'Love', desc: 'Showing affection and devotion to the people closest to me.' },
   { id: 'loyalty', name: 'Loyalty', desc: 'Standing by the people I am committed to.' },
-  { id: 'mastery', name: 'Mastery', desc: 'Practicing and refining my skills in the things I care about.' },
   { id: 'nature', name: 'Nature', desc: 'Spending time in the natural world.' },
   { id: 'nurturing', name: 'Nurturing', desc: 'Helping others grow and flourish by teaching, guiding and encouraging them.' },
   { id: 'open-mindedness', name: 'Open-mindedness', desc: 'Considering other viewpoints and staying open to being wrong.' },
@@ -68,6 +72,7 @@ export const VALUES = [
   { id: 'providing', name: 'Providing', desc: 'Working to provide for the people who depend on me.' },
   { id: 'prudence', name: 'Prudence', desc: 'Thinking ahead and making careful, considered choices.' },
   { id: 'reliability', name: 'Reliability', desc: 'Keeping my word to people.' },
+  { id: 'resourcefulness', name: 'Resourcefulness', desc: 'Looking for practical ways to deal with problems as they come.' },
   { id: 'respect', name: 'Respect', desc: 'Treating others with consideration and dignity.' },
   { id: 'responsibility', name: 'Responsibility', desc: 'Owning my choices and their consequences.' },
   { id: 'safety', name: 'Safety', desc: 'Protecting the people in my care from harm.' },
@@ -124,8 +129,10 @@ export const LIMITS = {
 export const MAX_CORE = LIMITS.core;
 export const MAX_AREA_VALUES = LIMITS.areaValues;
 
-// Cards that were merged or renamed in deck version 2, so saved progress can be
-// carried over. Old id -> new id.
+// Cards that were merged, renamed or split since the original deck, so saved
+// progress can be carried over. Old id -> current id. Every step of the saved
+// data migration applies the whole list, so an id here must never be reused
+// for a new card, and a value here must be a card in the current deck.
 export const RENAMED = {
   'caring': 'kindness',
   'encouragement': 'nurturing',
@@ -135,4 +142,7 @@ export const RENAMED = {
   'diligence': 'excellence',
   'peace': 'harmony',
   'trust': 'trusting-others',
+  // Deck version 3: Mastery's choices move to Expertise, the half that keeps its
+  // wording. Resourcefulness is new, so it is queued for sorting.
+  'mastery': 'expertise',
 };
