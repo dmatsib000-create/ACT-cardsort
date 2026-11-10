@@ -47,6 +47,19 @@ People can leave comments and report problems through a Google Form, with no Git
 
 A "Send feedback or report a problem" link then appears in the footer of every page, and a Feedback section appears on the About page. Both ask people not to include their answers or anything that identifies them. Responses go to your Google account; nothing from the card sort is attached.
 
+## Require an access code (optional)
+
+You can limit Lodestar to people you give a code to, for example while it is being tested with a clinic or a study group. While no code is set, anyone can use it.
+
+1. Choose a code. A few unrelated words (like `amber kite harbor`) are easy to share and hard to guess. Case and extra spaces don't matter.
+2. Run `node scripts/hash-access-code.mjs "amber kite harbor"` (Node 22 or later). It prints a line like `export const ACCESS_CODE_HASH = '3f9a…';`.
+3. Replace the `ACCESS_CODE_HASH` line in `assets/js/config.js` with it. Only the hash goes in the repository, never the code itself.
+4. Bump `VERSION` in `sw.js`, then commit.
+
+People then see an "Enter your access code" screen before any page except **Learn**, which stays open to everyone. The crisis resources and the feedback link in the footer stay visible too. The code is remembered on each device, so people enter it once. To change it, repeat the steps with a new code; everyone will be asked for the new one. To turn the gate off, set `ACCESS_CODE_HASH` back to `''`.
+
+This keeps casual visitors out, but it is not real security. The site has no server, so the code is checked in the browser, and someone determined could read the site's files and get past it. For content that must stay private, host the site somewhere with password protection instead (for example Cloudflare Pages or Netlify).
+
 ## Run it locally
 
 Any static web server works. For example:
@@ -62,6 +75,7 @@ python3 -m http.server 8000
 
 - All data is stored in the browser's `localStorage` on the person's own device. There is no server, account, analytics, cookies or third-party code.
 - Fonts are self-hosted, and a Content Security Policy allows only same-origin resources.
+- If an access code is set, the device remembers that it was entered (under its own key, kept by **Start over**). The code is checked in the browser and never sent anywhere.
 - People can erase everything with **Start over**, or download a backup file to move their results between devices.
 
 ## Accessibility
@@ -87,7 +101,8 @@ assets/css/styles.css   Design system: tokens, components, themes, print
 assets/js/app.js        Router, views and interactions
 assets/js/values.js     The values deck (edit here to change the cards)
 assets/js/content.js    Learn and About page content and references
-assets/js/config.js     Site settings: the feedback form link
+assets/js/config.js     Site settings: the feedback form link and access code
+assets/js/access.js     The optional access code check
 assets/js/store.js      Local storage, import validation
 assets/fonts/           Self-hosted fonts (SIL Open Font License)
 assets/icons/           App icons
@@ -95,6 +110,7 @@ docs/research/          Research briefs with verified citations
 docs/VALUES-MAP.md      Values map findings and proposed deck changes
 docs/values-map.html    Interactive values map
 scripts/check-deck.mjs  Checks every card against ACT's definition of a value
+scripts/hash-access-code.mjs  Prints the config line for an access code
 tests/                  End-to-end and accessibility tests (npm test)
 ```
 
