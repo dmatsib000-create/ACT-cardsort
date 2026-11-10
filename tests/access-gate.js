@@ -23,8 +23,8 @@ const GATE = 'h1:has-text("Enter your access code")';
     check((await page.locator(GATE).count()) === 0, 'no code set: no gate');
 
     await serve(page, HASH);
-    await page.goto(`${BASE}#/results`); await page.reload(); await page.waitForSelector(GATE);
-    check(true, 'code set: deep link to My values shows the gate');
+    await page.goto(`${BASE}#/results`); await page.reload(); await page.waitForSelector('#main h1');
+    check((await page.locator(GATE).count()) === 1, 'code set: deep link to My values shows the gate');
     check(await page.locator('.site-nav').isHidden(), 'main navigation hidden while locked');
     check(/988/.test(await page.locator('.site-footer').innerText()), 'crisis resources still shown');
     await axe(page, 'gate');
@@ -50,8 +50,8 @@ const GATE = 'h1:has-text("Enter your access code")';
     check((await page.locator(GATE).count()) === 0, 'stays unlocked after reloading');
 
     await serve(page, NEW_HASH);
-    await page.reload(); await page.waitForSelector(GATE);
-    check(true, 'code changed: asked again');
+    await page.reload(); await page.waitForSelector('#main h1');
+    check((await page.locator(GATE).count()) === 1, 'code changed: asked again');
     await finish(browser, errors, v.name);
   }
   exit();
