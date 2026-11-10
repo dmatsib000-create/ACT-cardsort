@@ -2,6 +2,7 @@ import { VALUES, PILES, PILE_ORDER, MAX_CORE, AREAS, MAX_AREA_VALUES, LIMITS } f
 import * as store from './store.js';
 import { learnHTML, aboutHTML } from './content.js';
 import { feedbackUrl } from './config.js';
+import * as access from './access.js';
 
 /* ------------------------------------------------------------------ *
  * State and helpers
@@ -155,6 +156,9 @@ function parseHash() {
   return { name, param: rest.join('/'), anchor };
 }
 
+// Pages anyone can read without the access code.
+const OPEN_WHEN_LOCKED = new Set(['learn']);
+
 let lastPath = null;
 
 function render() {
@@ -167,7 +171,11 @@ function render() {
 
   cleanupFns.forEach((fn) => fn());
   cleanupFns = [];
-  const view = routes[name] || viewNotFound;
+  // With an access code set, only the gate and the open pages show until
+  // the code is entered. The main navigation is hidden meanwhile.
+  const locked = access.isLocked();
+  document.body.classList.toggle('is-locked', locked);
+  const view = locked && !OPEN_WHEN_LOCKED.has(name) ? viewGate : (routes[name] || viewNotFound);
   app.innerHTML = '';
   view(param);
 
@@ -1881,6 +1889,46 @@ function viewLearn() {
 function viewAbout() {
   setTitle('About, privacy and support');
   app.innerHTML = aboutHTML(feedbackUrl());
+}
+
+function viewGate() {
+  setTitle('Enter your access code');
+  app.innerHTML = `
+    <header class="page-head">
+      <h1>Enter your access code</h1>
+      <p class="lede">Lodestar is available by invitation for now. Enter the access code you were given to begin. You’ll only need to do this once on this device.</p>
+    </header>
+    <form class="card-form gate-form" id="gate-form" novalidate>
+      <div class="field">
+        <label for="g-code" class="field-label">Access code</label>
+        <input type="text" id="g-code" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="g-code-err">
+        <p class="error" id="g-code-err" hidden></p>
+      </div>
+      <button type="submit" class="btn btn--primary">Unlock</button>
+    </form>
+    <p>Don’t have a code? You can still <a href="#/learn">read about values and ACT</a>.</p>`;
+
+  const form = document.getElementById('gate-form');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const input = document.getElementById('g-code');
+    const err = document.getElementById('g-code-err');
+    const fail = (msg) => {
+      err.textContent = msg;
+      err.hidden = false;
+      input.setAttribute('aria-invalid', 'true');
+      input.focus();
+      announce(msg); // the field may already have focus, so say it again
+    };
+    if (!input.value.trim()) { fail('Enter your access code.'); return; }
+    let ok = false;
+    try { ok = await access.unlock(input.value); } catch { /* e.g. no Web Crypto over plain http */ }
+    if (!document.contains(form)) return; // navigated away while checking
+    if (!ok) { fail('That code didn’t work. Check it and try again.'); return; }
+    announce('Unlocked. Welcome to Lodestar.');
+    lastPath = null; // show the page that was asked for
+    render();
+  });
 }
 
 function viewNotFound() {

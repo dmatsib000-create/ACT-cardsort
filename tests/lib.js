@@ -20,13 +20,21 @@ const VARIANTS = [
   { name: 'dark-phone', scheme: 'dark', viewport: { width: 390, height: 844 } },
 ];
 
-async function open(variant) {
+// The access code hash set in config.js ('' when the gate is off).
+const CONFIG = path.join(__dirname, '..', 'assets', 'js', 'config.js');
+const shippedHash = () => (fs.readFileSync(CONFIG, 'utf8').match(/export const ACCESS_CODE_HASH = '([^']*)';/) || [])[1]?.trim().toLowerCase() || '';
+
+// Pass { unlocked: false } to see the access code gate; by default the code
+// counts as already entered, so tests reach the app even when a code is set.
+async function open(variant, { unlocked = true } = {}) {
   // CHROMIUM_PATH lets the tests use an already-installed Chromium instead of
   // the one `npx playwright install` downloads.
   const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
   // bypassCSP lets axe be injected; serviceWorkers are blocked so every run
   // loads the files on disk rather than an old cached copy.
   const context = await browser.newContext({ colorScheme: variant.scheme, viewport: variant.viewport, serviceWorkers: 'block', bypassCSP: true });
+  const hash = shippedHash();
+  if (unlocked && hash) await context.addInitScript((h) => localStorage.setItem('lodestar:access', h), hash);
   const page = await context.newPage();
   page.setDefaultTimeout(10000); // fail fast instead of hanging on a missing element
   const errors = [];

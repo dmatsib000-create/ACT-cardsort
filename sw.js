@@ -1,6 +1,6 @@
 // Offline support. Pages are fetched network-first (so updates arrive quickly);
 // static assets are served from cache and refreshed in the background.
-const VERSION = 'lodestar-v11';
+const VERSION = 'lodestar-v12';
 const ASSETS = [
   './',
   './index.html',
@@ -12,6 +12,7 @@ const ASSETS = [
   './assets/js/values.js',
   './assets/js/content.js',
   './assets/js/config.js',
+  './assets/js/access.js',
   './assets/icons/icon.svg',
   './assets/fonts/atkinson-hyperlegible-latin-400-normal.woff2',
   './assets/fonts/atkinson-hyperlegible-latin-400-italic.woff2',
