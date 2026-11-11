@@ -17,7 +17,7 @@ export const FEEDBACK_FORM_URL = 'https://forms.gle/rrVtZw1mJEuewH6n7';
 // This is a soft gate for keeping casual visitors out, not real security:
 // the check runs in the browser, so a determined person could get past it.
 // After changing it, bump VERSION in sw.js so returning visitors get the update.
-export const ACCESS_CODE_HASH = '';
+export const ACCESS_CODE_HASH = 'fa105305fb6e18fbe166a835e4f02ba582b20895e875074f61053a82366ca727';
 
 // Returns the form link if it is a Google Forms address, otherwise ''.
 // Anything else is ignored so a typo can't send people somewhere unexpected.
