@@ -14,7 +14,12 @@ const live = document.getElementById('live');
 let cleanupFns = [];
 let firstRender = true;
 
-const persist = () => store.save(state);
+// If the browser stops letting Lodestar save partway through, say so at once.
+const persist = () => {
+  const ok = store.save(state);
+  if (!ok) document.getElementById('storage-warning')?.removeAttribute('hidden');
+  return ok;
+};
 
 let saveTimer = null;
 const persistSoon = () => {
@@ -53,6 +58,57 @@ function formatDate(iso) {
 }
 
 const plural = (n, one, many = one + 's') => `${n} ${n === 1 ? one : many}`;
+
+// Calendar days, so a backup saved last night reads "yesterday" this morning.
+function ago(ms) {
+  const day = (t) => { const d = new Date(t); return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()); };
+  const n = Math.round((day(Date.now()) - day(ms)) / 86_400_000);
+  if (n <= 0) return 'today';
+  if (n === 1) return 'yesterday';
+  if (n < 7) return `${n} days ago`;
+  return `on ${formatDate(new Date(ms).toISOString())}`;
+}
+
+/* Backups: how safe the work in this browser is */
+
+// Phones and tablets get the share sheet (Mail, Files, Drive...), which is
+// easier to find afterwards than a download.
+const SHARES_FILES = (() => {
+  try {
+    return window.matchMedia('(pointer: coarse)').matches && typeof navigator.canShare === 'function'
+      && navigator.canShare({ files: [new File(['{}'], 'x.json', { type: 'application/json' })] });
+  } catch { return false; }
+})();
+// Safari can erase a site's data after about a week unused, and a Home Screen
+// icon keeps its own copy separate from Safari.
+const IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+function backupStatusText() {
+  const b = store.backupStatus(state);
+  if (!b.has) return '';
+  if (!b.last) return 'Your results are only in this browser. No backup file saved yet.';
+  if (!b.unsaved) return `Everything is in your last backup file, saved ${ago(b.last)}.`;
+  return `You have changes that aren\u2019t in a backup file yet. Last backup saved ${ago(b.last)}.`;
+}
+
+// A gentle reminder once changes have gone a couple of days without a backup.
+function backupNotice() {
+  const b = store.backupStatus(state);
+  if (!b.due) return '';
+  const lead = b.last ? `Some of your changes aren\u2019t in a backup file yet (your last one was saved ${ago(b.last)}).` : 'You haven\u2019t saved a backup file yet.';
+  return `<aside class="notice notice--backup no-print" aria-labelledby="bk-h">
+    <h2 id="bk-h">Keep a copy of your work</h2>
+    <p>${esc(lead)} Your answers are saved only in this browser, so clearing browsing data could erase them. A backup file is a copy you keep somewhere else.</p>
+    <div class="inline-actions">
+      <button type="button" class="btn btn--secondary btn--sm" data-action="export">Download backup file</button>
+    </div>
+  </aside>`;
+}
+
+function refreshBackupStatus() {
+  document.querySelectorAll('[data-backup-status]').forEach((el) => { el.textContent = backupStatusText(); });
+  if (!store.backupStatus(state).due) document.querySelectorAll('.notice--backup').forEach((el) => el.remove());
+}
 
 // Rank numbers for the core values, where values marked "on a par" with the
 // one above share its number (1, 2, 2, 4...).
@@ -243,6 +299,7 @@ function viewHome() {
 
   app.innerHTML = `
   ${deckNotice()}
+  ${backupNotice()}
   <section class="hero">
     <div class="hero__text">
       <p class="eyebrow">An Acceptance and Commitment Therapy exercise</p>
@@ -253,6 +310,7 @@ function viewHome() {
         ${p.started ? '<button type="button" class="btn btn--ghost" data-action="start-over">Start over</button>' : '<a class="btn btn--ghost" href="#/learn">What are values?</a>'}
       </div>
       <p class="meta">${VALUES.length} cards · about 15 to 25 minutes · private: nothing leaves this device</p>
+      ${store.hasProgress(state) ? '' : '<p class="meta">Moving from another device? <button type="button" class="btn btn--ghost btn--sm" data-action="import">Restore from a backup file</button></p>'}
     </div>
     <div class="hero__art" aria-hidden="true">
       <div class="deck-art">
@@ -1260,6 +1318,7 @@ function viewResults() {
   const canShare = typeof navigator.share === 'function';
 
   app.innerHTML = `
+    ${backupNotice()}
     <header class="page-head results-head">
       <p class="eyebrow">Your compass</p>
       <h1>My values</h1>
@@ -1304,7 +1363,9 @@ function viewResults() {
 
     <section class="section toolbox no-print" aria-labelledby="keep-h">
       <h2 id="keep-h">Keep or share your results</h2>
-      <p class="muted">Your results are stored only in this browser. To keep them safe or move them to another device, save a copy.</p>
+      <p class="muted">Your results are stored only in this browser. To keep them safe or move them to another device, download a backup file. ${SHARES_FILES ? 'Choose Mail to send it to yourself, or save it to Files or a cloud drive.' : 'It goes to your Downloads folder; email it to yourself or move it to a cloud drive so a copy is kept off this device.'}</p>
+      <p class="backup-status" data-backup-status>${esc(backupStatusText())}</p>
+      ${IS_IOS ? '<p class="muted">On iPhone and iPad, Safari can erase a site\u2019s saved data if you don\u2019t open it for about a week, and an icon added to the Home Screen keeps its own separate copy. To switch between them, download a backup in one and restore it in the other.</p>' : ''}
       <div class="toolbox__btns">
         <button type="button" class="btn btn--secondary" data-action="print">Print or save as PDF</button>
         <button type="button" class="btn btn--secondary" data-action="copy">Copy as text</button>
@@ -1998,13 +2059,14 @@ document.addEventListener('click', (e) => {
     }
     case 'start-over': confirmDialog({
       title: 'Start over?',
-      body: 'This permanently erases your sorted cards, core values, reflections, actions and saved decisions from this device. You might want to download a backup first.',
+      body: `This permanently erases your sorted cards, core values, reflections, actions and saved decisions from this device. ${store.backupStatus(state).unsaved ? 'Some of your work isn\u2019t in a backup file yet, so you might want to download one first.' : 'You might want to download a backup first.'}`,
       confirm: 'Erase everything',
       danger: true,
     }).then((ok) => {
       if (!ok) return;
       state = store.clear();
       persist();
+      store.forgetBackup();
       announce('Everything has been erased.');
       if (location.hash === '#/' || location.hash === '') render(); else location.hash = '#/';
     }); break;
@@ -2061,15 +2123,43 @@ async function copyText(text) {
   }
 }
 
-function exportJSON() {
-  const blob = new Blob([JSON.stringify({ app: 'lodestar', ...state }, null, 2)], { type: 'application/json' });
+const backupName = () => `lodestar-values-${new Date().toISOString().slice(0, 10)}.json`;
+
+function backedUp() {
+  store.markBackedUp();
+  refreshBackupStatus();
+  announce('Backup file saved. Keep it somewhere private, off this device.');
+  toast('Backup file saved');
+}
+
+async function exportJSON() {
+  // Ask the browser not to clear Lodestar's storage on its own (where supported).
+  navigator.storage?.persist?.().catch(() => {});
+  const blob = new Blob([JSON.stringify(store.backupFile(state), null, 2)], { type: 'application/json' });
+  if (SHARES_FILES) {
+    const file = new File([blob], backupName(), { type: 'application/json' });
+    // Only count it as saved once the share sheet finishes; cancelling saves nothing.
+    try {
+      await navigator.share({ files: [file], title: 'Lodestar backup' });
+      backedUp();
+      return;
+    } catch (e) {
+      if (e?.name === 'AbortError') { announce('Backup not saved. The share was cancelled.'); toast('Backup not saved'); return; }
+      // Any other failure: fall back to a download.
+    }
+  }
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `lodestar-values-${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = backupName();
   document.body.append(a); a.click(); a.remove();
-  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  announce('Backup file downloaded.');
+  setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  backedUp();
 }
+
+const BACKUP_ERRORS = {
+  notours: { title: 'Couldn’t read that file', body: 'Please choose a backup file downloaded from Lodestar.' },
+  newer: { title: 'This backup is from a newer version', body: 'It was saved by a newer version of Lodestar, so this copy can’t read it safely. Nothing has been changed. Reload this page to get the latest version, then try again.' },
+};
 
 function importJSON() {
   const input = document.createElement('input');
@@ -2078,20 +2168,34 @@ function importJSON() {
   input.addEventListener('change', async () => {
     const file = input.files?.[0];
     if (!file) return;
+    let result;
     try {
-      if (file.size > 2_000_000) throw new Error('too big');
-      const data = JSON.parse(await file.text());
-      if (data.app !== 'lodestar') throw new Error('not lodestar');
-      const ok = await confirmDialog({ title: 'Restore this backup?', body: 'This will replace what is currently saved on this device.', confirm: 'Restore' });
-      if (!ok) return;
-      state = store.normalize(data);
-      persist();
-      announce('Backup restored.');
-      toast('Backup restored');
-      render();
-    } catch {
-      confirmDialog({ title: 'Couldn’t read that file', body: 'Please choose a backup file downloaded from Lodestar.', confirm: 'OK', hideCancel: true });
+      result = file.size > 2_000_000 ? { error: 'notours' } : store.parseBackup(await file.text());
+    } catch { result = { error: 'notours' }; }
+    if (result.error) {
+      confirmDialog({ ...BACKUP_ERRORS[result.error], confirm: 'OK', hideCancel: true });
+      return;
     }
+    const { data } = result;
+    // Older backups have no savedAt; the last change in them is close enough.
+    const savedIso = typeof data.savedAt === 'string' && !Number.isNaN(Date.parse(data.savedAt)) ? data.savedAt
+      : typeof data.updated === 'string' && !Number.isNaN(Date.parse(data.updated)) ? data.updated : '';
+    const here = store.hasProgress(state) ? Date.parse(state.updated) || 0 : 0;
+    const lost = here && (!savedIso || here > Date.parse(savedIso));
+    const body = [
+      savedIso ? `This backup was saved on ${formatDate(savedIso)}.` : '',
+      'Restoring it replaces what is currently saved on this device.',
+      lost ? 'This device has changes made after this backup was saved, and they would be lost. You might want to download a backup of this device first.' : '',
+    ].filter(Boolean).join(' ');
+    const ok = await confirmDialog({ title: 'Restore this backup?', body, confirm: 'Restore' });
+    if (!ok) return;
+    state = store.normalize(data);
+    persist();
+    // What is saved here now matches a file the person has.
+    store.markBackedUp();
+    announce('Backup restored.');
+    toast('Backup restored');
+    render();
   });
   input.click();
 }

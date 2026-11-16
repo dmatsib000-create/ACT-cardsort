@@ -51,6 +51,9 @@ export function save(state) {
   if (!persistent) return false;
   try {
     localStorage.setItem(KEY, JSON.stringify(state));
+    // The first change since the last backup file, so a reminder can wait
+    // until unsaved work is a couple of days old.
+    if (!localStorage.getItem(UNSAVED_KEY)) localStorage.setItem(UNSAVED_KEY, String(Date.now()));
     return true;
   } catch {
     persistent = false;
@@ -61,6 +64,74 @@ export function save(state) {
 export function clear() {
   try { localStorage.removeItem(KEY); } catch { /* ignore */ }
   return fresh();
+}
+
+/* Backup files
+ *
+ * A backup file is the saved state plus { app: 'lodestar', savedAt }. Two
+ * small keys of their own (kept out of the state, so they are never in a
+ * backup) record when a backup file was last saved and when the first change
+ * after it was made. Together they say whether this browser holds work that
+ * is not in a backup yet, and for how long.
+ */
+const BACKUP_KEY = 'lodestar:last-backup';
+const UNSAVED_KEY = 'lodestar:unsaved-since';
+// Unsaved work this many days old (or more) earns a gentle reminder.
+export const BACKUP_DUE_DAYS = 2;
+const DAY = 86_400_000;
+
+const readTime = (key) => { try { return Number(localStorage.getItem(key)) || 0; } catch { return 0; } };
+export const lastBackup = () => readTime(BACKUP_KEY);
+
+// Call once a backup file has been saved, or after restoring one (what is
+// saved here is then the same as a file the person has).
+export function markBackedUp(at = Date.now()) {
+  try {
+    localStorage.setItem(BACKUP_KEY, String(at));
+    localStorage.removeItem(UNSAVED_KEY);
+  } catch { /* ignore */ }
+}
+
+// After Start over there is nothing left to back up.
+export function forgetBackup() {
+  try {
+    localStorage.removeItem(BACKUP_KEY);
+    localStorage.removeItem(UNSAVED_KEY);
+  } catch { /* ignore */ }
+}
+
+// True once someone has done anything worth keeping.
+export const hasProgress = (s) => Boolean(s) && (Object.keys(s.piles || {}).length > 0 || (s.custom || []).length > 0
+  || (s.core || []).length > 0 || (s.actions || []).length > 0 || (s.decisions || []).length > 0);
+
+// { has, last, unsaved, due }: whether there is anything to back up, when the
+// last backup was saved (0 for never), whether work has changed since, and
+// whether that unsaved work is old enough for a reminder. Times are passed in
+// by the tests; the app uses the stored ones.
+export function backupStatus(state, { last = lastBackup(), since = readTime(UNSAVED_KEY), now = Date.now() } = {}) {
+  const has = hasProgress(state);
+  const changed = Date.parse(state?.updated) || 0;
+  const unsaved = has && (!last || changed > last);
+  // Without a record of the first unsaved change (for example, progress saved
+  // before this feature existed), count from the latest change.
+  const from = since || changed || now;
+  return { has, last, unsaved, due: unsaved && now - from >= BACKUP_DUE_DAYS * DAY };
+}
+
+export function backupFile(state, now = new Date()) {
+  return { app: 'lodestar', savedAt: now.toISOString(), ...state };
+}
+
+// Reads the text of a chosen file: { data } for a Lodestar backup this
+// version can read, or { error: 'notours' | 'newer' }. A backup from a newer
+// version may hold things this one doesn't know about, and normalize() would
+// quietly drop them, so it is refused rather than read in part.
+export function parseBackup(text) {
+  let data;
+  try { data = JSON.parse(text); } catch { return { error: 'notours' }; }
+  if (!data || typeof data !== 'object' || Array.isArray(data) || data.app !== 'lodestar') return { error: 'notours' };
+  if (Number(data.schema) > SCHEMA) return { error: 'newer' };
+  return { data };
 }
 
 // Carries saved progress over to a newer deck, where some cards were merged,

@@ -78,6 +78,20 @@ python3 -m http.server 8000
 - If an access code is set, the device remembers that it was entered (under its own key, kept by **Start over**). The code is checked in the browser and never sent anywhere.
 - People can erase everything with **Start over**, or download a backup file to move their results between devices.
 
+## Backups
+
+Results live only in one browser, so Lodestar helps people keep a copy:
+
+- **Backup status.** The *Keep or share your results* box on My values says whether everything is in a backup file, or whether there are changes since the last one (and when it was saved).
+- **A gentle reminder.** Once changes have gone 2 days without a backup (`BACKUP_DUE_DAYS` in `assets/js/store.js`), a short "Keep a copy of your work" note with a download button appears on the home page and My values. It goes away as soon as a backup is saved.
+- **Phones use the share sheet.** On phones and tablets, *Download backup file* opens the share sheet, so the file can be emailed to yourself or saved to Files or a cloud drive. Cancelling the share does not count as a backup. On computers the file goes to Downloads.
+- **iPhone and iPad note.** Safari can erase a site's data after about a week unused, and a Home Screen icon keeps its own copy separate from Safari. On those devices My values says so.
+- **Safer restores.** Before restoring, Lodestar says when the backup was saved, and warns if this device has changes made after it (they would be lost). A backup from a newer version of Lodestar is refused with a message, and nothing changes, rather than being read in part. A new browser offers *Restore from a backup file* on the home page.
+- **Asks the browser to keep its data.** Saving a backup also asks the browser not to clear Lodestar's storage on its own, where supported.
+- **Storage problems are shown at once.** If the browser stops allowing Lodestar to save partway through, the warning banner appears straight away, not only on the next visit.
+
+Two small keys, `lodestar:last-backup` and `lodestar:unsaved-since`, record when a backup was last saved and when the first change after it was made. They are kept out of the saved results, so they are never inside a backup file, and **Start over** clears them.
+
 ## Accessibility
 
 Lodestar targets **WCAG 2.2 AA**:
@@ -103,7 +117,7 @@ assets/js/values.js     The values deck (edit here to change the cards)
 assets/js/content.js    Learn and About page content and references
 assets/js/config.js     Site settings: the feedback form link and access code
 assets/js/access.js     The optional access code check
-assets/js/store.js      Local storage, import validation
+assets/js/store.js      Local storage, import validation, backup status
 assets/fonts/           Self-hosted fonts (SIL Open Font License)
 assets/icons/           App icons
 docs/research/          Research briefs with verified citations

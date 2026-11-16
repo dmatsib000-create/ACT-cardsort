@@ -798,6 +798,11 @@ input[type="range"][data-unset] { accent-color: var(--line-strong); }
 .notice--update { margin-bottom: var(--space-6); border-left: 4px solid var(--gold); }
 .notice--update h2 { font-size: 1.25rem; }
 .notice--update .inline-actions { margin-top: var(--space-3); }
+.notice--backup { margin-bottom: var(--space-6); border-left: 4px solid var(--primary); }
+.notice--backup h2 { font-size: 1.25rem; }
+.notice--backup .inline-actions { margin-top: var(--space-3); }
+.backup-status { font-weight: 700; }
+.backup-status:empty { display: none; }
 .notice--inline { padding: var(--space-3) var(--space-4); margin-bottom: var(--space-3); font-size: .95rem; }
 .value__why { font-size: .9rem; color: var(--ink-2); margin-bottom: var(--space-2); }
 

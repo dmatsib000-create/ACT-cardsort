@@ -26,6 +26,8 @@ npm test
 | `escaping.js` | Text that looks like HTML (`<img onerror>`, `<b>`, quotes) typed into every field is shown as plain text on every page and dialog, with no elements created and no code run. The page's Content Security Policy is bypassed so this tests the escaping itself. |
 | `feedback.js` | The feedback link stays hidden with no form set or a non-Google address, and appears in the footer and About page once a Google Form is set. |
 | `access-gate.js` | The access code gate: off with no code set; with one set, deep links show the gate, the navigation is hidden, the crisis footer and Learn page stay open, empty and wrong codes show an error, the right code (any case or spacing) opens the page asked for and is remembered, and a changed code asks again. |
+| `unit/backup.test.mjs` | Backup status (unsaved work, when the reminder is due), the backup file's format, and refusing files that aren't Lodestar backups or come from a newer version. |
+| `backup.js` | The backup reminder on the home page and My values, downloading a backup (the reminder goes and the status says everything is backed up), the warning when restoring an older file over newer changes, refusing a backup from a newer version without changing anything, and Start over forgetting the backup time. |
 | `life-areas.js` | The optional life areas exercise: picking (saved only on Continue), custom areas (add and remove), the three statuses, the three-value cap, the summary's suggestion (no scores), planning a step from an area, freeing a value's slot when it leaves the core list, and restoring the link when it returns. |
 
 If `ACCESS_CODE_HASH` is set in `assets/js/config.js`, the other tests start with the code already entered (see `open()` in `lib.js`), so they still reach the app.

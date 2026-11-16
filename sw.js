@@ -1,6 +1,6 @@
 // Offline support. Pages are fetched network-first (so updates arrive quickly);
 // static assets are served from cache and refreshed in the background.
-const VERSION = 'lodestar-v15';
+const VERSION = 'lodestar-v16';
 const ASSETS = [
   './',
   './index.html',

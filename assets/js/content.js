@@ -176,7 +176,7 @@ export const aboutHTML = (feedback = '') => `
       <li><strong>Nothing leaves your device.</strong> Your cards, reflections, plans and decisions are saved only in this browser’s local storage. There are no accounts, no analytics, no cookies and no third-party scripts or fonts.</li>
       <li><strong>Shared devices:</strong> anyone using this browser on this device could open your results. Use <em>Start over</em> on the My values page to erase everything.</li>
       <li><strong>Backups:</strong> a downloaded backup file contains everything you wrote, in plain text. Store it somewhere private.</li>
-      <li><strong>Clearing your browser data</strong> will also erase your results, so download a backup if you want to keep them.</li>${feedback ? `
+      <li><strong>Clearing your browser data</strong> will also erase your results, so download a backup if you want to keep them. If you have changes that aren’t in a backup after a couple of days, Lodestar shows a gentle reminder. It only checks this on your device.</li>${feedback ? `
       <li><strong>Feedback is separate:</strong> the feedback form is run by Google, not Lodestar. Only what you type into the form is sent; Lodestar never attaches your cards, reflections or plans.</li>` : ''}
     </ul>
   </section>
