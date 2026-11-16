@@ -1901,7 +1901,7 @@ function viewGate() {
     <form class="card-form gate-form" id="gate-form" novalidate>
       <div class="field">
         <label for="g-code" class="field-label">Access code</label>
-        <input type="text" id="g-code" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="g-code-err">
+        <input type="text" id="g-code" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" aria-describedby="g-code-err">
         <p class="error" id="g-code-err" hidden></p>
       </div>
       <button type="submit" class="btn btn--primary">Unlock</button>

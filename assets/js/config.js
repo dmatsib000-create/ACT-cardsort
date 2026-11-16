@@ -11,7 +11,7 @@ export const FEEDBACK_FORM_URL = 'https://forms.gle/rrVtZw1mJEuewH6n7';
 // Access code. While this is empty, anyone can use Lodestar. To require a
 // code, run `node scripts/hash-access-code.mjs "your code"` and paste the line
 // it prints here. Only the hash of the code goes here, never the code itself.
-// Codes ignore case and extra spaces. People enter the code once per device;
+// Codes ignore case and spaces. People enter the code once per device;
 // change it and everyone is asked for the new one. The Learn page and the
 // crisis resources in the footer stay open to everyone.
 // This is a soft gate for keeping casual visitors out, not real security:

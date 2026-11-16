@@ -18,7 +18,7 @@ npm test
 | `../scripts/check-deck.mjs` | Every card fits ACT's definition of a value. |
 | `../scripts/sync-values-map.mjs` | The values map (`docs/values-map.html`, `docs/VALUES-MAP.md`) shows the deck's current wording. Fix drift with `node scripts/sync-values-map.mjs --write`. |
 | `unit/config.test.mjs` | Only Google Forms links are accepted for the feedback form. |
-| `unit/access.test.mjs` | Access codes ignore case and extra spaces, hash consistently, and the shipped `ACCESS_CODE_HASH` is empty or a valid hash. |
+| `unit/access.test.mjs` | Access codes ignore case and all spaces, hash consistently, and the shipped `ACCESS_CODE_HASH` is empty or a valid hash. |
 | `unit/store.test.mjs` | Saved-data handling with Node's built-in test runner: validation, every limit, protection against `__proto__` keys in backup files, and each migration step. Runs in under a second. |
 | `../scripts/check-offline-cache.mjs` | Every file the app needs offline is in the service worker's cache list. (On pull requests, GitHub also checks the cache version was bumped.) |
 | `core-flow.js` | Sort, choose, rank (with ties), reflect, act, results, decide, learn, about; reload persistence; no horizontal scrolling. |

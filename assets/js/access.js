@@ -13,10 +13,11 @@ const SALT = 'lodestar-access:';
 
 let unlockedThisVisit = false; // used when the browser won't let us save
 
-// Codes are matched ignoring case, surrounding spaces and repeated spaces,
-// so "Blue Harbor" and " blue  harbor " both work.
+// Codes are matched ignoring case and all spaces, so "Blue Harbor",
+// "blueharbor" and " BLUE  harbor " all work. A code told out loud as a few
+// words works whether or not people type the spaces.
 export function normalizeCode(code) {
-  return String(code ?? '').trim().replace(/\s+/g, ' ').toLowerCase();
+  return String(code ?? '').replace(/\s+/g, '').toLowerCase();
 }
 
 // SHA-256 of the normalized code, as lowercase hex. Used by the gate and by

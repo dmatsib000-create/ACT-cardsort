@@ -29,8 +29,9 @@ const GATE = 'h1:has-text("Enter your access code")';
     check(/988/.test(await page.locator('.site-footer').innerText()), 'crisis resources still shown');
     await axe(page, 'gate');
 
-    await page.click('#app a[href="#/learn"]'); await page.waitForSelector('#main h1');
-    check((await page.locator(GATE).count()) === 0, 'Learn page is open without a code');
+    await page.click('#app a[href="#/learn"]');
+    // Wait for the gate to go: its own heading would satisfy a plain h1 wait.
+    check(await page.locator(GATE).waitFor({ state: 'detached' }).then(() => true, () => false), 'Learn page is open without a code');
     await page.goto(`${BASE}#/results`); await page.waitForSelector(GATE);
 
     await page.click('button:has-text("Unlock")');
@@ -40,9 +41,9 @@ const GATE = 'h1:has-text("Enter your access code")';
     check((await page.getAttribute('#g-code', 'aria-invalid')) === 'true', 'wrong code: field marked invalid');
     await axe(page, 'gate with error');
 
-    await page.fill('#g-code', '  Open  SESAME '); await page.click('button:has-text("Unlock")');
+    await page.fill('#g-code', ' OpenSESAME '); await page.click('button:has-text("Unlock")');
     await page.waitForSelector('h1:not(:has-text("Enter your access code"))');
-    check(page.url().endsWith('#/results'), 'right code (any case and spacing): opens the page asked for');
+    check(page.url().endsWith('#/results'), 'right code (any case, spaces left out): opens the page asked for');
     check(await page.locator('.site-nav').isVisible(), 'main navigation shown once unlocked');
     check(await page.evaluate(() => document.activeElement?.tagName === 'H1'), 'focus moves to the page heading');
 

@@ -51,7 +51,7 @@ A "Send feedback or report a problem" link then appears in the footer of every p
 
 You can limit Lodestar to people you give a code to, for example while it is being tested with a clinic or a study group. While no code is set, anyone can use it.
 
-1. Choose a code. A few unrelated words (like `amber kite harbor`) are easy to share and hard to guess. Case and extra spaces don't matter.
+1. Choose a code. A few unrelated words (like `amber kite harbor`) are easy to share and hard to guess. Case and spaces don't matter, so `amber kite harbor` and `AmberKiteHarbor` both work.
 2. Run `node scripts/hash-access-code.mjs "amber kite harbor"` (Node 22 or later). It prints a line like `export const ACCESS_CODE_HASH = '3f9a…';`.
 3. Replace the `ACCESS_CODE_HASH` line in `assets/js/config.js` with it. Only the hash goes in the repository, never the code itself.
 4. Bump `VERSION` in `sw.js`, then commit.

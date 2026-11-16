@@ -4,14 +4,15 @@ import assert from 'node:assert/strict';
 import { normalizeCode, hashCode, codeHash, isLocked } from '../../assets/js/access.js';
 import { ACCESS_CODE_HASH } from '../../assets/js/config.js';
 
-test('codes ignore case and extra spaces', async () => {
-  assert.equal(normalizeCode('  Blue   Harbor '), 'blue harbor');
+test('codes ignore case and all spaces', async () => {
+  assert.equal(normalizeCode('  Blue   Harbor '), 'blueharbor');
   assert.equal(await hashCode('Blue Harbor'), await hashCode(' blue  HARBOR '));
-  assert.notEqual(await hashCode('blue harbor'), await hashCode('blueharbor'));
+  assert.equal(await hashCode('blue harbor'), await hashCode('blueharbor'));
+  assert.notEqual(await hashCode('blue harbor'), await hashCode('blue harbour'));
 });
 
 test('hashes are stable lowercase SHA-256 hex', async () => {
-  assert.equal(await hashCode('open sesame'), 'ce578b9ef32f8cd4dcea552834dae2613caf4f4cd3bfe0015d6b4883ff555371');
+  assert.equal(await hashCode('open sesame'), 'ff66ac0cd13c102ab68ea8a4b2c12f920ceee4628989d318e4a535753ce0c588');
 });
 
 test('no hash means no gate', () => {
